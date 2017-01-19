@@ -1,0 +1,23 @@
+{% set pageNumber = oka_pagination.pageNumber %}
+{% if pageNumber > 1 %}
+<ul class="pagination">
+	{% if oka_pagination.page < 2 %}
+		<li class="arrow unavailable"><a href="#">&laquo;</a></li>
+	{% else %}
+		{% set previewParams = params|merge({'page': (oka_pagination.page - 1)}) %}
+		<li class="arrow"><a href="{{ path(route, previewParams) }}">&laquo;</a></li>
+	{% endif %}
+	{% for i in 1..pageNumber %}
+		{% set params = params|merge({'page': i}) %}
+		<li {% if oka_pagination.page == i %}class="current"{% endif %}>
+			<a href="{{ path(route, params) }}">{{ i }}</a>
+		</li>
+	{% endfor %}
+	{% if oka_pagination.page >= oka_pagination.pageNumber %}
+		<li class="arrow unavailable"><a href="#">&raquo;</a></li>
+	{% else %}
+		{% set nextParams = params|merge({'page': (oka_pagination.page + 1)}) %}
+		<li class="arrow"><a href="{{ path(route, nextParams) }}">&raquo;</a></li>
+	{% endif %}
+</ul>
+{% endif %}

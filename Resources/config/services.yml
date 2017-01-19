@@ -1,0 +1,21 @@
+#parameters:
+
+services:
+# Factory
+    oka_pagination.entity_manager:
+        class: Doctrine\ORM\EntityManager
+        factory: [ "@doctrine", getManager ]
+        arguments: [ "%oka_pagination.entity_manager_name%" ]
+        public: false
+
+# Services
+    oka_pagination.bag:
+        class: Oka\PaginationBundle\Service\PaginationBag
+        arguments: [[]]
+        public: false
+
+    oka_pagination.manager:
+        class: Oka\PaginationBundle\Service\PaginationManager
+        arguments: [ "@doctrine", "@oka_pagination.entity_manager", "@oka_pagination.bag", "%oka_pagination.item_per_page%", "%oka_pagination.max_page_number%", "%oka_pagination.template%" ]
+        tags:
+          - { name: twig.extension }

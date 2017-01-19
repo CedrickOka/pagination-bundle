@@ -1,0 +1,37 @@
+{
+	"name" : "oka/tools",
+	"type" : "library",
+	"description" : "Symfony OkaToolsBundle",
+	"keywords" : [
+		"doctrine2",
+		"pagination",
+		"key generator"
+	],
+	"licence" : "MIT",
+	"authors" : [{
+			"name" : "Cedrick Oka",
+			"email" : "cedrickoka@fermentuse.com"
+		}
+	],
+	"version" : "1.0.0-dev",
+	"minimum-stability" : "dev",
+	"require" : {
+		"php" : ">=5.4.0",
+		"symfony/symfony" : "2.3.*",
+		"symfony/http-foundation" : "2.6.*@dev",
+		"doctrine/orm" : ">=2.2",
+		"doctrine/common" : ">=2.2",
+		"twig/extensions" : "1.0.*"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"Oka\\ToolsBundle" : ""
+		}
+	},
+	"target-dir" : "Oka/ToolsBundle",
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "1.0.x-dev"
+		}
+	}
+}
