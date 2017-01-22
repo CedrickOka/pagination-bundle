@@ -37,7 +37,7 @@ class PaginationResultSet
 	 */
 	protected $pageNumber;
 	
-	public function __construct($page, $itemPerPage, array $orderBy, $fullyItems, $items)
+	public function __construct($page, $itemPerPage, array $orderBy, $fullyItems, $pageNumber, array $items)
 	{
 		$this->page = $page;
 		$this->itemPerPage = $itemPerPage;
@@ -92,18 +92,6 @@ class PaginationResultSet
 	 */
 	public function getPageNumber()
 	{
-		if ($this->pageNumber !== null) {
-			return $this->pageNumber;
-		}
-		
-		$this->pageNumber = 0;
-		$items = $this->fullyItems - $this->itemPerPage;
-		
-		while ($items > 0) {
-			++$this->pageNumber;
-			$items -= $this->itemPerPage;
-		}
-		
-		return ++$this->pageNumber;
+		return $this->pageNumber;
 	}
 }

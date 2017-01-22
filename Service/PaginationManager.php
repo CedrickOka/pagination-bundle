@@ -63,11 +63,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	protected $page;
 	
 	/**
-	 * @var array $orderBy
-	 */
-	protected $orderBy;
-	
-	/**
 	 * @var Query $selectQuery
 	 */
 	protected $selectQuery;
@@ -78,9 +73,44 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	protected $countQuery;
 	
 	/**
+	 * @var \Closure $selectItemsCallable
+	 */
+	protected $selectItemsCallable;
+	
+	/**
+	 * @var \Closure $countItemsCallable
+	 */
+	protected $countItemsCallable;
+	
+	/**
+	 * @var array $orderBy
+	 */
+	protected $orderBy;
+	
+	/**
 	 * @var integer $fullyItems
 	 */
 	protected $fullyItems;
+	
+	/**
+	 * @var integer $pageNumber
+	 */
+	protected $pageNumber;
+
+	/**
+	 * @var Query $internalSelectQuery
+	 */
+	private $internalSelectQuery;
+	
+	/**
+	 * @var Query $internalCountQuery
+	 */
+	private $internalCountQuery;
+	
+	/**
+	 * @var boolean $prepared
+	 */
+	private $prepared = false;
 	
 	/**
 	 * @param Registry $doctrine
@@ -103,28 +133,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->page = 1;
 		$this->orderBy = [];
 		$this->fullyItems = 0;
-	}
-	
-	public function loadConfig($key)
-	{
-		if (!$this->paginationBag->has($key)) {
-			throw new \InvalidArgumentException(sprintf('Configuration key "%s" is not defined in pagination bag.', $key));
-		}
-		
-		if ($bag = $this->paginationBag->get($key, [])) {
-			$this->className = $bag['class'];
-			$this->itemPerPage = $bag['item_per_page'];
-			$this->maxPageNumber = $bag['max_page_number'];
-			
-			if (isset($bag['template']) && $bag['template']) {
-				$this->template = $bag['template'];
-			}
-			if (isset($bag['entity_manager_name']) && $bag['entity_manager_name']) {
-				$this->entityManager = $this->doctrine->getManager($bag['entity_manager_name']);
-			}
-		}
-		
-		return $bag;
 	}
 	
 	/**
@@ -150,6 +158,49 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	/**
 	 * @return integer
 	 */
+	protected function getItemOffset()
+	{
+		if ($this->page < 2) {
+			return 0;
+		}
+		
+		return $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
+	}
+	
+	/**
+	 * @return integer
+	 * @deprecated
+	 */
+	protected function getItemLimit()
+	{
+		return $this->itemPerPage;
+	}
+	
+	public function loadConfig($key)
+	{
+		if (!$this->paginationBag->has($key)) {
+			throw new \InvalidArgumentException(sprintf('Configuration key "%s" is not defined in pagination bag.', $key));
+		}
+		
+		if ($bag = $this->paginationBag->get($key, [])) {
+			$this->className = $bag['class'];
+			$this->itemPerPage = $bag['item_per_page'];
+			$this->maxPageNumber = $bag['max_page_number'];
+			
+			if (isset($bag['template']) && $bag['template']) {
+				$this->template = $bag['template'];
+			}
+			if (isset($bag['entity_manager_name']) && $bag['entity_manager_name']) {
+				$this->entityManager = $this->doctrine->getManager($bag['entity_manager_name']);
+			}
+		}
+		
+		return $bag;
+	}
+	
+	/**
+	 * @return integer
+	 */
 	public function getMaxPageNumber()
 	{
 		return $this->maxPageNumber;
@@ -163,13 +214,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	{
 		$this->maxPageNumber = $maxPageNumber;
 		return $this;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getOrderBy() {
-		return $this->orderBy;
 	}
 	
 	/**
@@ -193,23 +237,50 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	}
 	
 	/**
-	 * @return integer
+	 * @param \Closure $closure
+	 * @return \Oka\PaginationBundle\Service\PaginationManager
 	 */
-	protected function getItemOffset()
+	public function setSelectItemsCallable(\Closure $closure)
 	{
-		if ($this->page < 2) {
-			return 0;
-		}
-		
-		return $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
+		$this->selectItemsCallable = $closure;
+		return $this;
+	}
+	
+	/**
+	 * @param \Closure $closure
+	 * @return \Oka\PaginationBundle\Service\PaginationManager
+	 */
+	public function setCountItemsCallable(\Closure $closure)
+	{
+		$this->countItemsCallable = $closure;
+		return $this;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getOrderBy() {
+		return $this->orderBy;
 	}
 	
 	/**
 	 * @return integer
 	 */
-	protected function getItemLimit()
+	public function getPageNumber()
 	{
-		return $this->itemPerPage;
+		if ($this->pageNumber !== null) {
+			return $this->pageNumber;
+		}
+		
+		$this->pageNumber = 0;
+		$items = $this->fullyItems - $this->itemPerPage;
+		
+		while ($items > 0) {
+			++$this->pageNumber;
+			$items -= $this->itemPerPage;
+		}
+		
+		return ++$this->pageNumber;
 	}
 	
 	/**
@@ -276,16 +347,13 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		$this->orderBy = !empty($sortAttributes) ? array_merge($orderBy, $sortAttributes) : $orderBy;
 		
-		// Prepare database query
-		if ($this->countQuery === null) {
-			$this->countQuery = $this->createCountQuery($criteria);
-		}
-		if ($this->selectQuery === null) {
-			$this->selectQuery = $this->createSelectQuery($criteria, $this->orderBy);
-		}
+		// prepar db query
+		$this->internalCountQuery = $this->createCountQuery($criteria);
+		$this->internalSelectQuery = $this->createSelectQuery($criteria, $this->orderBy)
+										  ->setFirstResult($this->getItemOffset())
+										  ->setMaxResults($this->itemPerPage);
 		
-		$this->selectQuery->setFirstResult($this->getItemOffset())
-						  ->setMaxResults($this->getItemLimit());
+		$this->prepared = true;
 		
 		return $this;
 	}
@@ -297,16 +365,45 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	public function fetch($hydrationMode = self::HYDRATE_ITEMS)
 	{
-		$items = [];
-		$this->fullyItems = $this->countQuery->getSingleScalarResult();
-		
-		if ($this->fullyItems > 0) {
-			$items = $this->selectQuery->getResult();
+		if ($this->prepared === false) {
+			throw new \LogicException('Unable to execute "fetch" method without executing "prepare" method');
 		}
 		
-		return new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->fullyItems, $items);
+		$items = [];
+		$er = $this->entityManager->getRepository($this->className);
+		
+		if ($this->countItemsCallable instanceof \Closure) {
+			$this->fullyItems = $this->countItemsCallable($er);
+		} elseif ($this->countQuery instanceof Query) {
+			$this->fullyItems = $this->countQuery->getSingleScalarResult();
+		} else {
+			$this->fullyItems = $this->internalCountQuery->getSingleScalarResult();
+		}
+		
+		if ($this->fullyItems > 0) {
+			if ($this->countItemsCallable instanceof \Closure) {
+				$items = $this->selectItemsCallable($er, $this->itemPerPage, $this->getItemOffset());
+			} elseif ($this->selectQuery instanceof Query) {
+				$items = $this->selectQuery->setFirstResult($this->getItemOffset())
+										   ->setMaxResults($this->itemPerPage)
+										   ->getResult();
+			} else {
+				$items = $this->internalSelectQuery->getResult();
+			}			
+		}
+		
+		// reset manager
+		$this->reset();
+		
+		return new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->fullyItems, $this->getPageNumber(), $items);
 	}
 	
+	/**
+	 * Create internal count items query
+	 * 
+	 * @param array $criteria
+	 * @return \Doctrine\ORM\Query
+	 */
 	protected function createCountQuery(array $criteria = [])
 	{
 		$query = $this->entityManager->createQueryBuilder();
@@ -321,6 +418,13 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		return $query->getQuery();
 	}
 	
+	/**
+	 * Create internal select items query
+	 * 
+	 * @param array $criteria
+	 * @param array $orderBy
+	 * @return \Doctrine\ORM\Query
+	 */
 	protected function createSelectQuery(array $criteria = [], array $orderBy = [])
 	{
 		$query = $this->entityManager->createQueryBuilder();
@@ -338,9 +442,24 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		return $query->getQuery();
 	}
 	
-	public function getListItemsWithQuery(array $params = [], array $sort = [])
+	private function reset() {
+		$this->prepared = false;
+		$this->countQuery = null;
+		$this->selectQuery = null;
+		$this->orderBy = [];
+		$this->fullyItems = 0;
+		$this->pageNumber = null;
+	}
+	
+	/**
+	 * @param array $params
+	 * @param array $orderBy
+	 * @return array
+	 * @deprecated
+	 */
+	public function fetchItems(array $params = [], array $orderBy = [])
 	{
-		return $this->objectManager->getRepository($this->class)->findBy($params, $sort, $this->itemPerPage, $this->getItemOffset());
+		return $this->entityManager->getRepository($this->className)->findBy($params, $orderBy, $this->itemPerPage, $this->getItemOffset());
 	}
 	
 	public function getName()
@@ -354,8 +473,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 			'oka_pagination' => [
 				'page' 			=> $this->page,
 				'itemPerPage' 	=> $this->itemPerPage,
-				'pageNumber' 	=> $this->getPageNumber(),
-				'fullyItems' 	=> $this->getFullyItems()
+				'fullyItems' 	=> $this->fullyItems,
+				'pageNumber' 	=> $this->getPageNumber()
 		]];
 	}
 	
@@ -367,7 +486,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	public function getFunctions()
 	{
 		return [
-			new \Twig_SimpleFunction('pagination', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
+			new \Twig_SimpleFunction('paginate', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
 		];
 	}
 }
