@@ -1,11 +1,10 @@
 {
-	"name" : "oka/tools",
-	"type" : "library",
-	"description" : "Symfony OkaToolsBundle",
+	"name" : "oka/pagination-bundle",
+	"type" : "symfony-bundle",
+	"description" : "Symfony Oka pagination bundle",
 	"keywords" : [
 		"doctrine2",
-		"pagination",
-		"key generator"
+		"pagination"
 	],
 	"licence" : "MIT",
 	"authors" : [{
@@ -16,7 +15,7 @@
 	"version" : "1.0.0-dev",
 	"minimum-stability" : "dev",
 	"require" : {
-		"php" : ">=5.4.0",
+		"php" : ">=5.5.0",
 		"symfony/symfony" : "2.3.*",
 		"symfony/http-foundation" : "2.6.*@dev",
 		"doctrine/orm" : ">=2.2",
@@ -24,11 +23,18 @@
 		"twig/extensions" : "1.0.*"
 	},
 	"autoload" : {
-		"psr-0" : {
-			"Oka\\ToolsBundle" : ""
+		"psr-4" : {
+			"Oka\\PaginationBundle\\" : ""
+		},
+		"exclude-from-classmap" : [
+			"/Tests/"
+		]
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Oka\\PaginationBundle\\Tests\\" : "Tests/"
 		}
 	},
-	"target-dir" : "Oka/ToolsBundle",
 	"extra" : {
 		"branch-alias" : {
 			"dev-master" : "1.0.x-dev"

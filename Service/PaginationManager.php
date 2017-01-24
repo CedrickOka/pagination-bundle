@@ -28,9 +28,9 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	protected $doctrine;
 	
 	/**
-	 * @var EntityManager $entityManager
+	 * @var EntityManager $objectManager
 	 */
-	protected $entityManager;
+	protected $objectManager;
 	
 	/**
 	 * @var PaginationBag $paginationBag
@@ -114,16 +114,16 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	
 	/**
 	 * @param Registry $doctrine
-	 * @param EntityManager $entityManager
+	 * @param EntityManager $objectManager
 	 * @param PaginationBag $paginationBag
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 */
-	public function __construct(Registry $doctrine, EntityManager $entityManager, PaginationBag $paginationBag, $itemPerPage, $maxPageNumber, $template = null)
+	public function __construct(Registry $doctrine, EntityManager $objectManager, PaginationBag $paginationBag, $itemPerPage, $maxPageNumber, $template = null)
 	{
 		$this->doctrine = $doctrine;
-		$this->entityManager = $entityManager;
+		$this->objectManager = $objectManager;
 		$this->paginationBag = $paginationBag;
 		
 		$this->itemPerPage = $itemPerPage;
@@ -190,8 +190,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 			if (isset($bag['template']) && $bag['template']) {
 				$this->template = $bag['template'];
 			}
-			if (isset($bag['entity_manager_name']) && $bag['entity_manager_name']) {
-				$this->entityManager = $this->doctrine->getManager($bag['entity_manager_name']);
+			if (isset($bag['model_manager_name']) && $bag['model_manager_name']) {
+				$this->objectManager = $this->doctrine->getManager($bag['model_manager_name']);
 			}
 		}
 		
@@ -370,7 +370,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		}
 		
 		$items = [];
-		$er = $this->entityManager->getRepository($this->className);
+		$er = $this->objectManager->getRepository($this->className);
 		
 		if ($this->countItemsCallable instanceof \Closure) {
 			$this->fullyItems = $this->countItemsCallable($er);
@@ -382,7 +382,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		if ($this->fullyItems > 0) {
 			if ($this->countItemsCallable instanceof \Closure) {
-				$items = $this->selectItemsCallable($er, $this->itemPerPage, $this->getItemOffset());
+				$items = $this->selectItemsCallable($er, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
 			} elseif ($this->selectQuery instanceof Query) {
 				$items = $this->selectQuery->setFirstResult($this->getItemOffset())
 										   ->setMaxResults($this->itemPerPage)
@@ -406,7 +406,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	protected function createCountQuery(array $criteria = [])
 	{
-		$query = $this->entityManager->createQueryBuilder();
+		$query = $this->objectManager->createQueryBuilder();
 		$query->select('COUNT(DISTINCT p)')
 			  ->from($this->className, 'p');
 		
@@ -427,7 +427,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	protected function createSelectQuery(array $criteria = [], array $orderBy = [])
 	{
-		$query = $this->entityManager->createQueryBuilder();
+		$query = $this->objectManager->createQueryBuilder();
 		$query->select('p')
 			  ->from($this->className, 'p');
 		
@@ -449,17 +449,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->orderBy = [];
 		$this->fullyItems = 0;
 		$this->pageNumber = null;
-	}
-	
-	/**
-	 * @param array $params
-	 * @param array $orderBy
-	 * @return array
-	 * @deprecated
-	 */
-	public function fetchItems(array $params = [], array $orderBy = [])
-	{
-		return $this->entityManager->getRepository($this->className)->findBy($params, $orderBy, $this->itemPerPage, $this->getItemOffset());
 	}
 	
 	public function getName()

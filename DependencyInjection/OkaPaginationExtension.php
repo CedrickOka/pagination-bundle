@@ -5,6 +5,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Alias;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -13,6 +15,20 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class OkaPaginationExtension extends Extension
 {
+	/**
+	 * @var array $doctrineDrivers
+	 */
+	private static $doctrineDrivers = [
+			'orm' => [
+					'registry' => 'doctrine',
+					'tag' => 'doctrine.event_subscriber',
+			],
+			'mongodb' => [
+					'registry' => 'doctrine_mongodb',
+					'tag' => 'doctrine_mongodb.odm.event_subscriber',
+			]
+	];
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -24,8 +40,12 @@ class OkaPaginationExtension extends Extension
 		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.yml');
 		
+// 		$container->setAlias('oka_pagination.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
+// 		$definition = $container->getDefinition('oka_pagination.object_manager');
+// 		$definition->setFactory([new Reference('oka_pagination.doctrine_registry'), 'getManager']);
+		
 		// Entity manager default name
-		$container->setParameter('oka_pagination.entity_manager_name', $config['entity_manager_name']);
+		$container->setParameter('oka_pagination.model_manager_name', $config['model_manager_name']);
 		
 		// Pagination default parameters
 		$container->setParameter('oka_pagination.item_per_page', $config['item_per_page']);

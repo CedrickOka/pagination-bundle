@@ -23,6 +23,8 @@ class Configuration implements ConfigurationInterface
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('oka_pagination');
 		
+		$supportedDrivers = ['orm', 'mongodb'];
+		
 		$rootNode
 			->addDefaultsIfNotSet()
 			->children()
@@ -37,6 +39,15 @@ class Configuration implements ConfigurationInterface
 					->useAttributeAsKey('name')
 					->prototype('array')
 						->children()
+// 							->scalarNode('db_driver')
+// 								->validate()
+// 									->ifNotInArray($supportedDrivers)
+// 									->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
+// 								->end()
+// 			                    ->cannotBeOverwritten()
+// 			                    ->isRequired()
+// 			                    ->cannotBeEmpty()
+// 							->end()
 							->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
 							->append($this->getEntityManageNameNodeDefinition())
 							->append($this->getItemPerPageNodeDefinition())
@@ -59,7 +70,7 @@ class Configuration implements ConfigurationInterface
 	
 	public function getEntityManageNameNodeDefinition()
 	{
-		$node = new ScalarNodeDefinition('entity_manager_name');
+		$node = new ScalarNodeDefinition('model_manager_name');
 		$node->defaultNull()->end();
 		
 		return $node;

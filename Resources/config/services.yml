@@ -2,10 +2,14 @@
 
 services:
 # Factory
+#    oka_pagination.object_manager:
+#        class: Doctrine\Common\Persistence\ObjectManager
+#        public: false
+
     oka_pagination.entity_manager:
         class: Doctrine\ORM\EntityManager
         factory: [ "@doctrine", getManager ]
-        arguments: [ "%oka_pagination.entity_manager_name%" ]
+        arguments: [ "%oka_pagination.model_manager_name%" ]
         public: false
 
 # Services
