@@ -18,7 +18,7 @@ class OkaPaginationExtension extends Extension
 	/**
 	 * @var array $doctrineDrivers
 	 */
-	private static $doctrineDrivers = [
+	public static $doctrineDrivers = [
 			'orm' => [
 					'registry' => 'doctrine',
 					'tag' => 'doctrine.event_subscriber',
@@ -40,9 +40,9 @@ class OkaPaginationExtension extends Extension
 		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.yml');
 		
-// 		$container->setAlias('oka_pagination.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
-// 		$definition = $container->getDefinition('oka_pagination.object_manager');
-// 		$definition->setFactory([new Reference('oka_pagination.doctrine_registry'), 'getManager']);
+		$container->setAlias('oka_pagination.default.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
+		$definition = $container->getDefinition('oka_pagination.default.object_manager');
+		$definition->setFactory([new Reference('oka_pagination.default.doctrine_registry'), 'getManager']);
 		
 		// Entity manager default name
 		$container->setParameter('oka_pagination.model_manager_name', $config['model_manager_name']);

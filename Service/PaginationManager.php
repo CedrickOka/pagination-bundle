@@ -3,11 +3,14 @@ namespace Oka\PaginationBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Query;
+use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension;
+use Oka\PaginationBundle\Util\ObjectManagerNotSupportedException;
 use Oka\PaginationBundle\Util\PaginationResultSet;
 use Oka\PaginationBundle\Util\RequestParser;
 use Oka\PaginationBundle\Util\SortAttributeNotAvailableException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,12 +26,12 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	const HYDRATE_PAGE = 1;
 	
 	/**
-	 * @var Registry $doctrine
+	 * @var ContainerInterface $container
 	 */
-	protected $doctrine;
+	protected $container;
 	
 	/**
-	 * @var EntityManager $objectManager
+	 * @var ObjectManager $objectManager
 	 */
 	protected $objectManager;
 	
@@ -113,16 +116,15 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	private $prepared = false;
 	
 	/**
-	 * @param Registry $doctrine
-	 * @param EntityManager $objectManager
+	 * @param ObjectManager $objectManager
 	 * @param PaginationBag $paginationBag
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 */
-	public function __construct(Registry $doctrine, EntityManager $objectManager, PaginationBag $paginationBag, $itemPerPage, $maxPageNumber, $template = null)
+	public function __construct(ContainerInterface $container, ObjectManager $objectManager, PaginationBag $paginationBag, $itemPerPage, $maxPageNumber, $template = null)
 	{
-		$this->doctrine = $doctrine;
+		$this->container = $container;
 		$this->objectManager = $objectManager;
 		$this->paginationBag = $paginationBag;
 		
@@ -136,66 +138,34 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	}
 	
 	/**
-	 * @param integer $page
-	 * @return \Oka\Pagination\Service\Pagination
+	 * Load pagination config
+	 * 
+	 * @param string $key
+	 * @throws \InvalidArgumentException
+	 * @return array
 	 */
-	protected function setPage($page)
-	{
-		$this->page = $this->maxPageNumber < $page ? $this->maxPageNumber : $page;
-		return $this;
-	}
-	
-	/**
-	 * @param integer $itemPerPage
-	 * @return \Oka\Pagination\Service\Pagination
-	 */
-	protected function setItemPerPage($itemPerPage)
-	{
-		$this->itemPerPage = $itemPerPage;
-		return $this;
-	}
-	
-	/**
-	 * @return integer
-	 */
-	protected function getItemOffset()
-	{
-		if ($this->page < 2) {
-			return 0;
-		}
-		
-		return $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
-	}
-	
-	/**
-	 * @return integer
-	 * @deprecated
-	 */
-	protected function getItemLimit()
-	{
-		return $this->itemPerPage;
-	}
-	
 	public function loadConfig($key)
 	{
 		if (!$this->paginationBag->has($key)) {
 			throw new \InvalidArgumentException(sprintf('Configuration key "%s" is not defined in pagination bag.', $key));
 		}
 		
-		if ($bag = $this->paginationBag->get($key, [])) {
-			$this->className = $bag['class'];
-			$this->itemPerPage = $bag['item_per_page'];
-			$this->maxPageNumber = $bag['max_page_number'];
+		if ($config = $this->paginationBag->get($key, [])) {
+			$this->className = $config['class'];
+			$this->itemPerPage = $config['item_per_page'];
+			$this->maxPageNumber = $config['max_page_number'];
 			
-			if (isset($bag['template']) && $bag['template']) {
-				$this->template = $bag['template'];
+			if (isset($config['template']) && $config['template']) {
+				$this->template = $config['template'];
 			}
-			if (isset($bag['model_manager_name']) && $bag['model_manager_name']) {
-				$this->objectManager = $this->doctrine->getManager($bag['model_manager_name']);
+			if (isset($config['model_manager_name']) && $config['model_manager_name']) {
+				/** @var \Doctrine\Bundle\DoctrineBundle\Registry $registry */
+				$registry = $this->container->get(OkaPaginationExtension::$doctrineDrivers[$config['db_driver']]['registry']);
+				$this->objectManager = $registry->getManager($config['model_manager_name']);
 			}
 		}
 		
-		return $bag;
+		return $config;
 	}
 	
 	/**
@@ -234,6 +204,38 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	{
 		$this->selectQuery = $query;
 		return $this;
+	}
+	
+	/**
+	 * @param integer $page
+	 * @return \Oka\Pagination\Service\Pagination
+	 */
+	protected function setPage($page)
+	{
+		$this->page = $this->maxPageNumber < $page ? $this->maxPageNumber : $page;
+		return $this;
+	}
+	
+	/**
+	 * @param integer $itemPerPage
+	 * @return \Oka\Pagination\Service\Pagination
+	 */
+	protected function setItemPerPage($itemPerPage)
+	{
+		$this->itemPerPage = $itemPerPage;
+		return $this;
+	}
+	
+	/**
+	 * @return integer
+	 */
+	protected function getItemOffset()
+	{
+		if ($this->page < 2) {
+			return 0;
+		}
+		
+		return $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
 	}
 	
 	/**
@@ -314,7 +316,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		// Load entity pagination config
 		$config = $this->loadConfig($key);
 		
-		$queryMapConfig = $config['requet']['query_map'];
+		$queryMapConfig = $config['request']['query_map'];
 		$sortConfig = $config['sort'];
 		
 		$query = $request->query;
@@ -347,12 +349,9 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		$this->orderBy = !empty($sortAttributes) ? array_merge($orderBy, $sortAttributes) : $orderBy;
 		
-		// prepar db query
+		// prepare db query
 		$this->internalCountQuery = $this->createCountQuery($criteria);
-		$this->internalSelectQuery = $this->createSelectQuery($criteria, $this->orderBy)
-										  ->setFirstResult($this->getItemOffset())
-										  ->setMaxResults($this->itemPerPage);
-		
+		$this->internalSelectQuery = $this->createSelectQuery($criteria);
 		$this->prepared = true;
 		
 		return $this;
@@ -374,21 +373,29 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		if ($this->countItemsCallable instanceof \Closure) {
 			$this->fullyItems = $this->countItemsCallable($er);
-		} elseif ($this->countQuery instanceof Query) {
+		} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 			$this->fullyItems = $this->countQuery->getSingleScalarResult();
 		} else {
-			$this->fullyItems = $this->internalCountQuery->getSingleScalarResult();
+			if ($this->internalCountQuery instanceof \Doctrine\ORM\Query) {
+				$this->fullyItems = $this->internalCountQuery->getSingleScalarResult();
+			} else {
+				$this->fullyItems = $this->internalCountQuery->execute();
+			}
 		}
 		
 		if ($this->fullyItems > 0) {
-			if ($this->countItemsCallable instanceof \Closure) {
+			if ($this->selectItemsCallable instanceof \Closure) {
 				$items = $this->selectItemsCallable($er, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
-			} elseif ($this->selectQuery instanceof Query) {
+			} elseif ($this->selectQuery instanceof \Doctrine\ORM\Query) {
 				$items = $this->selectQuery->setFirstResult($this->getItemOffset())
-										   ->setMaxResults($this->itemPerPage)
-										   ->getResult();
+											->setMaxResults($this->itemPerPage)
+											->getResult();
 			} else {
-				$items = $this->internalSelectQuery->getResult();
+				if ($this->internalSelectQuery instanceof \Doctrine\ORM\Query) {
+					$items = $this->internalSelectQuery->getResult();
+				} else {
+					$items = $this->internalSelectQuery->execute();
+				}
 			}			
 		}
 		
@@ -402,20 +409,31 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * Create internal count items query
 	 * 
 	 * @param array $criteria
-	 * @return \Doctrine\ORM\Query
+	 * @return \Doctrine\ORM\Query|\Doctrine\ODM\MongoDB\Query\Query
 	 */
 	protected function createCountQuery(array $criteria = [])
 	{
-		$query = $this->objectManager->createQueryBuilder();
-		$query->select('COUNT(DISTINCT p)')
-			  ->from($this->className, 'p');
-		
-		foreach ($criteria as $key => $value) {
-			$query->andWhere(sprintf('p.%1$s = :%1$s', $key));
-			$query->setParameter($key, $value);
+		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
+			$builder = $this->objectManager->createQueryBuilder()
+							->select('COUNT(DISTINCT p)')
+							->from($this->className, 'p');
+			
+			foreach ($criteria as $key => $value) {
+				$builder->andWhere(sprintf('p.%1$s = :%1$s', $key))
+						->setParameter($key, $value);
+			}
+		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+			$builder = $this->objectManager->createQueryBuilder($this->className)
+							->count();
+			
+			foreach ($criteria as $key => $value) {
+				$builder->field($key)->equals($value);
+			}
+		} else {
+			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
 		
-		return $query->getQuery();
+		return $builder->getQuery();
 	}
 	
 	/**
@@ -423,23 +441,38 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * 
 	 * @param array $criteria
 	 * @param array $orderBy
-	 * @return \Doctrine\ORM\Query
+	 * @return \Doctrine\ORM\Query|\Doctrine\ODM\MongoDB\DocumentManager
 	 */
-	protected function createSelectQuery(array $criteria = [], array $orderBy = [])
+	protected function createSelectQuery(array $criteria = [])
 	{
-		$query = $this->objectManager->createQueryBuilder();
-		$query->select('p')
-			  ->from($this->className, 'p');
-		
-		foreach ($criteria as $key => $value) {
-			$query->andWhere(sprintf('p.%1$s = :%1$s', $key));
-			$query->setParameter($key, $value);
+		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
+			$builder = $this->objectManager->createQueryBuilder()
+							->select('p')
+							->from($this->className, 'p')
+							->setFirstResult($this->getItemOffset())
+							->setMaxResults($this->itemPerPage);
+			
+			foreach ($criteria as $key => $value) {
+				$builder->andWhere(sprintf('p.%1$s = :%1$s', $key))
+						->setParameter($key, $value);
+			}
+			foreach ($this->orderBy as $key => $value) {
+				$builder->orderBy(sprintf('p.%s', $key), $value);
+			}
+		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+			$builder = $this->objectManager->createQueryBuilder($this->className)
+							->sort($this->orderBy)
+							->skip($this->getItemOffset() ? ($this->getItemOffset()+1) : 0)
+							->limit($this->itemPerPage);
+			
+			foreach ($criteria as $key => $value) {
+				$builder->field($key)->equals($value);
+			}
+		} else {
+			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
-		foreach ($orderBy as $key => $value) {
-			$query->orderBy(sprintf('p.%s', $key), $value);
-		}
 		
-		return $query->getQuery();
+		return $builder->getQuery();
 	}
 	
 	private function reset() {

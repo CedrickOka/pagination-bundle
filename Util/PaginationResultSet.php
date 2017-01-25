@@ -37,7 +37,7 @@ class PaginationResultSet
 	 */
 	protected $pageNumber;
 	
-	public function __construct($page, $itemPerPage, array $orderBy, $fullyItems, $pageNumber, array $items)
+	public function __construct($page, $itemPerPage, array $orderBy, $fullyItems, $pageNumber, $items)
 	{
 		$this->page = $page;
 		$this->itemPerPage = $itemPerPage;

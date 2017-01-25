@@ -23,31 +23,21 @@ class Configuration implements ConfigurationInterface
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('oka_pagination');
 		
-		$supportedDrivers = ['orm', 'mongodb'];
-		
 		$rootNode
 			->addDefaultsIfNotSet()
 			->children()
+				->append($this->getDBDriverNodeDefinition())
 				->append($this->getEntityManageNameNodeDefinition())
 				->append($this->getItemPerPageNodeDefinition())
 				->append($this->getMaxPageNumberNodeDefinition())
 				->append($this->getTemplateNodeDefinition())
-// 				->append($this->getRequestQueryMapNodeDefinition())
 				->arrayNode('pagination_bag')
 				 	->isRequired()
 				 	->requiresAtLeastOneElement()
 					->useAttributeAsKey('name')
 					->prototype('array')
 						->children()
-// 							->scalarNode('db_driver')
-// 								->validate()
-// 									->ifNotInArray($supportedDrivers)
-// 									->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
-// 								->end()
-// 			                    ->cannotBeOverwritten()
-// 			                    ->isRequired()
-// 			                    ->cannotBeEmpty()
-// 							->end()
+							->append($this->getDBDriverNodeDefinition())
 							->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
 							->append($this->getEntityManageNameNodeDefinition())
 							->append($this->getItemPerPageNodeDefinition())
@@ -66,6 +56,24 @@ class Configuration implements ConfigurationInterface
 			->end();
 		
 		return $treeBuilder;
+	}
+	
+	public function getDBDriverNodeDefinition()
+	{
+		$supportedDrivers = ['orm', 'mongodb'];
+		
+		$node = new ScalarNodeDefinition('db_driver');
+		$node
+			->validate()
+				->ifNotInArray($supportedDrivers)
+				->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
+			->end()
+			->cannotBeOverwritten()
+			->isRequired()
+			->cannotBeEmpty()
+		->end();
+		
+		return $node;
 	}
 	
 	public function getEntityManageNameNodeDefinition()
