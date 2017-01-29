@@ -1,5 +1,5 @@
 {
-	"name" : "oka/pagination-bundle",
+	"name" : "coka/pagination-bundle",
 	"description" : "Symfony Oka pagination bundle",
 	"type" : "symfony-bundle",
 	"keywords" : [
