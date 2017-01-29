@@ -22,8 +22,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 {
 	const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
 	
-	const HYDRATE_ITEMS = 0;
-	const HYDRATE_PAGE = 1;
+	const HYDRATE_OBJECT = 0;
+	const HYDRATE_ARRAY = 1;
 	
 	/**
 	 * @var ContainerInterface $container
@@ -362,7 +362,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * 
 	 * @param integer $hydrationMode
 	 */
-	public function fetch($hydrationMode = self::HYDRATE_ITEMS)
+	public function fetch($hydrationMode = self::HYDRATE_OBJECT)
 	{
 		if ($this->prepared === false) {
 			throw new \LogicException('Unable to execute "fetch" method without executing "prepare" method');
@@ -398,11 +398,13 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				}
 			}			
 		}
+		// Pagination result set definition
+		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->fullyItems, $this->getPageNumber(), $items);
 		
 		// reset manager
 		$this->reset();
 		
-		return new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->fullyItems, $this->getPageNumber(), $items);
+		return $hydrationMode == self::HYDRATE_ARRAY ? $paginationResultSet->toArray() : $paginationResultSet;
 	}
 	
 	/**

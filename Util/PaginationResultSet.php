@@ -94,4 +94,18 @@ class PaginationResultSet
 	{
 		return $this->pageNumber;
 	}
+	
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray() {
+		return [
+				'page' => $this->getPage(),
+				'itemPerPage' => $this->getItemPerPage(),
+				'orderBy' => $this->getOrderBy(),
+				'fullyItems' => $this->getFullyItems(),
+				'items' => $this->getItems(),
+				'pageNumber' => $this->getPageNumber()
+		];
+	}
 }
