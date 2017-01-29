@@ -12,8 +12,8 @@
 			"email" : "cedrickoka@fermentuse.com"
 		}
 	],
-	"version" : "1.0.0-dev",
-	"minimum-stability" : "stable",
+	"version" : "1.0.0-stable",
+	"minimum-stability" : "dev",
 	"require" : {
 		"php" : ">=5.3.9",
 		"symfony/symfony" : "2.8.*",
