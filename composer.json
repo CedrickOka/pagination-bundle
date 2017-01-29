@@ -6,13 +6,14 @@
 		"doctrine2",
 		"pagination"
 	],
+	"homepage" : "https://github.com/CedrickOka/oka-pagination",
 	"licence" : "MIT",
 	"authors" : [{
 			"name" : "Cedrick Oka",
 			"email" : "cedrickoka@fermentuse.com"
 		}
 	],
-	"version" : "1.0.0-stable",
+	"version" : "1.0.0-dev",
 	"minimum-stability" : "dev",
 	"require" : {
 		"php" : ">=5.3.9",
@@ -38,7 +39,10 @@
 	},
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "1.0.x-stable"
+			"dev-master" : "1.0.x-dev"
 		}
+	},
+	"support" : {
+		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/Resources/doc/index.rst"
 	}
 }
