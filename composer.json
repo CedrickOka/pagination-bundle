@@ -1,7 +1,7 @@
 {
 	"name" : "oka/pagination-bundle",
-	"type" : "symfony-bundle",
 	"description" : "Symfony Oka pagination bundle",
+	"type" : "symfony-bundle",
 	"keywords" : [
 		"doctrine2",
 		"pagination"
