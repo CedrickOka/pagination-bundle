@@ -1,5 +1,5 @@
 <?php
-namespace Oka\PaginationBundle\Util;
+namespace Oka\PaginationBundle\Exception;
 
 /**
  * 
@@ -8,7 +8,21 @@ namespace Oka\PaginationBundle\Util;
  */
 class SortAttributeNotAvailableException extends \Exception
 {
-	public function __construct($message = null, $code = null, $previous = null) {
+	/**
+	 * @var string $sort
+	 */
+	private $sort;
+	
+	public function __construct($sort, $message = null, $code = null, $previous = null) {
 		parent::__construct($message, $code, $previous);
+		
+		$this->sort = $sort;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getSort() {
+		return $this->sort;
 	}
 }

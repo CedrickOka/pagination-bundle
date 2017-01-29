@@ -12,11 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestParserTest extends KernelTestCase
 {
-	public function testParseQuerytoArray() {
+	public function testparseQueryToArray() {
 		$request = new Request();
 		$request->query->set('sort', 'name,createdAt,updatedAt');
 		
-		$this->assertEquals([], RequestParser::parseQuerytoArray($request, 'empty', ','));
-		$this->assertEquals(['name', 'createdAt', 'updatedAt'], RequestParser::parseQuerytoArray($request, 'sort', ','));
+		$this->assertEquals([], RequestParser::parseQueryToArray($request, 'empty', ','));
+		$this->assertEquals(['name', 'createdAt', 'updatedAt'], RequestParser::parseQueryToArray($request, 'sort', ','));
 	}
 }

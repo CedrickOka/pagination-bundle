@@ -1,5 +1,5 @@
 <?php
-namespace Oka\PaginationBundle\Util;
+namespace Oka\PaginationBundle\Exception;
 
 /**
  * 

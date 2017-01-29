@@ -17,7 +17,7 @@ final class RequestParser
 	 * @param mixed $defaultValue
 	 * @return mixed|[]
 	 */
-	public static function parseQuerytoArray(Request $request, $key, $delimiter = null, $defaultValue = null) {
+	public static function parseQueryToArray(Request $request, $key, $delimiter = null, $defaultValue = null) {
 		$value = $request->query->get($key, $defaultValue);
 		
 		if ($value && $delimiter !== null) {

@@ -6,10 +6,10 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Query;
 use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension;
-use Oka\PaginationBundle\Util\ObjectManagerNotSupportedException;
+use Oka\PaginationBundle\Exception\ObjectManagerNotSupportedException;
+use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Util\PaginationResultSet;
 use Oka\PaginationBundle\Util\RequestParser;
-use Oka\PaginationBundle\Util\SortAttributeNotAvailableException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -335,12 +335,12 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		}
 		
 		// Parse pagination request query for sort
-		$sortAttributes = RequestParser::parseQuerytoArray($request, $queryMapConfig['sort'], $sortConfig['delimiter']);
-		$descAttributes = RequestParser::parseQuerytoArray($request, $queryMapConfig['desc'], $sortConfig['delimiter']);
+		$sortAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['sort'], $sortConfig['delimiter']);
+		$descAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['desc'], $sortConfig['delimiter']);
 		
 		foreach ($sortAttributes as $key => $attribute) {
 			if (!in_array($attribute, $sortConfig['attributes_availables'])) {
-				throw new SortAttributeNotAvailableException(sprintf('Invalid request sort attribute "%s" not avalaible.', $attribute));
+				throw new SortAttributeNotAvailableException($attribute, sprintf('Invalid request sort attribute "%s" not avalaible.', $attribute));
 			}
 			
 			$sortAttributes[$attribute] = in_array($attribute, $descAttributes) ? 'DESC' : 'ASC';
@@ -394,7 +394,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				if ($this->internalSelectQuery instanceof \Doctrine\ORM\Query) {
 					$items = $this->internalSelectQuery->getResult();
 				} else {
-					$items = $this->internalSelectQuery->execute();
+					$items = $this->internalSelectQuery->execute()->toArray(false);
 				}
 			}			
 		}
@@ -460,13 +460,17 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+			$skip = $this->getItemOffset();
 			$builder = $this->objectManager->createQueryBuilder($this->className)
-							->sort($this->orderBy)
-							->skip($this->getItemOffset() ? ($this->getItemOffset()+1) : 0)
+// 							->sort($this->orderBy)
+							->skip($skip ? ($skip+1) : 0)
 							->limit($this->itemPerPage);
 			
 			foreach ($criteria as $key => $value) {
 				$builder->field($key)->equals($value);
+			}
+			foreach ($this->orderBy as $key => $value) {
+				$builder->sort($key, $value);
 			}
 		} else {
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
@@ -475,7 +479,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		return $builder->getQuery();
 	}
 	
-	private function reset() {
+	private function reset()
+	{
 		$this->prepared = false;
 		$this->countQuery = null;
 		$this->selectQuery = null;
