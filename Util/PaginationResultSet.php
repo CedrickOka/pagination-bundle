@@ -41,9 +41,9 @@ class PaginationResultSet
 	{
 		$this->page = $page;
 		$this->itemPerPage = $itemPerPage;
-		
 		$this->orderBy = $orderBy;		
 		$this->fullyItems = $fullyItems;
+		$this->pageNumber = $pageNumber;
 		$this->items = $items;
 	}
 	
