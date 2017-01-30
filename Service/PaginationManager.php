@@ -26,6 +26,11 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	const HYDRATE_ARRAY = 1;
 	
 	/**
+	 * @var ObjectManager $_objectManager
+	 */
+	private $_objectManager;
+	
+	/**
 	 * @var ContainerInterface $container
 	 */
 	protected $container;
@@ -295,7 +300,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @param integer $hydrationMode
 	 * @return PaginationResultSet
 	 */
-	public function paginate($key, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_ITEMS)
+	public function paginate($key, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_OBJECT)
 	{
 		return $this->prepare($key, $request, $criteria, $orderBy)
 					->fetch($hydrationMode);
