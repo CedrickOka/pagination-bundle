@@ -377,7 +377,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$er = $this->objectManager->getRepository($this->className);
 		
 		if ($this->countItemsCallable instanceof \Closure) {
-			$this->fullyItems = $this->countItemsCallable($er);
+			$fn = $this->countItemsCallable;
+			$this->fullyItems = $fn($er);
 		} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 			$this->fullyItems = $this->countQuery->getSingleScalarResult();
 		} else {
@@ -390,7 +391,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		if ($this->fullyItems > 0) {
 			if ($this->selectItemsCallable instanceof \Closure) {
-				$items = $this->selectItemsCallable($er, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
+				$fn = $this->selectItemsCallable;
+				$items = $fn($er, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
 			} elseif ($this->selectQuery instanceof \Doctrine\ORM\Query) {
 				$items = $this->selectQuery->setFirstResult($this->getItemOffset())
 											->setMaxResults($this->itemPerPage)
