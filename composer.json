@@ -20,9 +20,11 @@
 		"symfony/symfony" : "2.8.*",
 		"doctrine/orm" : "^2.4.8",
 		"doctrine/doctrine-bundle" : "~1.4",
-		"doctrine/mongodb-odm" : "~1.0",
-		"doctrine/mongodb-odm-bundle" : "~3.0",
 		"twig/extensions" : "1.0.*"
+	},
+	"suggest" : {
+		"doctrine/mongodb-odm" : "~1.0",
+		"doctrine/mongodb-odm-bundle" : "~3.0"
 	},
 	"autoload" : {
 		"psr-4" : {
