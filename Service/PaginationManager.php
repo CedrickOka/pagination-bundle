@@ -469,10 +469,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-			$skip = $this->getItemOffset();
 			$builder = $this->objectManager->createQueryBuilder($this->className)
-// 							->sort($this->orderBy)
-							->skip($skip ? ($skip+1) : 0)
+							->skip($this->getItemOffset())
 							->limit($this->itemPerPage);
 			
 			foreach ($criteria as $key => $value) {
