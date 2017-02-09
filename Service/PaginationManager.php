@@ -91,6 +91,11 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	protected $countItemsCallable;
 	
 	/**
+	 * @var array $criteria
+	 */
+	protected $criteria;
+	
+	/**
 	 * @var array $orderBy
 	 */
 	protected $orderBy;
@@ -138,6 +143,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->template = $template;
 		
 		$this->page = 1;
+		$this->criteria = [];
 		$this->orderBy = [];
 		$this->fullyItems = 0;
 	}
@@ -352,6 +358,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 			unset($sortAttributes[$key]);
 		}
 		
+		$this->criteria = $criteria;
 		$this->orderBy = !empty($sortAttributes) ? array_merge($orderBy, $sortAttributes) : $orderBy;
 		
 		// prepare db query
@@ -379,6 +386,10 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		if ($this->countItemsCallable instanceof \Closure) {
 			$fn = $this->countItemsCallable;
 			$this->fullyItems = $fn($er);
+			
+			if (!is_integer($this->fullyItems)) {
+				throw new \UnexpectedValueException('The closure "countItemsCallable" returned an unexcepted value.');
+			}
 		} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 			$this->fullyItems = $this->countQuery->getSingleScalarResult();
 		} else {
@@ -392,7 +403,11 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		if ($this->fullyItems > 0) {
 			if ($this->selectItemsCallable instanceof \Closure) {
 				$fn = $this->selectItemsCallable;
-				$items = $fn($er, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
+				$items = $fn($er, $this->criteria, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
+				
+				if (!is_array($items)) {
+					throw new \UnexpectedValueException('The closure "selectItemsCallable" returned an unexcepted value.');
+				}
 			} elseif ($this->selectQuery instanceof \Doctrine\ORM\Query) {
 				$items = $this->selectQuery->setFirstResult($this->getItemOffset())
 											->setMaxResults($this->itemPerPage)
