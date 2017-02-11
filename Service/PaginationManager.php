@@ -385,7 +385,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		if ($this->countItemsCallable instanceof \Closure) {
 			$fn = $this->countItemsCallable;
-			$this->fullyItems = $fn($er);
+			$this->fullyItems = $fn($er, $this->criteria);
 			
 			if (!is_integer($this->fullyItems)) {
 				throw new \UnexpectedValueException('The closure "countItemsCallable" returned an unexcepted value.');
