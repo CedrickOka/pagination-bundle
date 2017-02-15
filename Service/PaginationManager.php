@@ -164,7 +164,49 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->orderBy = [];
 		$this->fullyItems = 0;
 		$this->pageNumber = null;
-// 		$this->maxPageNumber = 0;
+	}
+	
+	public function getName()
+	{
+		return 'oka_pagination.twig_extension';
+	}
+	
+	public function getGlobals()
+	{
+		return [self::TWIG_GLOBAL_VAR_NAME => []];
+	}
+	
+	public function getFunctions()
+	{
+		return [
+				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
+				new \Twig_SimpleFunction('paginate_*', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']])
+		];
+	}
+	
+	public function renderDefaultBlock(\Twig_Environment $env, $route, array $params = [])
+	{
+		return $this->renderBlock($env, $this->currentManagerConfigKey, $route, $params);
+	}
+	
+	public function renderBlock(\Twig_Environment $env, $name, $route, array $params = [])
+	{
+		if (!isset($this->paginationStore[$name])) {
+			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in pagination resultset store.', $name));
+		}
+		
+		return $env->render($this->template ?: self::DEFAULT_TEMPLATE, [
+				'route' => $route, 
+				'params' => $params,
+				'managerName' => $name
+		]);
+	}
+	
+	/**
+	 * @return number
+	 */
+	public function getPage() {
+		return $this->page;
 	}
 	
 	/**
@@ -175,6 +217,13 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	{
 		$this->itemPerPage = $itemPerPage;
 		return $this;
+	}
+	
+	/**
+	 * @return number
+	 */
+	public function getItemPerPage() {
+		return $this->itemPerPage;
 	}
 	
 	/**
@@ -243,6 +292,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @param array $criteria
 	 * @param array $orderBy
 	 * @param integer $hydrationMode
+	 * @throws SortAttributeNotAvailableException
+	 * @throws \UnexpectedValueException
 	 * @return PaginationResultSet
 	 */
 	public function paginate($configKey, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_OBJECT)
@@ -310,6 +361,9 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * Fetch page
 	 * 
 	 * @param integer $hydrationMode
+	 * @throws \LogicException
+	 * @throws \UnexpectedValueException
+	 * @return \Oka\PaginationBundle\Util\PaginationResultSet
 	 */
 	public function fetch($hydrationMode = self::HYDRATE_OBJECT)
 	{
@@ -535,41 +589,5 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->orderBy = [];
 		$this->fullyItems = 0;
 		$this->pageNumber = null;
-	}
-	
-	public function getName()
-	{
-		return 'oka_pagination.twig_extension';
-	}
-	
-	public function getGlobals()
-	{
-		return [self::TWIG_GLOBAL_VAR_NAME => []];
-	}
-	
-	public function renderBlock(\Twig_Environment $env, $name, $route, array $params = [])
-	{
-		if (!isset($this->paginationStore[$name])) {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in pagination resultset store.', $name));
-		}
-		
-		return $env->render($this->template ?: self::DEFAULT_TEMPLATE, [
-				'route' => $route, 
-				'params' => $params,
-				'managerName' => $name
-		]);
-	}
-	
-	public function renderDefaultBlock(\Twig_Environment $env, $route, array $params = [])
-	{
-		return $this->renderBlock($env, $this->currentManagerConfigKey, $route, $params);
-	}
-	
-	public function getFunctions()
-	{
-		return [
-				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
-				new \Twig_SimpleFunction('paginate_*', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']])
-		];
 	}
 }
