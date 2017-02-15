@@ -31,7 +31,9 @@ class Configuration implements ConfigurationInterface
 				->append($this->getItemPerPageNodeDefinition())
 				->append($this->getMaxPageNumberNodeDefinition())
 				->append($this->getTemplateNodeDefinition())
-				->arrayNode('pagination_bag')
+				->append($this->getRequestNodeDefinition())
+				->append($this->getSortNodeDefinition())
+				->arrayNode('pagination_managers')
 				 	->isRequired()
 				 	->requiresAtLeastOneElement()
 					->useAttributeAsKey('name')
@@ -43,12 +45,13 @@ class Configuration implements ConfigurationInterface
 							->append($this->getItemPerPageNodeDefinition())
 							->append($this->getMaxPageNumberNodeDefinition())
 							->append($this->getTemplateNodeDefinition())
-							->arrayNode('request')
-								->addDefaultsIfNotSet()
-								->children()
-									->append($this->getRequestQueryMapNodeDefinition())
-								->end()
-							->end()
+							->append($this->getRequestNodeDefinition())
+// 							->arrayNode('request')
+// 								->addDefaultsIfNotSet()
+// 								->children()
+// 									->append($this->getRequestNodeDefinition())
+// 								->end()
+// 							->end()
 							->append($this->getSortNodeDefinition())
 						->end()
 					->end()
@@ -103,21 +106,39 @@ class Configuration implements ConfigurationInterface
 	public function getTemplateNodeDefinition()
 	{
 		$node = new ScalarNodeDefinition('template');
-		$node->cannotBeEmpty()->defaultValue(PaginationManager::DEFAULT_TEMPLATE)->end();
+		$node->cannotBeEmpty()->cannotBeEmpty()->defaultValue(PaginationManager::DEFAULT_TEMPLATE)->end();
 		
 		return $node;
 	}
 	
-	public function getRequestQueryMapNodeDefinition()
+	public function getRequestNodeDefinition()
 	{
-		$node = new ArrayNodeDefinition('query_map');
+// 		$node = new ArrayNodeDefinition('query_map');
+// 		$node
+// 			->addDefaultsIfNotSet()
+// 			->children()
+// 				->scalarNode('page')->cannotBeEmpty()->defaultValue('page')->end()
+// 				->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
+// 				->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
+// 				->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
+// 			->end()
+// 		->end();
+		
+// 		return $node;
+		
+		$node = new ArrayNodeDefinition('request');
 		$node
 			->addDefaultsIfNotSet()
 			->children()
-				->scalarNode('page')->cannotBeEmpty()->defaultValue('page')->end()
-				->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
-				->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
-				->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
+				->arrayNode('query_map')
+					->addDefaultsIfNotSet()
+					->children()
+						->scalarNode('page')->cannotBeEmpty()->defaultValue('page')->end()
+						->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
+						->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
+						->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
+					->end()
+				->end()
 			->end()
 		->end();
 		

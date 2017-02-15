@@ -4,7 +4,7 @@ services:
 # Factory
     oka_pagination.default.object_manager:
         class: Doctrine\Common\Persistence\ObjectManager
-        public: false
+#        public: false
 
 #    oka_pagination.entity_manager:
 #        class: Doctrine\Common\Persistence\ObjectManager
@@ -13,14 +13,14 @@ services:
 #        public: false
 
 # Services
-    oka_pagination.bag:
-        class: Oka\PaginationBundle\Service\PaginationBag
+    oka_pagination.managers_config:
+        class: Oka\PaginationBundle\Service\PaginationManagersConfig
         arguments: [[]]
         public: false
 
 #, "@twig"
     oka_pagination.manager:
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ "@service_container", "@oka_pagination.default.object_manager", "@oka_pagination.bag", "%oka_pagination.item_per_page%", "%oka_pagination.max_page_number%", "%oka_pagination.template%" ]
+        arguments: [ "@service_container", "@oka_pagination.managers_config", "%oka_pagination.item_per_page%", "%oka_pagination.max_page_number%", "%oka_pagination.template%", "%oka_pagination.request%", "%oka_pagination.sort%" ]
         tags:
           - { name: twig.extension }

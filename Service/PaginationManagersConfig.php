@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * @author cedrick
  * 
  */
-class PaginationBag extends ParameterBag
+class PaginationManagersConfig extends ParameterBag
 {
 	public function __construct(array $parameters = [])
 	{

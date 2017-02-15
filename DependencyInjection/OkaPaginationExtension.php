@@ -51,12 +51,11 @@ class OkaPaginationExtension extends Extension
 		$container->setParameter('oka_pagination.item_per_page', $config['item_per_page']);
 		$container->setParameter('oka_pagination.max_page_number', $config['max_page_number']);
 		$container->setParameter('oka_pagination.template', $config['template']);
-		
-// 		// Pagination request query map
-// 		$container->setParameter('oka_pagination.request.query_map', $config['query_map']);
+		$container->setParameter('oka_pagination.request', $config['request']);
+		$container->setParameter('oka_pagination.sort', $config['sort']);
 		
 		// Pagination bag
-		$definition = $container->getDefinition('oka_pagination.bag');
-		$definition->replaceArgument(0, $config['pagination_bag']);
+		$definition = $container->getDefinition('oka_pagination.managers_config');
+		$definition->replaceArgument(0, $config['pagination_managers']);
 	}
 }
