@@ -23,6 +23,11 @@ class PaginationResultSet
 	protected $orderBy;
 	
 	/**
+	 * @var integer $itemOffset
+	 */
+	protected $itemOffset;
+	
+	/**
 	 * @var integer $fullyItems
 	 */
 	protected $fullyItems;
@@ -37,11 +42,12 @@ class PaginationResultSet
 	 */
 	protected $pageNumber;
 	
-	public function __construct($page, $itemPerPage, array $orderBy, $fullyItems, $pageNumber, $items)
+	public function __construct($page, $itemPerPage, array $orderBy, $itemOffset, $fullyItems, $pageNumber, $items)
 	{
 		$this->page = $page;
 		$this->itemPerPage = $itemPerPage;
-		$this->orderBy = $orderBy;		
+		$this->orderBy = $orderBy;
+		$this->itemOffset = $itemOffset;
 		$this->fullyItems = $fullyItems;
 		$this->pageNumber = $pageNumber;
 		$this->items = $items;
@@ -69,6 +75,13 @@ class PaginationResultSet
 	public function getOrderBy()
 	{
 		return $this->orderBy;
+	}
+	
+	/**
+	 * @return integer
+	 */
+	public function getItemOffset() {
+		return $this->itemOffset;
 	}
 	
 	/**
@@ -103,6 +116,7 @@ class PaginationResultSet
 				'page' => $this->getPage(),
 				'itemPerPage' => $this->getItemPerPage(),
 				'orderBy' => $this->getOrderBy(),
+				'itemOffset' => $this->getItemOffset(),
 				'fullyItems' => $this->getFullyItems(),
 				'items' => $this->getItems(),
 				'pageNumber' => $this->getPageNumber()

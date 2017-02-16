@@ -409,15 +409,16 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				} else {
 					$items = $this->internalSelectQuery->execute()->toArray(false);
 				}
-			}			
+			}
 		}
 		// Pagination result set definition
-		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->fullyItems, $this->getPageNumber(), $items);
+		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
 		$this->paginationStore[$this->currentManagerConfigKey] = [
-				'page' 			=> $this->page,
-				'itemPerPage' 	=> $this->itemPerPage,
+				'page'			=> $this->page,
+				'itemPerPage'	=> $this->itemPerPage,
+				'itemOffset'	=> $this->getItemOffset(),
 				'fullyItems'	=> $this->fullyItems,
-				'pageNumber' 	=> $this->getPageNumber()
+				'pageNumber'	=> $this->getPageNumber()
 		];
 		
 		// Add twig global parameters for manager config key
