@@ -12,4 +12,5 @@ Changelog
 #### 1.1.0 (2017-02-15)
 
 * Added getting started in documentation
+* Allow support of object class name as value of pagination manager name
 * Allow to paginate many entity class in single request

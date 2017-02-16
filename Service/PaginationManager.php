@@ -108,9 +108,9 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	protected $pageNumber;
 	
 	/**
-	 * @var string $currentManagerConfigKey
+	 * @var string $currentManagerName
 	 */
-	private $currentManagerConfigKey;
+	private $currentManagerName;
 	
 	/**
 	 * @var array $defaultManagerConfig
@@ -186,7 +186,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	
 	public function renderDefaultBlock(\Twig_Environment $env, $route, array $params = [])
 	{
-		return $this->renderBlock($env, $this->currentManagerConfigKey, $route, $params);
+		return $this->renderBlock($env, $this->currentManagerName, $route, $params);
 	}
 	
 	public function renderBlock(\Twig_Environment $env, $name, $route, array $params = [])
@@ -287,7 +287,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	/**
 	 * Paginate query
 	 * 
-	 * @param string $configKey
+	 * @param string $managerName
 	 * @param Request $request
 	 * @param array $criteria
 	 * @param array $orderBy
@@ -296,26 +296,26 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @throws \UnexpectedValueException
 	 * @return PaginationResultSet
 	 */
-	public function paginate($configKey, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_OBJECT)
+	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_OBJECT)
 	{
-		return $this->prepare($configKey, $request, $criteria, $orderBy)
+		return $this->prepare($managerName, $request, $criteria, $orderBy)
 					->fetch($hydrationMode);
 	}
 	
 	/**
 	 * Prepare pagination query
 	 * 
-	 * @param string $configKey
+	 * @param string $managerName
 	 * @param Request $request
 	 * @param array $criteria
 	 * @param array $orderBy
 	 * @throws SortAttributeNotAvailableException
 	 * @return \Oka\PaginationBundle\Service\PaginationManager
 	 */
-	public function prepare($configKey, Request $request, array $criteria = [], array $orderBy = [])
+	public function prepare($managerName, Request $request, array $criteria = [], array $orderBy = [])
 	{
 		// Load entity pagination manager config
-		$managerConfig = $this->loadManagerConfig($configKey);
+		$managerConfig = $this->loadManagerConfig($managerName);
 		$queryMapConfig = $managerConfig['request']['query_map'];
 		$sortConfig = $managerConfig['sort'];
 		$query = $request->query;
@@ -413,7 +413,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		}
 		// Pagination result set definition
 		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
-		$this->paginationStore[$this->currentManagerConfigKey] = [
+		$this->paginationStore[$this->currentManagerName] = [
 				'page'			=> $this->page,
 				'itemPerPage'	=> $this->itemPerPage,
 				'itemOffset'	=> $this->getItemOffset(),
@@ -434,30 +434,30 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	/**
 	 * Load pagination manager config
 	 * 
-	 * @param string $configKey
+	 * @param string $managerName
 	 * @throws \InvalidArgumentException
 	 * @return array
 	 */
-	protected function loadManagerConfig($configKey)
+	protected function loadManagerConfig($managerName)
 	{
-		if ($this->paginationManagersConfig->has($configKey)) {
-			$managerConfig = $this->paginationManagersConfig->get($configKey, []);
+		if ($this->paginationManagersConfig->has($managerName)) {
+			$managerConfig = $this->paginationManagersConfig->get($managerName, []);
 			
 			if (isset($managerConfig['model_manager_name']) && $managerConfig['model_manager_name']) {
 				/** @var \Doctrine\Bundle\DoctrineBundle\Registry $registry */
 				$registry = $this->container->get(OkaPaginationExtension::$doctrineDrivers[$managerConfig['db_driver']]['registry']);
 				$this->objectManager = $registry->getManager($managerConfig['model_manager_name']);
 			}
-		} elseif (class_exists($configKey)) {
+		} elseif (class_exists($managerName)) {
 			$this->objectManager = $this->container->get('oka_pagination.default.object_manager');
 			$managerConfig = $this->defaultManagerConfig;
-			$managerConfig['class'] = $configKey;
-			$configKey = self::DEFAULT_MANAGER_NAME;
+			$managerConfig['class'] = $managerName;
+			$managerName = self::DEFAULT_MANAGER_NAME;
 		} else {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $configKey));
+			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $managerName));
 		}
 		
-		$this->currentManagerConfigKey = $configKey;
+		$this->currentManagerName = $managerName;
 		$this->className = $managerConfig['class'];
 		$this->itemPerPage = $managerConfig['item_per_page'];
 		$this->maxPageNumber = $managerConfig['max_page_number'];
