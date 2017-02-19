@@ -318,21 +318,11 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$managerConfig = $this->loadManagerConfig($managerName);
 		$queryMapConfig = $managerConfig['request']['query_map'];
 		$sortConfig = $managerConfig['sort'];
-		$query = $request->query;
-		$intRegex = '#^[0-9]+$#';
 		
-		// Parse pagination request query for page
-		if ($query->has($queryMapConfig['page'])) {
-			if (preg_match('#^[0-9]+$#', ($page = $query->get($queryMapConfig['page'])))) {
-				$this->setPage((int) $page);
-			}
-		}
-		if ($query->has($queryMapConfig['item_per_page'])) {
-			if (preg_match($intRegex, ($itemPerPage = $query->get($queryMapConfig['item_per_page'])))) {
-				$this->setItemPerPage((int) $itemPerPage);
-			}
-		}
-		
+		// Extract pagination data in request
+		$this->extractPageInRequest($request, $queryMapConfig['page']);
+		$this->extractItemPerPageInRequest($request, $queryMapConfig['item_per_page']);
+				
 		// Parse pagination request query for sort
 		$sortAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['sort'], $sortConfig['delimiter']);
 		$descAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['desc'], $sortConfig['delimiter']);
@@ -464,6 +454,30 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->template = $managerConfig['template'];
 		
 		return $managerConfig;
+	}
+	
+	/**
+	 * @param Request $request
+	 * @param string $key
+	 */
+	protected function extractPageInRequest(Request $request, $key) {
+		$page = $request->query->has($key) ? $request->query->get($key) : $request->request->get($key);
+	
+		if ($page && preg_match('#^[0-9]+$#', $page)) {
+			$this->setPage((int) $page);
+		}
+	}
+
+	/**
+	 * @param Request $request
+	 * @param string $key
+	 */
+	protected function extractItemPerPageInRequest(Request $request, $key) {
+		$itemPerPage = $request->query->has($key) ? $request->query->get($key) : $request->request->get($key);
+	
+		if ($itemPerPage && preg_match('#^[0-9]+$#', $itemPerPage)) {
+			$this->setItemPerPage((int) $itemPerPage);
+		}
 	}
 	
 	/**
