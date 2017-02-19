@@ -461,8 +461,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @param string $key
 	 */
 	protected function extractPageInRequest(Request $request, $key) {
-		$page = $request->query->has($key) ? $request->query->get($key) : $request->request->get($key);
-	
+		$page = $request->query->has($key) ? $request->query->get($key) : $request->attributes->get($key);
+		
 		if ($page && preg_match('#^[0-9]+$#', $page)) {
 			$this->setPage((int) $page);
 		}
@@ -473,8 +473,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @param string $key
 	 */
 	protected function extractItemPerPageInRequest(Request $request, $key) {
-		$itemPerPage = $request->query->has($key) ? $request->query->get($key) : $request->request->get($key);
-	
+		$itemPerPage = $request->query->has($key) ? $request->query->get($key) : $request->attributes->get($key);
+		
 		if ($itemPerPage && preg_match('#^[0-9]+$#', $itemPerPage)) {
 			$this->setItemPerPage((int) $itemPerPage);
 		}
