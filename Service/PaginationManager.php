@@ -299,7 +299,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true, $hydrationMode = self::HYDRATE_OBJECT)
 	{
-		return $this->prepare($managerName, $request, $criteria, $orderBy, $strictMode = true)
+		return $this->prepare($managerName, $request, $criteria, $orderBy, $strictMode)
 					->fetch($hydrationMode);
 	}
 	
