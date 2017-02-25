@@ -291,14 +291,15 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @param Request $request
 	 * @param array $criteria
 	 * @param array $orderBy
+ 	 * @param boolean $strictMode Throw exception if value has true and parse request occur an error
 	 * @param integer $hydrationMode
 	 * @throws SortAttributeNotAvailableException
 	 * @throws \UnexpectedValueException
 	 * @return PaginationResultSet
 	 */
-	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $hydrationMode = self::HYDRATE_OBJECT)
+	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true, $hydrationMode = self::HYDRATE_OBJECT)
 	{
-		return $this->prepare($managerName, $request, $criteria, $orderBy)
+		return $this->prepare($managerName, $request, $criteria, $orderBy, $strictMode = true)
 					->fetch($hydrationMode);
 	}
 	
@@ -312,7 +313,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @throws SortAttributeNotAvailableException
 	 * @return \Oka\PaginationBundle\Service\PaginationManager
 	 */
-	public function prepare($managerName, Request $request, array $criteria = [], array $orderBy = [])
+	public function prepare($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true)
 	{
 		// Load entity pagination manager config
 		$managerConfig = $this->loadManagerConfig($managerName);
@@ -329,7 +330,10 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		
 		foreach ($sortAttributes as $key => $attribute) {
 			if (!in_array($attribute, $sortConfig['attributes_availables'])) {
-				throw new SortAttributeNotAvailableException($attribute, sprintf('Invalid request sort attribute "%s" not avalaible.', $attribute));
+				if ($strictMode === true) {
+					throw new SortAttributeNotAvailableException($attribute, sprintf('Invalid request sort attribute "%s" not avalaible.', $attribute));
+				}
+				continue;
 			}
 			
 			$sortAttributes[$attribute] = in_array($attribute, $descAttributes) ? 'DESC' : 'ASC';
