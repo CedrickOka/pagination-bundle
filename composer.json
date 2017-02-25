@@ -13,7 +13,6 @@
 			"email" : "cedrickoka@fermentuse.com"
 		}
 	],
-	"version" : "1.0.0-dev",
 	"minimum-stability" : "dev",
 	"require" : {
 		"php" : ">=5.3.9",
