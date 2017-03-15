@@ -1,4 +1,4 @@
-#**Getting Started With OkaPaginationBundle**
+# **Getting Started With OkaPaginationBundle**
 =====================================
 
 This bundle provides a flexible pagination system.
@@ -60,7 +60,7 @@ class AppKernel extends Kernel
 
 Add the following configuration to your `config.yml`.
 
-```
+```yaml
 # app/config/config.yml
 oka_pagination:
     db_driver: orm
