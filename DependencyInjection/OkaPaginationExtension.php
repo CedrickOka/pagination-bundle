@@ -54,8 +54,21 @@ class OkaPaginationExtension extends Extension
 		$container->setParameter('oka_pagination.request', $config['request']);
 		$container->setParameter('oka_pagination.sort', $config['sort']);
 		
+		// Twig Configuration
+		$this->loadTwigExtension($config, $container);
+		
 		// Pagination bag
 		$definition = $container->getDefinition('oka_pagination.managers_config');
 		$definition->replaceArgument(0, $config['pagination_managers']);
+	}
+	
+	public function loadTwigExtension(array $config, ContainerBuilder $container)
+	{
+		$container->setParameter('oka_pagination.twig.enable_global', $config['twig']['enable_global']);
+		$definition = $container->getDefinition('oka_pagination.twig.extension');
+		
+		if ($config['twig']['enable_extension'] === true) {
+			$definition->addTag('twig.extension');
+		}
 	}
 }

@@ -1,19 +1,15 @@
-{% set page = oka_pagination[managerName].page %}
-{% set pageNumber = oka_pagination[managerName].pageNumber %}
-{% set itemPerPage = oka_pagination[managerName].itemPerPage %}
-
-{% if pageNumber > 1 %}
-<ul class="pagination" data-page-number="{{ pageNumber }}">
+{% if context.pageNumber > 1 %}
+<ul class="pagination" data-page-number="{{ context.pageNumber }}">
 	{# Preview Button #}
-	{% if page > 1 %}
-		{% set previewParams = params|merge({'page': (page - 1)}) %}
+	{% if context.page > 1 %}
+		{% set previewParams = params|merge({'page': (context.page - 1)}) %}
 		<li class="arrow"><a href="{{ path(route, previewParams) }}">&laquo;</a></li>
 	{% endif %}
 	
 	{# Middle #}
-	{% for i in 1..pageNumber %}
+	{% for i in 1..context.pageNumber %}
 		{% set params = params|merge({'page': i}) %}
-		{% if page == i %}
+		{% if context.page == i %}
 			<li><a href="#" class="current">{{ i }}</a></li>
 		{% else %}
 			<li><a href="{{ path(route, params) }}" data-page="{{ i }}">{{ i }}</a></li>
@@ -21,8 +17,8 @@
 	{% endfor %}
 	
 	{# Next Button #}
-	{% if page < pageNumber %}
-		{% set nextParams = params|merge({'page': (page + 1)}) %}
+	{% if context.page < context.pageNumber %}
+		{% set nextParams = params|merge({'page': (context.page + 1)}) %}
 		<li class="arrow"><a href="{{ path(route, nextParams) }}">&raquo;</a></li>
 	{% endif %}
 </ul>

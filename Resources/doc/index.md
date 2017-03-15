@@ -48,6 +48,8 @@ class AppKernel extends Kernel
 		);
 		
 		// ...
+		
+		return $bundles;
 	}
 	
 	// ...
@@ -75,6 +77,9 @@ oka_pagination:
     sort:
         delimiter: ','
         attributes_availables: ['name']
+    twig:
+        enable_extension: true
+        enable_global: true
     pagination_managers:
         foo:
             db_driver: orm
@@ -106,7 +111,7 @@ You can use it in two ways.
 
 Initialize pagination 
 
-```
+```php
 /** @var \Oka\PaginationBundle\Service\PaginationManager */
 $paginationManager = $this->get('oka_pagination.manager');
 
@@ -119,7 +124,7 @@ $items = $paginationResultSet->getItems();
 
 ```
 
-```
+```php
 /** @var \Oka\PaginationBundle\Service\PaginationManager */
 $paginationManager = $this->get('oka_pagination.manager');
 
@@ -134,12 +139,12 @@ $items = $paginationResultSet->getItems();
 
 #### In Views (Twig)
 
-```
-{# Use default pagination manager #}
+```twig
+{# Use the current pagination manager #}
 {{ paginate('foo_path' , {'query': 'query'}) }}
 ```
 
-```
-{# Use custom pagination manager #}
+```twig
+{# Use a specific pagination manager #}
 {{ paginate_foo('foo_path' , {'query': 'query'}) }}
 ```

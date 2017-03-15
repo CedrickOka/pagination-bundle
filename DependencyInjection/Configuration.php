@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\DependencyInjection;
 
-use Oka\PaginationBundle\Service\PaginationManager;
+use Oka\PaginationBundle\Twig\OkaPaginationExtension as TwigExtension;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\IntegerNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
@@ -33,6 +33,13 @@ class Configuration implements ConfigurationInterface
 				->append($this->getTemplateNodeDefinition())
 				->append($this->getRequestNodeDefinition())
 				->append($this->getSortNodeDefinition())
+				->arrayNode('twig')
+					->addDefaultsIfNotSet()
+					->children()
+						->booleanNode('enable_extension')->defaultTrue()->end()
+						->booleanNode('enable_global')->defaultTrue()->end()
+					->end()
+				->end()
 				->arrayNode('pagination_managers')
 				 	->isRequired()
 				 	->requiresAtLeastOneElement()
@@ -106,7 +113,7 @@ class Configuration implements ConfigurationInterface
 	public function getTemplateNodeDefinition()
 	{
 		$node = new ScalarNodeDefinition('template');
-		$node->cannotBeEmpty()->cannotBeEmpty()->defaultValue(PaginationManager::DEFAULT_TEMPLATE)->end();
+		$node->cannotBeEmpty()->cannotBeEmpty()->defaultValue(TwigExtension::DEFAULT_TEMPLATE)->end();
 		
 		return $node;
 	}

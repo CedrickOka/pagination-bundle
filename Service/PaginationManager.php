@@ -5,9 +5,10 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Query;
-use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension;
+use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension as BundleExtension;
 use Oka\PaginationBundle\Exception\ObjectManagerNotSupportedException;
 use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
+use Oka\PaginationBundle\Twig\OkaPaginationExtension as TwigExtension;
 use Oka\PaginationBundle\Util\PaginationResultSet;
 use Oka\PaginationBundle\Util\RequestParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -18,15 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
  * @author cedrick
  * 
  */
-class PaginationManager extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class PaginationManager
 {
-	const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
 	const HYDRATE_OBJECT = 0;
 	const HYDRATE_ARRAY = 1;
-	
-	const DEFAULT_MANAGER_NAME = 'default';
-	const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';
-	
+		
 	/**
 	 * @var ContainerInterface $container
 	 */
@@ -51,11 +48,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 * @var integer $maxPageNumber
 	 */
 	protected $maxPageNumber;
-	
-	/**
-	 * @var string $template
-	 */
-	protected $template;
 	
 	/**
 	 * @var string $className
@@ -166,42 +158,6 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		$this->pageNumber = null;
 	}
 	
-	public function getName()
-	{
-		return 'oka_pagination.twig_extension';
-	}
-	
-	public function getGlobals()
-	{
-		return [self::TWIG_GLOBAL_VAR_NAME => []];
-	}
-	
-	public function getFunctions()
-	{
-		return [
-				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
-				new \Twig_SimpleFunction('paginate_*', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']])
-		];
-	}
-	
-	public function renderDefaultBlock(\Twig_Environment $env, $route, array $params = [])
-	{
-		return $this->renderBlock($env, $this->currentManagerName, $route, $params);
-	}
-	
-	public function renderBlock(\Twig_Environment $env, $name, $route, array $params = [])
-	{
-		if (!isset($this->paginationStore[$name])) {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in pagination resultset store.', $name));
-		}
-		
-		return $env->render($this->template ?: self::DEFAULT_TEMPLATE, [
-				'route' => $route, 
-				'params' => $params,
-				'managerName' => $name
-		]);
-	}
-	
 	/**
 	 * @return number
 	 */
@@ -285,6 +241,27 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	}
 	
 	/**
+	 * Get pagination manager config
+	 * 
+	 * @param string $managerName
+	 * @throws \InvalidArgumentException
+	 * @return array
+	 */
+	public function getManagerConfig($managerName) 
+	{
+		if ($this->paginationManagersConfig->has($managerName)) {
+			$managerConfig = $this->paginationManagersConfig->get($managerName, []);
+		} elseif (class_exists($managerName)) {
+			$managerConfig = $this->defaultManagerConfig;
+			$managerConfig['class'] = $managerName;
+		} else {
+			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $managerName));
+		}
+		
+		return $managerConfig;
+	}
+	
+	/**
 	 * Paginate query
 	 * 
 	 * @param string $managerName
@@ -323,7 +300,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		// Extract pagination data in request
 		$this->extractPageInRequest($request, $queryMapConfig['page']);
 		$this->extractItemPerPageInRequest($request, $queryMapConfig['item_per_page']);
-				
+		
 		// Parse pagination request query for sort
 		$sortAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['sort'], $sortConfig['delimiter']);
 		$descAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['desc'], $sortConfig['delimiter']);
@@ -405,6 +382,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 				}
 			}
 		}
+		
 		// Pagination result set definition
 		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
 		$this->paginationStore[$this->currentManagerName] = [
@@ -416,13 +394,33 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 		];
 		
 		// Add twig global parameters for manager config key
-		$twig = $this->container->get('twig');
-		$twig->addGlobal(self::TWIG_GLOBAL_VAR_NAME, $this->paginationStore);
+		if ($this->container->getParameter('oka_pagination.twig.enable_global') === true) {
+			$twig = $this->container->get('twig');
+			$twig->addGlobal(TwigExtension::TWIG_GLOBAL_VAR_NAME, $this->paginationStore);
+		}
 		
 		// reset manager
 		$this->reset();
 		
 		return $hydrationMode == self::HYDRATE_ARRAY ? $paginationResultSet->toArray() : $paginationResultSet;
+	}
+	
+	/**
+	 * Get the name of current pagination manager
+	 * 
+	 * @return string
+	 */
+	public function getCurrentManagerName() {
+		return $this->currentManagerName;
+	}
+	
+	/**
+	 * Store pagination result set
+	 * 
+	 * @return array
+	 */
+	public function getPaginationStore(){
+		return $this->paginationStore;
 	}
 	
 	/**
@@ -434,28 +432,20 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	protected function loadManagerConfig($managerName)
 	{
-		if ($this->paginationManagersConfig->has($managerName)) {
-			$managerConfig = $this->paginationManagersConfig->get($managerName, []);
-			
-			if (isset($managerConfig['model_manager_name']) && $managerConfig['model_manager_name']) {
-				/** @var \Doctrine\Bundle\DoctrineBundle\Registry $registry */
-				$registry = $this->container->get(OkaPaginationExtension::$doctrineDrivers[$managerConfig['db_driver']]['registry']);
-				$this->objectManager = $registry->getManager($managerConfig['model_manager_name']);
-			}
-		} elseif (class_exists($managerName)) {
-			$this->objectManager = $this->container->get('oka_pagination.default.object_manager');
-			$managerConfig = $this->defaultManagerConfig;
-			$managerConfig['class'] = $managerName;
-			$managerName = self::DEFAULT_MANAGER_NAME;
+		$managerConfig = $this->getManagerConfig($managerName);
+		
+		if (isset($managerConfig['model_manager_name']) && isset($managerConfig['db_driver'])) {
+			/** @var \Doctrine\Bundle\DoctrineBundle\Registry $registry */
+			$registry = $this->container->get(BundleExtension::$doctrineDrivers[$managerConfig['db_driver']]['registry']);
+			$this->objectManager = $registry->getManager($managerConfig['model_manager_name']);
 		} else {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $managerName));
+			$this->objectManager = $this->container->get('oka_pagination.default.object_manager');
 		}
 		
 		$this->currentManagerName = $managerName;
 		$this->className = $managerConfig['class'];
 		$this->itemPerPage = $managerConfig['item_per_page'];
 		$this->maxPageNumber = $managerConfig['max_page_number'];
-		$this->template = $managerConfig['template'];
 		
 		return $managerConfig;
 	}
@@ -499,11 +489,8 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	 */
 	protected function getItemOffset()
 	{
-		if ($this->page < 2) {
-			return 0;
-		}
-		
-		return $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
+		return $this->page < 2 ? 
+			0 : $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
 	}
 	
 	/**
@@ -600,7 +587,7 @@ class PaginationManager extends \Twig_Extension implements \Twig_Extension_Globa
 	/**
 	 * Reset pagination manager after fetch
 	 */
-	private function reset()
+	protected function reset()
 	{
 		$this->prepared = false;
 		$this->countQuery = null;

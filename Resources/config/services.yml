@@ -4,13 +4,6 @@ services:
 # Factory
     oka_pagination.default.object_manager:
         class: Doctrine\Common\Persistence\ObjectManager
-#        public: false
-
-#    oka_pagination.entity_manager:
-#        class: Doctrine\Common\Persistence\ObjectManager
-#        factory: [ "@doctrine", getManager ]
-#        arguments: [ "%oka_pagination.model_manager_name%" ]
-#        public: false
 
 # Services
     oka_pagination.managers_config:
@@ -18,9 +11,12 @@ services:
         arguments: [[]]
         public: false
 
-#, "@twig"
     oka_pagination.manager:
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ "@service_container", "@oka_pagination.managers_config", "%oka_pagination.item_per_page%", "%oka_pagination.max_page_number%", "%oka_pagination.template%", "%oka_pagination.request%", "%oka_pagination.sort%" ]
-        tags:
-          - { name: twig.extension }
+        arguments: [ '@service_container', '@oka_pagination.managers_config', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%', '%oka_pagination.sort%' ]
+
+# Twig extension
+    oka_pagination.twig.extension:
+        class: Oka\PaginationBundle\Twig\OkaPaginationExtension
+        arguments: [ '@oka_pagination.manager' ]
+        public: false
