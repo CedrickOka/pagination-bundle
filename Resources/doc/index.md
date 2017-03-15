@@ -1,5 +1,5 @@
 # **Getting Started With OkaPaginationBundle**
-=====================================
+==============================================
 
 This bundle provides a flexible pagination system.
 
@@ -32,7 +32,7 @@ $ composer require coka/pagination-bundle
 After installation, enable the bundle by adding it to the list of registered bundles 
 in the `app/AppKernel.php` file of your project:
 
-```
+```php
 <?php
 // app/AppKernel.php
 // ...
