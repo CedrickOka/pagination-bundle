@@ -356,9 +356,9 @@ class PaginationManager
 			$this->fullyItems = $this->countQuery->getSingleScalarResult();
 		} else {
 			if ($this->internalCountQuery instanceof \Doctrine\ORM\Query) {
-				$this->fullyItems = $this->internalCountQuery->getSingleScalarResult();
+				$this->fullyItems = (int) $this->internalCountQuery->getSingleScalarResult();
 			} else {
-				$this->fullyItems = $this->internalCountQuery->execute();
+				$this->fullyItems = (int) $this->internalCountQuery->execute();
 			}
 		}
 		
