@@ -113,13 +113,13 @@ class PaginationResultSet
 	 */
 	public function toArray() {
 		return [
-				'page' => $this->getPage(),
-				'itemPerPage' => $this->getItemPerPage(),
-				'orderBy' => $this->getOrderBy(),
-				'itemOffset' => $this->getItemOffset(),
-				'fullyItems' => $this->getFullyItems(),
-				'items' => $this->getItems(),
-				'pageNumber' => $this->getPageNumber()
+				'page' => $this->page,
+				'itemPerPage' => $this->itemPerPage,
+				'orderBy' => $this->orderBy,
+				'itemOffset' => $this->itemOffset,
+				'fullyItems' => $this->fullyItems,
+				'pageNumber' => $this->pageNumber,
+				'items' => $this->items
 		];
 	}
 }

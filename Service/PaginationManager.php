@@ -589,6 +589,11 @@ class PaginationManager
 	 */
 	protected function reset()
 	{
+		$this->countQuery = null;
+		$this->countItemsCallable = null;
+		$this->selectQuery = null;
+		$this->selectItemsCallable = null;
+		
 		$this->prepared = false;
 		$this->countQuery = null;
 		$this->selectQuery = null;
