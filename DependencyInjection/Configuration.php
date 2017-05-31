@@ -41,7 +41,8 @@ class Configuration implements ConfigurationInterface
 					->end()
 				->end()
 				->arrayNode('pagination_managers')
-				 	->isRequired()
+// 				 	->isRequired()
+					->treatNullLike([])
 				 	->requiresAtLeastOneElement()
 					->useAttributeAsKey('name')
 					->prototype('array')
@@ -120,19 +121,6 @@ class Configuration implements ConfigurationInterface
 	
 	public function getRequestNodeDefinition()
 	{
-// 		$node = new ArrayNodeDefinition('query_map');
-// 		$node
-// 			->addDefaultsIfNotSet()
-// 			->children()
-// 				->scalarNode('page')->cannotBeEmpty()->defaultValue('page')->end()
-// 				->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
-// 				->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
-// 				->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
-// 			->end()
-// 		->end();
-		
-// 		return $node;
-		
 		$node = new ArrayNodeDefinition('request');
 		$node
 			->addDefaultsIfNotSet()

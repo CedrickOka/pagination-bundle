@@ -23,7 +23,7 @@ class PaginationManager
 {
 	const HYDRATE_OBJECT = 0;
 	const HYDRATE_ARRAY = 1;
-		
+	
 	/**
 	 * @var ContainerInterface $container
 	 */
@@ -142,7 +142,6 @@ class PaginationManager
 	{
 		$this->container = $container;
 		$this->paginationManagersConfig = $paginationManagersConfig;
-		
 		$this->defaultManagerConfig = [
 				'item_per_page' => $itemPerPage,
 				'max_page_number' => $maxPageNumber,
@@ -247,7 +246,7 @@ class PaginationManager
 	 * @throws \InvalidArgumentException
 	 * @return array
 	 */
-	public function getManagerConfig($managerName) 
+	public function getManagerConfig($managerName)
 	{
 		if ($this->paginationManagersConfig->has($managerName)) {
 			$managerConfig = $this->paginationManagersConfig->get($managerName, []);
@@ -410,7 +409,8 @@ class PaginationManager
 	 * 
 	 * @return string
 	 */
-	public function getCurrentManagerName() {
+	public function getCurrentManagerName()
+	{
 		return $this->currentManagerName;
 	}
 	
@@ -419,7 +419,8 @@ class PaginationManager
 	 * 
 	 * @return array
 	 */
-	public function getPaginationStore(){
+	public function getPaginationStore()
+	{
 		return $this->paginationStore;
 	}
 	
@@ -454,7 +455,8 @@ class PaginationManager
 	 * @param Request $request
 	 * @param string $key
 	 */
-	protected function extractPageInRequest(Request $request, $key) {
+	protected function extractPageInRequest(Request $request, $key)
+	{
 		$page = $request->query->has($key) ? $request->query->get($key) : $request->attributes->get($key);
 		
 		if ($page && preg_match('#^[0-9]+$#', $page)) {
@@ -466,7 +468,8 @@ class PaginationManager
 	 * @param Request $request
 	 * @param string $key
 	 */
-	protected function extractItemPerPageInRequest(Request $request, $key) {
+	protected function extractItemPerPageInRequest(Request $request, $key)
+	{
 		$itemPerPage = $request->query->has($key) ? $request->query->get($key) : $request->attributes->get($key);
 		
 		if ($itemPerPage && preg_match('#^[0-9]+$#', $itemPerPage)) {
@@ -563,6 +566,7 @@ class PaginationManager
 				$builder->andWhere(sprintf('p.%1$s = :%1$s', $key))
 						->setParameter($key, $value);
 			}
+			
 			foreach ($this->orderBy as $key => $value) {
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
@@ -574,6 +578,7 @@ class PaginationManager
 			foreach ($criteria as $key => $value) {
 				$builder->field($key)->equals($value);
 			}
+			
 			foreach ($this->orderBy as $key => $value) {
 				$builder->sort($key, $value);
 			}
@@ -593,7 +598,6 @@ class PaginationManager
 		$this->countItemsCallable = null;
 		$this->selectQuery = null;
 		$this->selectItemsCallable = null;
-		
 		$this->prepared = false;
 		$this->countQuery = null;
 		$this->selectQuery = null;
