@@ -143,11 +143,11 @@ class PaginationManager
 		$this->container = $container;
 		$this->paginationManagersConfig = $paginationManagersConfig;
 		$this->defaultManagerConfig = [
-				'item_per_page' => $itemPerPage,
-				'max_page_number' => $maxPageNumber,
-				'template' => $template,
-				'request' => $request,
-				'sort' => $sort
+				'item_per_page' 	=> $itemPerPage,
+				'max_page_number' 	=> $maxPageNumber,
+				'template' 			=> $template,
+				'request' 			=> $request,
+				'sort' 				=> $sort
 		];
 		
 		$this->page = 1;
@@ -160,7 +160,8 @@ class PaginationManager
 	/**
 	 * @return number
 	 */
-	public function getPage() {
+	public function getPage()
+	{
 		return $this->page;
 	}
 	
@@ -177,7 +178,8 @@ class PaginationManager
 	/**
 	 * @return number
 	 */
-	public function getItemPerPage() {
+	public function getItemPerPage()
+	{
 		return $this->itemPerPage;
 	}
 	
@@ -299,6 +301,7 @@ class PaginationManager
 		// Extract pagination data in request
 		$this->extractPageInRequest($request, $queryMapConfig['page']);
 		$this->extractItemPerPageInRequest($request, $queryMapConfig['item_per_page']);
+		$filters = $this->extractFiltersInRequest($request, $queryMapConfig['filters']);
 		
 		// Parse pagination request query for sort
 		$sortAttributes = RequestParser::parseQueryToArray($request, $queryMapConfig['sort'], $sortConfig['delimiter']);
@@ -316,12 +319,12 @@ class PaginationManager
 			unset($sortAttributes[$key]);
 		}
 		
-		$this->criteria = $criteria;
-		$this->orderBy = !empty($sortAttributes) ? array_merge($orderBy, $sortAttributes) : $orderBy;
+		$this->criteria = empty($filters) ? $criteria : array_merge($criteria, $filters);
+		$this->orderBy = empty($sortAttributes) ? $orderBy :  array_merge($orderBy, $sortAttributes);
 		
 		// prepare db query
-		$this->internalCountQuery = $this->createCountQuery($criteria);
-		$this->internalSelectQuery = $this->createSelectQuery($criteria);
+		$this->internalCountQuery = $this->createCountQuery($this->criteria);
+		$this->internalSelectQuery = $this->createSelectQuery($this->criteria);
 		$this->prepared = true;
 		
 		return $this;
@@ -475,6 +478,39 @@ class PaginationManager
 		if ($itemPerPage && preg_match('#^[0-9]+$#', $itemPerPage)) {
 			$this->setItemPerPage((int) $itemPerPage);
 		}
+	}
+	
+	protected function extractFiltersInRequest(Request $request, array $filterMaps)
+	{
+		$criteria = [];
+		
+		foreach ($filterMaps as $key => $filterMap) {
+			if (null === ($value = self::getRequestParameter($request, $key))) {
+				continue;
+			}
+			
+			if ($filterMap['type'] !== 'datetime') {
+				if (!is_string($value) || $filterMap['type'] !== 'string') {
+					settype($value, $filterMap['type']);
+				}
+			} else {
+				$value = new \DateTime($value);
+			}
+			
+			$criteria[$filterMap['field'] ?: $key] = $value;
+		}
+		
+		return $criteria;
+	}
+	
+	/**
+	 * @param Request $request
+	 * @param string $key
+	 * @return mixed
+	 */
+	protected static function getRequestParameter(Request $request, $key)
+	{
+		return $request->query->has($key) ? $request->query->get($key) : $request->attributes->get($key);
 	}
 	
 	/**

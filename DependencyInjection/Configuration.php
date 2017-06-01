@@ -54,12 +54,6 @@ class Configuration implements ConfigurationInterface
 							->append($this->getMaxPageNumberNodeDefinition())
 							->append($this->getTemplateNodeDefinition())
 							->append($this->getRequestNodeDefinition())
-// 							->arrayNode('request')
-// 								->addDefaultsIfNotSet()
-// 								->children()
-// 									->append($this->getRequestNodeDefinition())
-// 								->end()
-// 							->end()
 							->append($this->getSortNodeDefinition())
 						->end()
 					->end()
@@ -121,6 +115,8 @@ class Configuration implements ConfigurationInterface
 	
 	public function getRequestNodeDefinition()
 	{
+		$supportedTypes = ['boolean', 'bool', 'integer', 'int', 'float', 'double', 'string', 'datetime'];
+		
 		$node = new ArrayNodeDefinition('request');
 		$node
 			->addDefaultsIfNotSet()
@@ -132,6 +128,23 @@ class Configuration implements ConfigurationInterface
 						->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
 						->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
 						->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
+						->arrayNode('filters')
+							->treatNullLike([])
+						 	->requiresAtLeastOneElement()
+							->useAttributeAsKey('name')
+							->prototype('array')
+								->children()
+									->scalarNode('type')
+										->defaultValue('string')
+										->validate()
+											->ifNotInArray($supportedTypes)
+											->thenInvalid('The type %s is not supported. Please choose one of '.json_encode($supportedTypes))
+										->end()
+									->end()
+									->scalarNode('field')->defaultNull()->end()
+								->end()
+							->end()
+						->end()
 					->end()
 				->end()
 			->end()
