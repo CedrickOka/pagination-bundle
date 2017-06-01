@@ -1,6 +1,10 @@
 Changelog
 =========
 
+#### 1.2.6 (2017-06-01)
+
+* Add propertie `filter` in `PaginationResultSet` class convert in array.
+
 #### 1.2.5 (2017-06-01)
 
 * Add propertie `filter` in `PaginationResultSet` class.

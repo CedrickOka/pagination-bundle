@@ -130,6 +130,7 @@ class PaginationResultSet
 		return [
 				'page' => $this->page,
 				'itemPerPage' => $this->itemPerPage,
+				'filters' => $this->filters,
 				'orderBy' => $this->orderBy,
 				'itemOffset' => $this->itemOffset,
 				'fullyItems' => $this->fullyItems,
