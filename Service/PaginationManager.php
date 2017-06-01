@@ -386,7 +386,7 @@ class PaginationManager
 		}
 		
 		// Pagination result set definition
-		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
+		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->criteria, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
 		$this->paginationStore[$this->currentManagerName] = [
 				'page'			=> $this->page,
 				'itemPerPage'	=> $this->itemPerPage,

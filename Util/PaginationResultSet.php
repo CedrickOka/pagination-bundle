@@ -2,8 +2,9 @@
 namespace Oka\PaginationBundle\Util;
 
 /**
+ * 
  * @author cedrick
- *
+ * 
  */
 class PaginationResultSet
 {
@@ -16,6 +17,11 @@ class PaginationResultSet
 	 * @var integer $itemPerPage
 	 */
 	protected $itemPerPage;
+	
+	/**
+	 * @var array $filters
+	 */
+	protected $filters;
 	
 	/**
 	 * @var array $orderBy
@@ -42,10 +48,11 @@ class PaginationResultSet
 	 */
 	protected $pageNumber;
 	
-	public function __construct($page, $itemPerPage, array $orderBy, $itemOffset, $fullyItems, $pageNumber, $items)
+	public function __construct($page, $itemPerPage, array $filters, array $orderBy, $itemOffset, $fullyItems, $pageNumber, $items)
 	{
 		$this->page = $page;
 		$this->itemPerPage = $itemPerPage;
+		$this->filters = $filters;
 		$this->orderBy = $orderBy;
 		$this->itemOffset = $itemOffset;
 		$this->fullyItems = $fullyItems;
@@ -67,6 +74,14 @@ class PaginationResultSet
 	public function getItemPerPage()
 	{
 		return $this->itemPerPage;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getFilters()
+	{
+		return $this->filters;
 	}
 	
 	/**

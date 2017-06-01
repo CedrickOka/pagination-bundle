@@ -1,6 +1,10 @@
 Changelog
 =========
 
+#### 1.2.5 (2017-06-01)
+
+* Add propertie `filter` in `PaginationResultSet` class.
+
 #### 1.2.4 (2017-06-01)
 
 * Adds support for the resolution of the filters of the request.
