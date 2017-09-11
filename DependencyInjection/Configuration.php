@@ -41,7 +41,6 @@ class Configuration implements ConfigurationInterface
 					->end()
 				->end()
 				->arrayNode('pagination_managers')
-// 				 	->isRequired()
 					->treatNullLike([])
 				 	->requiresAtLeastOneElement()
 					->useAttributeAsKey('name')

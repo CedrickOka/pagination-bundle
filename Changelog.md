@@ -1,13 +1,18 @@
 Changelog
 =========
 
+#### 1.2.7 (2017-09-11)
+
+* Lets you not supply the 'oka_pagintaion.pagination_managers` configuration value.
+* Added french translation.
+
 #### 1.2.6 (2017-06-01)
 
-* Add propertie `filter` in `PaginationResultSet` class convert in array.
+* Upgraded property `filter` in `PaginationResultSet` class of string to array value.
 
 #### 1.2.5 (2017-06-01)
 
-* Add propertie `filter` in `PaginationResultSet` class.
+* Added property `filter` in `PaginationResultSet` class.
 
 #### 1.2.4 (2017-06-01)
 

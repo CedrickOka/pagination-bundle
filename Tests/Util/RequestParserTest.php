@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Tests\Util;
 
-use Oka\ApiBundle\Util\RequestParser;
+use Oka\PaginationBundle\Util\RequestParser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
