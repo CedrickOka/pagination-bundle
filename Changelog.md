@@ -37,11 +37,23 @@ Changelog
 * Allows to activate or deactivate the injection of globals variables in the twig template.
 * Added params context in pagintaion template.
 
-#### 1.1.1 (2017-02-16)
+#### 1.1.5 (2017-02-16)
 
 * Added itemOffset in pagination resultset.
 
-#### 1.1.1 (2017-02-15)
+#### 1.1.4 (2017-02-25)
+
+* Modify propertie support.doc within composer.json file.
+
+#### 1.1.3 (2017-02-25)
+
+* Fixed pagination manager stricMode.
+
+#### 1.1.2 (2017-02-25)
+
+* Updated composer file.
+
+#### 1.1.1 (2017-02-25)
 
 * Added getter method for page and itemPerPage.
 
@@ -50,3 +62,14 @@ Changelog
 * Added getting started in documentation.
 * Allow support of object class name as value of pagination manager name.
 * Allow to paginate many entity class in single request.
+* Added criteria in count item closure.
+* Thrown an exception if the values returned by the closures are not valid.
+* Fixed mongodb query builder skip method bad using.
+* Added value `doctrine/mongodb-odm` in propertie `suggests` of composer.json file.
+
+#### 1.0.0 (2017-02-01)
+
+* Fixed bug callable.
+* Fixed pagination result set attribute `pageNumber` is undefined.
+* Fixed pagination manger bad hydratation mode.
+* Update composer file.
