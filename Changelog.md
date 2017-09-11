@@ -1,6 +1,10 @@
 Changelog
 =========
 
+#### 1.2.8 (2017-09-11)
+
+* Added the ability to get the value of a datetime query filter from a timestamps.
+
 #### 1.2.7 (2017-09-11)
 
 * Lets you not supply the 'oka_pagintaion.pagination_managers` configuration value.

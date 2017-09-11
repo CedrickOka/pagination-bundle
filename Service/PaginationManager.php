@@ -357,11 +357,8 @@ class PaginationManager
 		} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 			$this->fullyItems = $this->countQuery->getSingleScalarResult();
 		} else {
-			if ($this->internalCountQuery instanceof \Doctrine\ORM\Query) {
-				$this->fullyItems = (int) $this->internalCountQuery->getSingleScalarResult();
-			} else {
-				$this->fullyItems = (int) $this->internalCountQuery->execute();
-			}
+			$this->fullyItems = (int) ($this->internalCountQuery instanceof \Doctrine\ORM\Query ? 
+					$this->internalCountQuery->getSingleScalarResult() : $this->internalCountQuery->execute());
 		}
 		
 		if ($this->fullyItems > 0) {
@@ -377,11 +374,8 @@ class PaginationManager
 											->setMaxResults($this->itemPerPage)
 											->getResult();
 			} else {
-				if ($this->internalSelectQuery instanceof \Doctrine\ORM\Query) {
-					$items = $this->internalSelectQuery->getResult();
-				} else {
-					$items = $this->internalSelectQuery->execute()->toArray(false);
-				}
+				$items = $this->internalSelectQuery instanceof \Doctrine\ORM\Query ? 
+						$this->internalSelectQuery->getResult() : $this->internalSelectQuery->execute()->toArray(false);
 			}
 		}
 		
@@ -480,6 +474,11 @@ class PaginationManager
 		}
 	}
 	
+	/**
+	 * @param Request $request
+	 * @param array $filterMaps
+	 * @return mixed[]
+	 */
 	protected function extractFiltersInRequest(Request $request, array $filterMaps)
 	{
 		$criteria = [];
@@ -494,7 +493,7 @@ class PaginationManager
 					settype($value, $filterMap['type']);
 				}
 			} else {
-				$value = new \DateTime($value);
+				$value = new \DateTime(is_int($value) ? '@'.$value : $value);
 			}
 			
 			$criteria[$filterMap['field'] ?: $key] = $value;
@@ -560,6 +559,7 @@ class PaginationManager
 	protected function createCountQuery(array $criteria = [])
 	{
 		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
+			/** @var \Doctrine\ORM\QueryBuilder $builder */
 			$builder = $this->objectManager->createQueryBuilder()
 							->select('COUNT(DISTINCT p)')
 							->from($this->className, 'p');
