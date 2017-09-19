@@ -6,5 +6,4 @@ namespace Oka\PaginationBundle\Exception;
  * @author cedrick
  * 
  */
-class ObjectManagerNotSupportedException extends \Exception {
-}
+class ObjectManagerNotSupportedException extends \Exception {}

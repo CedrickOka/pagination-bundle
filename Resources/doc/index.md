@@ -3,40 +3,49 @@
 
 This bundle provides a flexible pagination system.
 
-## Prerequisites
+Prerequisites
+=============
 
 The OkaPaginationBundle has the following requirements:
  - PHP 5.5
- - Symfony 2.5+
+ - Symfony 2.7+
  - Twig Extension
 
-## Installation
+Installation
+============
 
-Installation is a quick (I promise!) 2 step process:
+Installation is a quick (I promise!) 4 step process:
 
 1. Download OkaPaginationBundle
 2. Enable the Bundle
 3. Configure the OkaPaginationBundle
 4. Use bundle and enjoy!
 
-### Step 1: Download OkaPaginationBundle
+Step 1: Download the Bundle
+---------------------------
 
-Use composer for install bundle.
+Open a command console, enter your project directory and execute the
+following command to download the latest stable version of this bundle:
 
-```
+```bash
 $ composer require coka/pagination-bundle
 ```
 
-### Step 2: Enable the Bundle
+This command requires you to have Composer installed globally, as explained
+in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
+of the Composer documentation.
 
-After installation, enable the bundle by adding it to the list of registered bundles 
+Step 2: Enable the Bundle
+-------------------------
+
+Then, enable the bundle by adding it to the list of registered bundles
 in the `app/AppKernel.php` file of your project:
 
 ```php
 <?php
 // app/AppKernel.php
-// ...
 
+// ...
 class AppKernel extends Kernel
 {
 	public function registerBundles()
@@ -48,15 +57,14 @@ class AppKernel extends Kernel
 		);
 		
 		// ...
-		
-		return $bundles;
 	}
 	
 	// ...
 }
 ```
 
-### Step 3: Configure the OkaPaginationBundle
+Step 3: Configure the Bundle
+----------------------------
 
 Add the following configuration to your `config.yml`.
 
@@ -65,21 +73,21 @@ Add the following configuration to your `config.yml`.
 oka_pagination:
     db_driver: orm
     model_manager_name: default
-    item_per_page: 10
-    max_page_number: 4000
-    template: OkaPaginationBundle:Pagination:paginate.html.twig
+    item_per_page: 10 											# number of items to show by page
+    max_page_number: 4000 										# number max of page to show
+    template: OkaPaginationBundle:Pagination:paginate.html.twig	# twig template used for shown pagination menu
     request:
        query_map:
-            page: page
-            item_per_page: item_per_page
-            sort: sort
-            desc: desc
+            page: page											# page query parameter name
+            item_per_page: item_per_page						# number of items by page query parameter name
+            sort: sort											# sort field query parameter name
+            desc: desc											# sort direction query parameter name
     sort:
-        delimiter: ','
-        attributes_availables: ['name']
+        delimiter: ','											# sort query delimiter value
+        attributes_availables: ['name']							# sort query value availables attributes
     twig:
         enable_extension: true
-        enable_global: true
+        enable_global: false
     pagination_managers:
         foo:
             db_driver: orm
@@ -94,12 +102,17 @@ oka_pagination:
                     item_per_page: item_per_page
                     sort: sort
                     desc: desc
+                 filters:
+                 	enabled:
+                 		field: enabled							# Not required if the filter name is equal to the field name
+                 		type: boolean							# The type in which the value of the filter will be casted
             sort:
                 delimiter: ','
-                attributes_availables: ['name']
+                attributes_availables: ['name', 'createdAt']
 ```
 
-### Step 4: Use the bundle is simple.
+Step 4: Use the bundle is simple
+--------------------------------
 
 The goal of this bundle is to paginate some `Entity` (ORM) or `Document` (MongoDB) class.
 You can use it in two ways.
@@ -112,39 +125,50 @@ You can use it in two ways.
 Initialize pagination 
 
 ```php
-/** @var \Oka\PaginationBundle\Service\PaginationManager */
-$paginationManager = $this->get('oka_pagination.manager');
+// Acme\DemoBundle\Controller\FooController.php
 
-// Use default pagination manager
-/** @var \Oka\PaginationBundle\Util\PaginationResultSet $paginationResultSet */
-$paginationResultSet = $paginationManager->paginate(Foo::class, $request, $criteria, $orderBy);
-
-/** @var array $items */
-$items = $paginationResultSet->getItems();
-
-```
-
-```php
-/** @var \Oka\PaginationBundle\Service\PaginationManager */
-$paginationManager = $this->get('oka_pagination.manager');
-
-// Use custom pagination manager
-/** @var \Oka\PaginationBundle\Util\PaginationResultSet $paginationResultSet */
-$paginationResultSet = $paginationManager->paginate('foo', $request, $criteria, $orderBy);
-
-/** @var array $items */
-$items = $paginationResultSet->getItems();
-
+public function listAction(Request $request)
+{
+	/** @var \Oka\PaginationBundle\Service\PaginationManager $pm */
+	$pm = $this->get('oka_pagination.manager');
+	
+	// Use default pagination manager
+	/** @var \Oka\PaginationBundle\Util\PaginationResultSet $resultSet */
+	$pagination = $paginationManager->paginate(Foo::class, $request);
+	
+	// Or use custom pagination manager
+	// /** @var \Oka\PaginationBundle\Util\PaginationResultSet $resultSet */
+	// $pagination = $paginationManager->paginate('foo', $request);
+	
+    // parameters to template
+    return $this->render('AcmeDemoBundle:Foo:list.html.twig', ['pagination' => $pagination]);
+}
 ```
 
 #### In Views (Twig)
 
 ```twig
-{# Use the current pagination manager #}
-{{ paginate('foo_path' , {'query': 'query'}) }}
-```
+{# total items count #}
+<div class="count">
+    {{ pagination.getFullyItems() }}
+</div>
 
-```twig
-{# Use a specific pagination manager #}
-{{ paginate_foo('foo_path' , {'query': 'query'}) }}
+<table>
+{# table body #}
+{% for item in pagination.items %}
+<tr {% if loop.index is odd %}class="color"{% endif %}>
+    <td>{{ item.id }}</td>
+    <td>{{ item.title }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{# display navigation #}
+<div class="navigation">
+	{# Use the current pagination manager #}
+    {{ paginate('foo_path' , {'query': 'query'}) }}
+    
+    {# Or use a specific pagination manager #}
+    {# {{ paginate_foo('foo_path' , {'query': 'query'}) }} #}
+</div>
 ```

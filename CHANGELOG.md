@@ -1,5 +1,12 @@
-Changelog
+CHANGELOG
 =========
+
+#### 1.2.9 (2017-09-19)
+
+* Updated `LICENCE`.
+* Updated `README`.
+* Updated documentation.
+* Improve code quality.
 
 #### 1.2.8 (2017-09-11)
 

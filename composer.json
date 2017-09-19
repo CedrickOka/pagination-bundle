@@ -2,12 +2,13 @@
 	"name" : "coka/pagination-bundle",
 	"description" : "Symfony Oka pagination bundle",
 	"type" : "symfony-bundle",
+	"homepage" : "https://github.com/CedrickOka/oka-pagination",
+	"license" : "MIT",
 	"keywords" : [
+		"tiwg",
 		"doctrine2",
 		"pagination"
 	],
-	"homepage" : "https://github.com/CedrickOka/oka-pagination",
-	"licence" : "MIT",
 	"authors" : [{
 			"name" : "Cedrick Oka",
 			"email" : "cedrickoka@fermentuse.com"

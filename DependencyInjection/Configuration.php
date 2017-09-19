@@ -146,6 +146,7 @@ class Configuration implements ConfigurationInterface
 						->end()
 					->end()
 				->end()
+// 				->append($this->getSortNodeDefinition())
 			->end()
 		->end();
 		
