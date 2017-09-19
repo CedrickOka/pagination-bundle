@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 1.2.11 (2017-09-19)
+
+* Fixed text files should end with a newline character.
+
 #### 1.2.10 (2017-09-19)
 
 * Fixed text files should end with a newline character.
