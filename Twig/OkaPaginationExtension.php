@@ -3,6 +3,11 @@ namespace Oka\PaginationBundle\Twig;
 
 use Oka\PaginationBundle\Service\PaginationManager;
 
+/**
+ *
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
+ *
+ */
 class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
 	const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';

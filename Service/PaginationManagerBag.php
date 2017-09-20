@@ -5,10 +5,10 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * 
- * @author cedrick
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
-class PaginationManagersConfig extends ParameterBag
+class PaginationManagerBag extends ParameterBag
 {
 	public function __construct(array $parameters = [])
 	{

@@ -58,7 +58,7 @@ class OkaPaginationExtension extends Extension
 		$this->loadTwigExtension($config, $container);
 		
 		// Pagination bag
-		$definition = $container->getDefinition('oka_pagination.managers_config');
+		$definition = $container->getDefinition('oka_pagination.manager_bag');
 		$definition->replaceArgument(0, $config['pagination_managers']);
 	}
 	

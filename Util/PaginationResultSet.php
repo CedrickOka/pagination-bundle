@@ -3,7 +3,7 @@ namespace Oka\PaginationBundle\Util;
 
 /**
  * 
- * @author cedrick
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
 class PaginationResultSet
@@ -126,16 +126,26 @@ class PaginationResultSet
 	/**
 	 * @return mixed[]
 	 */
-	public function toArray() {
-		return [
-				'page' => $this->page,
-				'itemPerPage' => $this->itemPerPage,
-				'filters' => $this->filters,
-				'orderBy' => $this->orderBy,
-				'itemOffset' => $this->itemOffset,
-				'fullyItems' => $this->fullyItems,
-				'pageNumber' => $this->pageNumber,
-				'items' => $this->items
+	public function toArray(array $exludedFields = []) {
+		$data = [
+				'page' 			=> $this->page,
+				'itemPerPage' 	=> $this->itemPerPage,
+				'filters' 		=> $this->filters,
+				'orderBy' 		=> $this->orderBy,
+				'itemOffset' 	=> $this->itemOffset,
+				'fullyItems' 	=> $this->fullyItems,
+				'pageNumber' 	=> $this->pageNumber,
+				'items' 		=> $this->items
 		];
+		
+		if (!empty($exludedFields)) {
+			foreach ($exludedFields as $exludedField) {
+				if (isset($data[$exludedField])) {
+					unset($data[$exludedField]);
+				}
+			}
+		}
+		
+		return $data;
 	}
 }

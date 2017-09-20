@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * 
- * @author cedrick
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
 class PaginationManager
@@ -35,9 +35,9 @@ class PaginationManager
 	protected $objectManager;
 	
 	/**
-	 * @var PaginationManagersConfig $paginationManagersConfig
+	 * @var PaginationManagerBag $paginationManagerBag
 	 */
-	protected $paginationManagersConfig;
+	protected $paginationManagerBag;
 	
 	/**
 	 * @var integer $itemPerPage
@@ -131,17 +131,22 @@ class PaginationManager
 	
 	/**
 	 * @param ContainerInterface $container
-	 * @param PaginationManagersConfig $paginationManagersConfig
+	 * @param PaginationManagerBag $paginationManagerBag
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 * @param array $request
 	 * @param array $sort
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagersConfig $paginationManagersConfig, $itemPerPage, $maxPageNumber, $template = null, array $request, array $sort)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $paginationManagerBag, $itemPerPage, $maxPageNumber, $template = null, array $request, array $sort)
 	{
 		$this->container = $container;
-		$this->paginationManagersConfig = $paginationManagersConfig;
+		$this->paginationManagerBag = $paginationManagerBag;
+		$this->page = 1;
+		$this->criteria = [];
+		$this->orderBy = [];
+		$this->fullyItems = 0;
+		$this->pageNumber = null;
 		$this->defaultManagerConfig = [
 				'item_per_page' 	=> $itemPerPage,
 				'max_page_number' 	=> $maxPageNumber,
@@ -149,12 +154,6 @@ class PaginationManager
 				'request' 			=> $request,
 				'sort' 				=> $sort
 		];
-		
-		$this->page = 1;
-		$this->criteria = [];
-		$this->orderBy = [];
-		$this->fullyItems = 0;
-		$this->pageNumber = null;
 	}
 	
 	/**
@@ -250,11 +249,13 @@ class PaginationManager
 	 */
 	public function getManagerConfig($managerName)
 	{
-		if ($this->paginationManagersConfig->has($managerName)) {
-			$managerConfig = $this->paginationManagersConfig->get($managerName, []);
+		if ($this->paginationManagerBag->has($managerName)) {
+			$managerConfig = $this->paginationManagerBag->get($managerName, []);
+			
 		} elseif (class_exists($managerName)) {
 			$managerConfig = $this->defaultManagerConfig;
 			$managerConfig['class'] = $managerName;
+			
 		} else {
 			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $managerName));
 		}
@@ -381,13 +382,7 @@ class PaginationManager
 		
 		// Pagination result set definition
 		$paginationResultSet = new PaginationResultSet($this->page, $this->itemPerPage, $this->criteria, $this->orderBy, $this->getItemOffset(), $this->fullyItems, $this->getPageNumber(), $items);
-		$this->paginationStore[$this->currentManagerName] = [
-				'page'			=> $this->page,
-				'itemPerPage'	=> $this->itemPerPage,
-				'itemOffset'	=> $this->getItemOffset(),
-				'fullyItems'	=> $this->fullyItems,
-				'pageNumber'	=> $this->getPageNumber()
-		];
+		$this->paginationStore[$this->currentManagerName] = $paginationResultSet->toArray(['items']);
 		
 		// Add twig global parameters for manager config key
 		if ($this->container->getParameter('oka_pagination.twig.enable_global') === true) {

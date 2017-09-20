@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+#### 1.2.12 (2017-09-20)
+
+* Renamed `PaginationManagersConfig` class to `PaginationManagerBag`.
+* Chnaged service ID form `oka_pagination.managers_config` class to `oka_pagination.manager_bag`.
+
 #### 1.2.11 (2017-09-19)
 
 * Fixed text files should end with a newline character.

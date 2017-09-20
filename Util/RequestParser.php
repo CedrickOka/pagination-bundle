@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * 
- * @author cedrick
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
 final class RequestParser

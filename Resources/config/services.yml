@@ -4,14 +4,14 @@ services:
         class: Doctrine\Common\Persistence\ObjectManager
 
 #Services
-    oka_pagination.managers_config:
-        class: Oka\PaginationBundle\Service\PaginationManagersConfig
+    oka_pagination.manager_bag:
+        class: Oka\PaginationBundle\Service\PaginationManagerBag
         arguments: [[]]
         public: false
 
     oka_pagination.manager:
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ '@service_container', '@oka_pagination.managers_config', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%', '%oka_pagination.sort%' ]
+        arguments: [ '@service_container', '@oka_pagination.manager_bag', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%', '%oka_pagination.sort%' ]
 
 #Twig extension
     oka_pagination.twig.extension:

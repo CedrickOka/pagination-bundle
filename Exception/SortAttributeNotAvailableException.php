@@ -3,7 +3,7 @@ namespace Oka\PaginationBundle\Exception;
 
 /**
  * 
- * @author cedrick
+ * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
 class SortAttributeNotAvailableException extends \Exception
