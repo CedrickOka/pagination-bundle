@@ -11,7 +11,7 @@
 	],
 	"authors" : [{
 			"name" : "Cedrick Oka",
-			"email" : "cedrickoka@fermentuse.com"
+			"email" : "okacedrick@gmail.com"
 		}
 	],
 	"minimum-stability" : "alpha",
@@ -48,4 +48,3 @@
 		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/Resources/doc/index.md"
 	}
 }
-
