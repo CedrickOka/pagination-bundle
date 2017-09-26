@@ -1,9 +1,13 @@
 CHANGELOG
 =========
 
+#### 1.2.14 (2017-09-25)
+
+* Fixed bad definition of arguments of `oka pagination.default.object manager` service.
+
 #### 1.2.13 (2017-09-20)
 
-* Updated composer.json.
+* Updated `composer.json`.
 
 #### 1.2.12 (2017-09-20)
 

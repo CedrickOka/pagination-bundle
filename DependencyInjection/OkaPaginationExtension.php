@@ -42,6 +42,7 @@ class OkaPaginationExtension extends Extension
 		
 		$container->setAlias('oka_pagination.default.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
 		$definition = $container->getDefinition('oka_pagination.default.object_manager');
+		$definition->addArgument($config['model_manager_name']);
 		$definition->setFactory([new Reference('oka_pagination.default.doctrine_registry'), 'getManager']);
 		
 		// Entity manager default name
