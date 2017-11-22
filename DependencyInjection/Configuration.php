@@ -62,7 +62,7 @@ class Configuration implements ConfigurationInterface
 		return $treeBuilder;
 	}
 	
-	public function getDBDriverNodeDefinition()
+	protected function getDBDriverNodeDefinition()
 	{
 		$supportedDrivers = ['orm', 'mongodb'];
 		
@@ -80,7 +80,7 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	public function getEntityManageNameNodeDefinition()
+	protected function getEntityManageNameNodeDefinition()
 	{
 		$node = new ScalarNodeDefinition('model_manager_name');
 		$node->defaultNull()->end();
@@ -88,7 +88,7 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	public function getItemPerPageNodeDefinition()
+	protected function getItemPerPageNodeDefinition()
 	{
 		$node = new IntegerNodeDefinition('item_per_page');
 		$node->min(1)->defaultValue(10)->end();
@@ -96,7 +96,7 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	public function getMaxPageNumberNodeDefinition()
+	protected function getMaxPageNumberNodeDefinition()
 	{
 		$node = new IntegerNodeDefinition('max_page_number');
 		$node->min(1)->defaultValue(400)->end();
@@ -104,7 +104,7 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	public function getTemplateNodeDefinition()
+	protected function getTemplateNodeDefinition()
 	{
 		$node = new ScalarNodeDefinition('template');
 		$node->cannotBeEmpty()->cannotBeEmpty()->defaultValue(TwigExtension::DEFAULT_TEMPLATE)->end();
@@ -112,7 +112,7 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	public function getRequestNodeDefinition()
+	protected function getRequestNodeDefinition()
 	{
 		$supportedTypes = ['boolean', 'bool', 'integer', 'int', 'float', 'double', 'string', 'datetime'];
 		
@@ -146,20 +146,21 @@ class Configuration implements ConfigurationInterface
 						->end()
 					->end()
 				->end()
-// 				->append($this->getSortNodeDefinition())
+				->append($this->getSortNodeDefinition(false))
 			->end()
 		->end();
 		
 		return $node;
 	}
 	
-	public function getSortNodeDefinition()
+	protected function getSortNodeDefinition($deprecated = true)
 	{
 		$node = new ArrayNodeDefinition('sort');
 		$node
+			->info(!$deprecated ? 'Request sort configuration' : 'This configuration value is deprecated since 1.3.0 and will be removed in 1.4.0. Use instead `oka_pagination.request.sort`')
 			->addDefaultsIfNotSet()
 			->children()
-				->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(',')->end()
+				->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(!$deprecated ? ',' : null)->end()
 				->arrayNode('attributes_availables')
 					->treatNullLike([])
 					->prototype('scalar')->end()

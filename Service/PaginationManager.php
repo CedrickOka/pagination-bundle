@@ -138,7 +138,7 @@ class PaginationManager
 	 * @param array $request
 	 * @param array $sort
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagerBag $paginationManagerBag, $itemPerPage, $maxPageNumber, $template = null, array $request, array $sort)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $paginationManagerBag, $itemPerPage, $maxPageNumber, $template = null, array $request)
 	{
 		$this->container = $container;
 		$this->paginationManagerBag = $paginationManagerBag;
@@ -151,8 +151,7 @@ class PaginationManager
 				'item_per_page' 	=> $itemPerPage,
 				'max_page_number' 	=> $maxPageNumber,
 				'template' 			=> $template,
-				'request' 			=> $request,
-				'sort' 				=> $sort
+				'request' 			=> $request
 		];
 	}
 	
@@ -252,6 +251,19 @@ class PaginationManager
 		if ($this->paginationManagerBag->has($managerName)) {
 			$managerConfig = $this->paginationManagerBag->get($managerName, []);
 			
+			if (isset($managerConfig['sort'])) {
+				if ($managerConfig['sort']['delimiter'] !== null && $managerConfig['request']['sort']['delimiter'] === ',') {
+					$managerConfig['request']['sort']['delimiter'] = $managerConfig['sort']['delimiter'];
+					@trigger_error(sprintf('The configuration value `oka_pagination.pagination_managers.%1$s.sort.delimiter` is deprecated since 1.3.0 and will be removed in 1.4.0. Use `oka_pagination.pagination_managers.%1$s.request.sort.delimiter` instead', $managerName), E_USER_DEPRECATED);
+				}
+				if (!empty($managerConfig['sort']['attributes_availables']) && empty($managerConfig['request']['sort']['attributes_availables'])) {
+					$managerConfig['request']['sort']['attributes_availables'] = $managerConfig['sort']['attributes_availables'];
+					@trigger_error(sprintf('The configuration value `oka_pagination.pagination_managers.%1$s.sort.attributes_availables` is deprecated since 1.3.0 and will be removed in 1.4.0. Use `oka_pagination.pagination_managers.%1$s.request.sort.attributes_availables` instead', $managerName), E_USER_DEPRECATED);
+				}
+				
+				unset($managerConfig['sort']);
+				$this->paginationManagerBag->set($managerName, $managerConfig);
+			}
 		} elseif (class_exists($managerName)) {
 			$managerConfig = $this->defaultManagerConfig;
 			$managerConfig['class'] = $managerName;
@@ -297,7 +309,7 @@ class PaginationManager
 		// Load entity pagination manager config
 		$managerConfig = $this->loadManagerConfig($managerName);
 		$queryMapConfig = $managerConfig['request']['query_map'];
-		$sortConfig = $managerConfig['sort'];
+		$sortConfig = $managerConfig['request']['sort'];
 		
 		// Extract pagination data in request
 		$this->extractPageInRequest($request, $queryMapConfig['page']);

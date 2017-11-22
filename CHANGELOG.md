@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+#### 1.3.0 (2017-11-22)
+
+* Deprecated `oka_pagination.sort` configuration values.
+* Deprecated `oka_pagination.pagination_managers.[manageName].sort` configuration values.
+* Updated documentation.
+
 #### 1.2.14 (2017-09-25)
 
 * Fixed bad definition of arguments of `oka pagination.default.object manager` service.

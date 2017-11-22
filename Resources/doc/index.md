@@ -73,18 +73,18 @@ Add the following configuration to your `config.yml`.
 oka_pagination:
     db_driver: orm
     model_manager_name: default
-    item_per_page: 10 											# number of items to show by page
-    max_page_number: 4000 										# number max of page to show
-    template: OkaPaginationBundle:Pagination:paginate.html.twig	# twig template used for shown pagination menu
+    item_per_page: 10 											# Global number of items to show by page
+    max_page_number: 4000 										# Global number max of page to show
+    template: OkaPaginationBundle:Pagination:paginate.html.twig	# Global twig template used for shown pagination menu
     request:
-       query_map:
-            page: page											# page query parameter name
-            item_per_page: item_per_page						# number of items by page query parameter name
-            sort: sort											# sort field query parameter name
-            desc: desc											# sort direction query parameter name
-    sort:
-        delimiter: ','											# sort query delimiter value
-        attributes_availables: ['name']							# sort query value availables attributes
+        query_map:
+            page: page											# Global page query parameter name
+            item_per_page: item_per_page						# Global number of items by page query parameter name
+            sort: sort											# Global sort field query parameter name
+            desc: desc											# Global sort direction query parameter name
+        sort:
+            delimiter: ','										# Global sort query delimiter value
+            attributes_availables: ['name']						# Global sort query value availables attributes
     twig:
         enable_extension: true
         enable_global: false
@@ -102,13 +102,13 @@ oka_pagination:
                     item_per_page: item_per_page
                     sort: sort
                     desc: desc
-                 filters:
-                 	enabled:
-                 		field: enabled							# Not required if the filter name is equal to the field name
-                 		type: boolean							# The type in which the value of the filter will be casted
-            sort:
-                delimiter: ','
-                attributes_availables: ['name', 'createdAt']
+                    filters:
+                 	    enabled:
+                 		    field: enabled							# Not required if the filter name is equal to the field name
+                 		    type: boolean							# The type in which the value of the filter will be casted
+                sort:
+                    delimiter: ','
+                    attributes_availables: ['name', 'createdAt']
 ```
 
 Step 4: Use the bundle is simple
@@ -133,15 +133,15 @@ public function listAction(Request $request)
 	$pm = $this->get('oka_pagination.manager');
 	
 	// Use default pagination manager
-	/** @var \Oka\PaginationBundle\Util\PaginationResultSet $resultSet */
-	$pagination = $paginationManager->paginate(Foo::class, $request);
+	/** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
+	$page = $pm->paginate(Foo::class, $request, [], ['name' => 'ASC']);
 	
 	// Or use custom pagination manager
-	// /** @var \Oka\PaginationBundle\Util\PaginationResultSet $resultSet */
-	// $pagination = $paginationManager->paginate('foo', $request);
+	// /** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
+	// $page = $pm->paginate('foo', $request, [], ['name' => 'ASC']);
 	
     // parameters to template
-    return $this->render('AcmeDemoBundle:Foo:list.html.twig', ['pagination' => $pagination]);
+    return $this->render('AcmeDemoBundle:Foo:list.html.twig', ['page' => $page]);
 }
 ```
 
@@ -171,4 +171,34 @@ public function listAction(Request $request)
     {# Or use a specific pagination manager #}
     {# {{ paginate_foo('foo_path' , {'query': 'query'}) }} #}
 </div>
+```
+
+#### Advanced Usage
+
+```php
+// Acme\DemoBundle\Controller\FooController.php
+
+public function listAction(Request $request)
+{
+	/** @var \Oka\PaginationBundle\Service\PaginationManager $pm */
+	$pm = $this->get('oka_pagination.manager');
+	
+	// Use default pagination manager
+	/** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
+	$pm->prepare('foo', $request, [], ['name' => 'ASC'])
+		->setCountItemsCallable(function(EntityRepository $er, array $criteria){
+			// Here your code to return the number of elements
+			// ...
+		})
+		->setSelectItemsCallable(function(EntityRepository $er, array $criteria, array $orderBy, $limit, $offset){
+			// Here your code to return the elements list
+			// ...
+		});
+	
+	/** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
+	$page = $pm->fetch();
+	
+    // parameters to template
+    return $this->render('AcmeDemoBundle:Foo:list.html.twig', ['page' => $page]);
+}
 ```

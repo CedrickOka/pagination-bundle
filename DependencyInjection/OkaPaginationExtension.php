@@ -52,8 +52,9 @@ class OkaPaginationExtension extends Extension
 		$container->setParameter('oka_pagination.item_per_page', $config['item_per_page']);
 		$container->setParameter('oka_pagination.max_page_number', $config['max_page_number']);
 		$container->setParameter('oka_pagination.template', $config['template']);
-		$container->setParameter('oka_pagination.request', $config['request']);
-		$container->setParameter('oka_pagination.sort', $config['sort']);
+		
+		// Request Configuration
+		$this->loadRequestConfiguration($config, $container);
 		
 		// Twig Configuration
 		$this->loadTwigExtension($config, $container);
@@ -63,7 +64,24 @@ class OkaPaginationExtension extends Extension
 		$definition->replaceArgument(0, $config['pagination_managers']);
 	}
 	
-	public function loadTwigExtension(array $config, ContainerBuilder $container)
+	protected function loadRequestConfiguration(array $config, ContainerBuilder $container)
+	{
+		if (!empty($config['sort']['attributes_availables']) || $config['sort']['delimiter'] !== null) {
+			@trigger_error('The configuration value `oka_pagination.sort` is deprecated since 1.3.0 and will be removed in 1.4.0. Use `oka_pagination.request.sort` instead', E_USER_DEPRECATED);				
+		}
+		
+		if ($config['sort']['delimiter'] !== null && $config['request']['sort']['delimiter'] === ',') {
+			$config['request']['sort']['delimiter'] = $config['sort']['delimiter'];
+		}
+		if (!empty($config['sort']['attributes_availables']) && empty($config['request']['sort']['attributes_availables'])) {
+			$config['request']['sort']['attributes_availables'] = $config['sort']['attributes_availables'];
+		}
+		
+		$container->setParameter('oka_pagination.request', $config['request']);
+		unset($config['sort']);
+	}
+	
+	protected function loadTwigExtension(array $config, ContainerBuilder $container)
 	{
 		$container->setParameter('oka_pagination.twig.enable_global', $config['twig']['enable_global']);
 		$definition = $container->getDefinition('oka_pagination.twig.extension');
