@@ -32,12 +32,10 @@ class Configuration implements ConfigurationInterface
 				->append($this->getMaxPageNumberNodeDefinition())
 				->append($this->getTemplateNodeDefinition())
 				->append($this->getRequestNodeDefinition())
-				->append($this->getSortNodeDefinition())
 				->arrayNode('twig')
 					->addDefaultsIfNotSet()
 					->children()
 						->booleanNode('enable_extension')->defaultTrue()->end()
-						->booleanNode('enable_global')->defaultTrue()->end()
 					->end()
 				->end()
 				->arrayNode('pagination_managers')
@@ -53,7 +51,6 @@ class Configuration implements ConfigurationInterface
 							->append($this->getMaxPageNumberNodeDefinition())
 							->append($this->getTemplateNodeDefinition())
 							->append($this->getRequestNodeDefinition())
-							->append($this->getSortNodeDefinition())
 						->end()
 					->end()
 				->end()
@@ -107,7 +104,13 @@ class Configuration implements ConfigurationInterface
 	protected function getTemplateNodeDefinition()
 	{
 		$node = new ScalarNodeDefinition('template');
-		$node->cannotBeEmpty()->cannotBeEmpty()->defaultValue(TwigExtension::DEFAULT_TEMPLATE)->end();
+		$node
+			->cannotBeEmpty()
+			->defaultValue(TwigExtension::DEFAULT_TEMPLATE)
+			->treatNullLike(TwigExtension::DEFAULT_TEMPLATE)
+			->treatTrueLike(TwigExtension::DEFAULT_TEMPLATE)
+			->treatFalseLike(TwigExtension::DEFAULT_TEMPLATE)
+		->end();
 		
 		return $node;
 	}
@@ -153,14 +156,14 @@ class Configuration implements ConfigurationInterface
 		return $node;
 	}
 	
-	protected function getSortNodeDefinition($deprecated = true)
+	protected function getSortNodeDefinition()
 	{
 		$node = new ArrayNodeDefinition('sort');
 		$node
-			->info(!$deprecated ? 'Request sort configuration' : 'This configuration value is deprecated since 1.3.0 and will be removed in 1.4.0. Use instead `oka_pagination.request.sort`')
+			->info('Request sort configuration')
 			->addDefaultsIfNotSet()
 			->children()
-				->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(!$deprecated ? ',' : null)->end()
+				->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(',')->end()
 				->arrayNode('attributes_availables')
 					->treatNullLike([])
 					->prototype('scalar')->end()

@@ -1,10 +1,26 @@
 CHANGELOG
 =========
 
+#### 2.0.0 (2017-11-25)
+
+* Removed `oka_pagination.sort` configuration values.
+* Removed `oka_pagination.pagination_managers.[manageName].sort` configuration values.
+* Removed `oka_pagination.twig.enable_global` configuration values.
+* Added `Oka\PaginationBundle\Util\PaginationQuery` class.
+* Added `PaginationManager::createQuery()` method.
+* Deprecated `PaginationManager::prepare()` method.
+* [BC break] Removed `Oka\PaginationBundle\Service\PaginationManager` properties `$page`, `$itemPerPage`, `$maxPageNumber` and associated getters and setters.
+* [BC break] Removed `PaginationManager::fetch()` deprecated method since bundle version `1.3.0`.
+* [BC break] Removed `PaginationManager::getPaginationStore()` deprecated method since bundle version `1.3.0`.
+* [BC break] Removed `PaginationManager::getCurrentManagerName()` deprecated method since bundle version `1.3.0`.
+* Updated documentation.
+
 #### 1.3.0 (2017-11-22)
 
 * Deprecated `oka_pagination.sort` configuration values.
 * Deprecated `oka_pagination.pagination_managers.[manageName].sort` configuration values.
+* Added `oka_pagination.request.sort` configuration values.
+* Added `oka_pagination.pagination_managers.[manageName].request.sort` configuration values.
 * Updated documentation.
 
 #### 1.2.14 (2017-09-25)
@@ -18,7 +34,7 @@ CHANGELOG
 #### 1.2.12 (2017-09-20)
 
 * Renamed `PaginationManagersConfig` class to `PaginationManagerBag`.
-* Chnaged service ID form `oka_pagination.managers_config` class to `oka_pagination.manager_bag`.
+* Changed service ID form `oka_pagination.managers_config` class to `oka_pagination.manager_bag`.
 
 #### 1.2.11 (2017-09-19)
 

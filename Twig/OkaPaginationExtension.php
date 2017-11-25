@@ -14,15 +14,18 @@ class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_
 	const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
 	
 	/**
-	 * @var PaginationManager $paginationManager
+	 * @var PaginationManager $pm
 	 */
-	protected $paginationManager;
+	protected $pm;
 	
 	/**
-	 * @param PaginationManager $paginationManager
+	 * Constructor.
+	 * 
+	 * @param PaginationManager $pm
 	 */
-	public function __construct(PaginationManager $paginationManager) {
-		$this->paginationManager = $paginationManager;
+	public function __construct(PaginationManager $pm)
+	{
+		$this->pm = $pm;
 	}
 	
 	public function getName()
@@ -38,30 +41,48 @@ class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_
 	public function getFunctions()
 	{
 		return [
-				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultBlock'], ['needs_environment' => true, 'is_safe' => ['html']]),
-				new \Twig_SimpleFunction('paginate_*', [$this, 'renderBlock'], ['needs_environment' => true, 'is_safe' => ['html']])
+				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultView'], ['needs_environment' => true, 'is_safe' => ['html']]),
+				new \Twig_SimpleFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']])
 		];
 	}
 	
-	public function renderDefaultBlock(\Twig_Environment $env, $route, array $params = [])
+	/**
+	 * Render pagination widget view
+	 * 
+	 * @param \Twig_Environment $env
+	 * @param string $route
+	 * @param array $params
+	 * @return string
+	 */
+	public function renderDefaultView(\Twig_Environment $env, $route, array $params = [])
 	{
-		return $this->renderBlock($env, $this->paginationManager->getCurrentManagerName(), $route, $params);
+		return $this->renderView($env, $this->pm->getLastManagerName(), $route, $params);
 	}
 	
-	public function renderBlock(\Twig_Environment $env, $name, $route, array $params = [])
+	/**
+	 * Render pagination widget view
+	 * 
+	 * @param \Twig_Environment $env
+	 * @param string $name
+	 * @param string $route
+	 * @param array $params
+	 * @throws \InvalidArgumentException
+	 * @return string
+	 */
+	public function renderView(\Twig_Environment $env, $name, $route, array $params = [])
 	{
-		$managerConfig = $this->paginationManager->getManagerConfig($name);
-		$paginationStore = $this->paginationManager->getPaginationStore();
+		$config = $this->pm->getManagerConfig($name);
+		$globals = $env->getGlobals();
 		
-		if (!isset($paginationStore[$name])) {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in pagination result set store.', $name));
+		if (!isset($globals[self::TWIG_GLOBAL_VAR_NAME][$name])) {
+			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in twig global variables "%s".', $name, self::TWIG_GLOBAL_VAR_NAME));
 		}
 		
-		return $env->render($managerConfig['template'] ?: self::DEFAULT_TEMPLATE, [
-				'route' => $route, 
-				'params' => $params,
-				'managerName' => $name,
-				'context' => $paginationStore[$name]
+		return $env->render($config['template'], [
+				'route' 		=> $route, 
+				'params' 		=> $params,
+				'managerName' 	=> $name,
+				'context' 		=> $globals[self::TWIG_GLOBAL_VAR_NAME][$name]
 		]);
 	}
 }

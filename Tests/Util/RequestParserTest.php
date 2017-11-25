@@ -12,7 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestParserTest extends KernelTestCase
 {
-	public function testparseQueryToArray() {
+	public function testparseQueryToArray()
+	{
 		$request = new Request();
 		$request->query->set('sort', 'name,createdAt,updatedAt');
 		

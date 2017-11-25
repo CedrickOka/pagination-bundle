@@ -150,12 +150,12 @@ public function listAction(Request $request)
 ```twig
 {# total items count #}
 <div class="count">
-    {{ pagination.getFullyItems() }}
+    {{ page.getFullyItems() }}
 </div>
 
 <table>
 {# table body #}
-{% for item in pagination.items %}
+{% for item in page.items %}
 <tr {% if loop.index is odd %}class="color"{% endif %}>
     <td>{{ item.id }}</td>
     <td>{{ item.title }}</td>
@@ -185,15 +185,15 @@ public function listAction(Request $request)
     
     // Use default pagination manager
     /** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
-    $pm->prepare('foo', $request, [], ['name' => 'ASC'])
-        ->setCountItemsCallable(function(EntityRepository $er, array $criteria){
-            // Here your code to return the number of elements
-            // ...
-        })
-        ->setSelectItemsCallable(function(EntityRepository $er, array $criteria, array $orderBy, $limit, $offset){
-            // Here your code to return the elements list
-            // ...
-        });
+    $pm->createQuery('foo', $request, [], ['name' => 'ASC'])
+       ->setCountItemsCallable(function(EntityRepository $er, array $criteria){
+           // Here your code to return the number of elements
+           // ...
+       })
+       ->setSelectItemsCallable(function(EntityRepository $er, array $criteria, array $orderBy, $limit, $offset){
+           // Here your code to return the elements list
+           // ...
+       });
     
     /** @var \Oka\PaginationBundle\Util\PaginationResultSet $page */
     $page = $pm->fetch();
