@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.0.1 (2017-11-27)
+
+* Adds support for array type in request filters.
+
 #### 2.0.0 (2017-11-25)
 
 * Removed `oka_pagination.sort` configuration values.
