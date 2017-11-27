@@ -114,7 +114,7 @@ class Configuration implements ConfigurationInterface
 	
 	protected function getRequestNodeDefinition()
 	{
-		$supportedTypes = ['boolean', 'bool', 'integer', 'int', 'float', 'double', 'string', 'datetime'];
+		$supportedTypes = ['array', 'boolean', 'bool', 'integer', 'int', 'float', 'double', 'string', 'datetime'];
 		
 		$node = new ArrayNodeDefinition('request');
 		$node
