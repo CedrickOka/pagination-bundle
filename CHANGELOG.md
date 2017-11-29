@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+#### 2.1.0 (2017-11-29)
+
+* Fixed bug undefined constant in class method `Oka\PaginationBundle\Service\PagingationManager::paginate()`.
+* Added the ability of filtering query with sql expresion in URL query filters.
+* Added `oka_pagination.query_builder_manipulator` service ID.
+* Added `oka_pagination.query_expr_converters` configuration values.
+* Added `Oka\PaginationBundle\Converter\LikeQueryExprConverter` class in query expression map converter.
+* Added `Oka\PaginationBundle\Converter\NotLikeQueryExprConverter` class in query expression map converter.
+* Updated documentation.
+
 #### 2.0.0 (2017-11-25)
 
 * Removed `oka_pagination.sort` configuration values.

@@ -31,6 +31,11 @@ class PaginationManager
 	protected $managerBag;
 	
 	/**
+	 * @var QueryBuilderManipulator $manipulator
+	 */
+	protected $manipulator;
+	
+	/**
 	 * @var array $defaultManagerConfig
 	 */
 	private $defaultManagerConfig;
@@ -45,15 +50,17 @@ class PaginationManager
 	 * 
 	 * @param ContainerInterface $container
 	 * @param PaginationManagerBag $managerBag
+	 * @param QueryBuilderManipulator $manipulator
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 * @param array $requestConfig
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, $itemPerPage, $maxPageNumber, $template = null, array $requestConfig)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, QueryBuilderManipulator $manipulator, $itemPerPage, $maxPageNumber, $template = null, array $requestConfig)
 	{
 		$this->container = $container;
 		$this->managerBag = $managerBag;
+		$this->manipulator = $manipulator;
 		$this->defaultManagerConfig = [
 				'item_per_page' 	=> $itemPerPage,
 				'max_page_number' 	=> $maxPageNumber,
@@ -97,7 +104,7 @@ class PaginationManager
 	 * @throws \UnexpectedValueException
 	 * @return PaginationResultSet
 	 */
-	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true, $hydrationMode = self::HYDRATE_OBJECT)
+	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true, $hydrationMode = PaginationQuery::HYDRATE_OBJECT)
 	{
 		$query = $this->createQuery($managerName, $request, $criteria, $orderBy, $strictMode);
 		
@@ -159,7 +166,7 @@ class PaginationManager
 			$objectManager = $this->container->get('oka_pagination.default.object_manager');
 		}
 		
-		return new PaginationQuery($objectManager, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
+		return new PaginationQuery($objectManager, $this->manipulator, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
 	}
 	
 	/**

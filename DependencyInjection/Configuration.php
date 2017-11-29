@@ -15,6 +15,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+	protected static $supportedDrivers = ['orm', 'mongodb'];
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -36,6 +38,31 @@ class Configuration implements ConfigurationInterface
 					->addDefaultsIfNotSet()
 					->children()
 						->booleanNode('enable_extension')->defaultTrue()->end()
+					->end()
+				->end()
+				->arrayNode('query_expr_converters')
+					->useAttributeAsKey('name')
+					->treatNullLike([])
+					->prototype('array')
+						->children()
+							->arrayNode('db_drivers')
+								->treatNullLike(self::$supportedDrivers)
+								->validate()
+									->ifTrue(function($value){
+										foreach ($value as $v) {
+											if (false === in_array($v, self::$supportedDrivers, SORT_REGULAR)) {
+												return true;
+											}
+										}
+										return false;
+									})
+									->thenInvalid('Only following options are supported "%s".')
+								->end()
+								->prototype('scalar')->end()
+							->end()
+							->scalarNode('class')->isRequired()->end()
+							->scalarNode('pattern')->isRequired()->end()
+						->end()
 					->end()
 				->end()
 				->arrayNode('pagination_managers')
@@ -61,13 +88,11 @@ class Configuration implements ConfigurationInterface
 	
 	protected function getDBDriverNodeDefinition()
 	{
-		$supportedDrivers = ['orm', 'mongodb'];
-		
 		$node = new ScalarNodeDefinition('db_driver');
 		$node
 			->validate()
-				->ifNotInArray($supportedDrivers)
-				->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
+				->ifNotInArray(self::$supportedDrivers)
+				->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode(self::$supportedDrivers))
 			->end()
 			->cannotBeOverwritten()
 			->isRequired()
