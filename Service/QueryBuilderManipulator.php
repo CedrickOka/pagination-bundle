@@ -63,7 +63,7 @@ class QueryBuilderManipulator
 		}
 		
 		if ($qb instanceof QueryBuilder) {
-			$qb->andWhere(isset($expr) ? $expr : (new \Doctrine\ORM\Query\Expr())->eq($alias.'.'.$field, ':'.$field));
+			$qb->andWhere(isset($expr) ? $expr : (new \Doctrine\ORM\Query\Expr())->eq($alias.'.'.$field, $namedParameter));
 			$qb->setParameter($namedParameter, $value);
 		} else {
 			$qb->addAnd(isset($expr) ? $expr : (new \Doctrine\MongoDB\Query\Expr())->field($field)->equals($value));
