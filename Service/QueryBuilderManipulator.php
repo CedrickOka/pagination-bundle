@@ -34,17 +34,19 @@ class QueryBuilderManipulator
 	 * @param QueryBuilder|Builder $qb
 	 * @param string $alias
 	 * @param string $field
-	 * @param string $definition
+	 * @param string $exprValue
+	 * @param string $namedParameter
 	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
 	 */
-	public function applyExprFromString($qb, $alias, $field, $exprValue)
+	public function applyExprFromString($qb, $alias, $field, $exprValue, $namedParameter = null)
 	{
 		if (!$qb instanceof QueryBuilder && !$qb instanceof Builder) {
 			throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an instance of "%s" or "%s", "%s" given.', __METHOD__, '\Doctrine\ORM\QueryBuilder', '\Doctrine\ODM\MongoDB\Query\Builder', gettype($qb)));
 		}
 		
 		$value = $exprValue;
-		$namedParameter = ':'.$field;
+		$namedParameter = $namedParameter ?: ':'.$field;
 		$dbDriver = $qb instanceof QueryBuilder ? 'orm' : 'mongodb';
 		
 		foreach ($this->mapConverters as $mapConverter) {
@@ -62,7 +64,7 @@ class QueryBuilderManipulator
 		
 		if ($qb instanceof QueryBuilder) {
 			$qb->andWhere(isset($expr) ? $expr : (new \Doctrine\ORM\Query\Expr())->eq($alias.'.'.$field, ':'.$field));
-			$qb->setParameter($field, $value);
+			$qb->setParameter($namedParameter, $value);
 		} else {
 			$qb->addAnd(isset($expr) ? $expr : (new \Doctrine\MongoDB\Query\Expr())->field($field)->equals($value));
 		}
@@ -77,8 +79,10 @@ class QueryBuilderManipulator
 	 */
 	public function applyExprFromArray($qb, $alias, array $criteria)
 	{
+		$pos = 0;
+		
 		foreach ($criteria as $field => $exprValue) {
-			$this->applyExprFromString($qb, $alias, $field, $exprValue);
+			$this->applyExprFromString($qb, $alias, $field, $exprValue, ':'.$field.($pos++));
 		}
 	}
 	

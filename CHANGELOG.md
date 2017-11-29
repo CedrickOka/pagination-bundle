@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.1.1 (2017-11-29)
+
+* Modified `QueryBuilderManipulator::applyExprFromString()` method signature.
+
 #### 2.1.0 (2017-11-29)
 
 * Fixed bug undefined constant in class method `Oka\PaginationBundle\Service\PagingationManager::paginate()`.
