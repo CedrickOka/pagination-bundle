@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-<<<<<<< HEAD
-#### 2.0.1 (2017-11-27)
-
-* Adds support for array type in request filters.
-=======
 #### 2.1.0 (2017-11-29)
 
 * Fixed bug undefined constant in class method `Oka\PaginationBundle\Service\PagingationManager::paginate()`.
@@ -15,7 +10,10 @@ CHANGELOG
 * Added `Oka\PaginationBundle\Converter\LikeQueryExprConverter` class in query expression map converter.
 * Added `Oka\PaginationBundle\Converter\NotLikeQueryExprConverter` class in query expression map converter.
 * Updated documentation.
->>>>>>> 2.0
+
+#### 2.0.1 (2017-11-27)
+
+* Adds support for array type in request filters.
 
 #### 2.0.0 (2017-11-25)
 
