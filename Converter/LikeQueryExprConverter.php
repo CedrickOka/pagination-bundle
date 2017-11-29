@@ -19,7 +19,6 @@ class LikeQueryExprConverter extends AbstractQueryExprConverter
 		$matches = [];
 		preg_match(self::PATTERN, $exprValue, $matches);
 		$value = $matches[1];
-		dump($matches);
 		
 		return $dbDriver === 'orm' ? 
 				(new \Doctrine\ORM\Query\Expr())->like($alias.'.'.$field, $namedParameter ?: ':'.$field) : 

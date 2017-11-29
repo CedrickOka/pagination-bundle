@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 1.4.1 (2017-11-29)
+
+* Removed `dump()` method call in `Oka\PaginationBundle\Converter\LikeQueryExprConverter` class.
+
 #### 1.4.0 (2017-11-29)
 
 * Added the ability of filtering query with sql expresion in URL query filters.
