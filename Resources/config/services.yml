@@ -11,8 +11,11 @@ services:
 
     oka_pagination.manager:
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ '@service_container', '@oka_pagination.manager_bag', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
+        arguments: [ '@service_container', '@oka_pagination.manager_bag', '@oka_pagination.query_builder_manipulator', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
 
+    oka_pagination.query_builder_manipulator:
+        class: Oka\PaginationBundle\Service\QueryBuilderManipulator
+        arguments: [[]]
 #Twig extension
     oka_pagination.twig.extension:
         class: Oka\PaginationBundle\Twig\OkaPaginationExtension

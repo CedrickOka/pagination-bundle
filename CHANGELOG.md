@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+#### 1.4.0 (2017-11-29)
+
+* Added the ability of filtering query with sql expresion in URL query filters.
+* Added `oka_pagination.query_builder_manipulator` service ID.
+* Added `oka_pagination.query_expr_converters` configuration values.
+* Added `Oka\PaginationBundle\Converter\LikeQueryExprConverter` class in query expression map converter.
+* Added `Oka\PaginationBundle\Converter\NotLikeQueryExprConverter` class in query expression map converter.
+* Updated documentation.
+
 #### 1.3.1 (2017-11-27)
 
 * Adds support for array type in request filters.

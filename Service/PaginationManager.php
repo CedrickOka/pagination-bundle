@@ -40,6 +40,11 @@ class PaginationManager
 	protected $paginationManagerBag;
 	
 	/**
+	 * @var QueryBuilderManipulator $manipulator
+	 */
+	protected $manipulator;
+	
+	/**
 	 * @var integer $itemPerPage
 	 */
 	protected $itemPerPage;
@@ -132,16 +137,18 @@ class PaginationManager
 	/**
 	 * @param ContainerInterface $container
 	 * @param PaginationManagerBag $paginationManagerBag
+	 * @param QueryBuilderManipulator $manipulator
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 * @param array $request
 	 * @param array $sort
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagerBag $paginationManagerBag, $itemPerPage, $maxPageNumber, $template = null, array $request)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $paginationManagerBag, QueryBuilderManipulator $manipulator, $itemPerPage, $maxPageNumber, $template = null, array $request)
 	{
 		$this->container = $container;
 		$this->paginationManagerBag = $paginationManagerBag;
+		$this->manipulator = $manipulator;
 		$this->page = 1;
 		$this->criteria = [];
 		$this->orderBy = [];
@@ -570,21 +577,14 @@ class PaginationManager
 			$builder = $this->objectManager->createQueryBuilder()
 							->select('COUNT(DISTINCT p)')
 							->from($this->className, 'p');
-			
-			foreach ($criteria as $key => $value) {
-				$builder->andWhere(sprintf('p.%1$s = :%1$s', $key))
-						->setParameter($key, $value);
-			}
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
 			$builder = $this->objectManager->createQueryBuilder($this->className)
 							->count();
-			
-			foreach ($criteria as $key => $value) {
-				$builder->field($key)->equals($value);
-			}
 		} else {
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
+		
+		$this->manipulator->applyExprFromArray($builder, 'p', $criteria);
 		
 		return $builder->getQuery();
 	}
@@ -605,11 +605,6 @@ class PaginationManager
 							->setFirstResult($this->getItemOffset())
 							->setMaxResults($this->itemPerPage);
 			
-			foreach ($criteria as $key => $value) {
-				$builder->andWhere(sprintf('p.%1$s = :%1$s', $key))
-						->setParameter($key, $value);
-			}
-			
 			foreach ($this->orderBy as $key => $value) {
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
@@ -618,16 +613,14 @@ class PaginationManager
 							->skip($this->getItemOffset())
 							->limit($this->itemPerPage);
 			
-			foreach ($criteria as $key => $value) {
-				$builder->field($key)->equals($value);
-			}
-			
 			foreach ($this->orderBy as $key => $value) {
 				$builder->sort($key, $value);
 			}
 		} else {
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
+		
+		$this->manipulator->applyExprFromArray($builder, 'p', $criteria);
 		
 		return $builder->getQuery();
 	}
