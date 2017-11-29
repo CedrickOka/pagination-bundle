@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 1.4.2 (2017-11-29)
+
+* Modified `QueryBuilderManipulator::applyExprFromString()` method signature.
+
 #### 1.4.1 (2017-11-29)
 
 * Removed `dump()` method call in `Oka\PaginationBundle\Converter\LikeQueryExprConverter` class.
