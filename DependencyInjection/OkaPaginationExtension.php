@@ -1,12 +1,14 @@
 <?php
 namespace Oka\PaginationBundle\DependencyInjection;
 
+use Oka\PaginationBundle\Converter\LikeQueryExprConverter;
+use Oka\PaginationBundle\Converter\NotLikeQueryExprConverter;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -60,6 +62,9 @@ class OkaPaginationExtension extends Extension
 		// Pagination bag
 		$definition = $container->getDefinition('oka_pagination.manager_bag');
 		$definition->replaceArgument(0, $config['pagination_managers']);
+		
+		// Query Expression Converters Configuration
+		$this->loadQueryExprConverter($config, $container);
 	}
 	
 	protected function loadTwigConfiguration(array $config, ContainerBuilder $container)
@@ -70,5 +75,30 @@ class OkaPaginationExtension extends Extension
 		if ($config['twig']['enable_extension'] === true) {
 			$definition->addTag('twig.extension');
 		}
+	}
+	
+	protected function loadQueryExprConverter(array $config, ContainerBuilder $container)
+	{
+		$mapConverters = [
+				[
+						'db_drivers' 	=> ['orm', 'mongodb'],
+						'pattern' 		=> LikeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\LikeQueryExprConverter'
+				],
+				[
+						'db_drivers' 	=> ['orm', 'mongodb'],
+						'pattern' 		=> NotLikeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\NotLikeQueryExprConverter'
+				]
+		];
+		
+		if (!empty($config['query_expr_converters'])) {
+			foreach ($config['query_expr_converters'] as $converter) {
+				$mapConverters[] = $converter;
+			}
+		}
+		
+		$definition = $container->getDefinition('oka_pagination.query_builder_manipulator');
+		$definition->replaceArgument(0, $mapConverters);
 	}
 }

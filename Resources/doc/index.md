@@ -103,6 +103,8 @@ oka_pagination:
                     sort: sort
                     desc: desc
                     filters:
+                        name:
+                            type: string
                         enabled:
                             field: enabled         # Not required if the filter name is equal to the field name
                             type: boolean          # The type in which the value of the filter will be casted
