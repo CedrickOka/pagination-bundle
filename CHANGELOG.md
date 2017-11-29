@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 1.4.3 (2017-11-29)
+
+* Fixed token not defined in the query.
+
 #### 1.4.2 (2017-11-29)
 
 * Modified `QueryBuilderManipulator::applyExprFromString()` method signature.
