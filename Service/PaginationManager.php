@@ -13,6 +13,7 @@ use Oka\PaginationBundle\Util\PaginationResultSet;
 use Oka\PaginationBundle\Util\RequestParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Oka\PaginationBundle\Util\FilterUtil;
 
 /**
  * 
@@ -502,15 +503,7 @@ class PaginationManager
 				continue;
 			}
 			
-			if ($filterMap['type'] !== 'datetime') {
-				if (!is_string($value) || $filterMap['type'] !== 'string') {
-					settype($value, $filterMap['type']);
-				}
-			} else {
-				$value = new \DateTime(is_int($value) ? '@'.$value : $value);
-			}
-			
-			$criteria[$filterMap['field'] ?: $key] = $value;
+			$criteria[$filterMap['field'] ?: $key] = FilterUtil::castTo($value, $filterMap['type']);
 		}
 		
 		return $criteria;

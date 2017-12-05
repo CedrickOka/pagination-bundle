@@ -6,7 +6,7 @@ namespace Oka\PaginationBundle\Exception;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  * 
  */
-class SortAttributeNotAvailableException extends \Exception
+class SortAttributeNotAvailableException extends PaginationException
 {
 	/**
 	 * @var string $sort

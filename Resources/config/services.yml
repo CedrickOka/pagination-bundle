@@ -16,6 +16,7 @@ services:
     oka_pagination.query_builder_manipulator:
         class: Oka\PaginationBundle\Service\QueryBuilderManipulator
         arguments: [[]]
+
 #Twig extension
     oka_pagination.twig.extension:
         class: Oka\PaginationBundle\Twig\OkaPaginationExtension

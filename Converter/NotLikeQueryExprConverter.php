@@ -1,6 +1,8 @@
 <?php
 namespace Oka\PaginationBundle\Converter;
 
+use Oka\PaginationBundle\Exception\BadQueryExprException;
+
 /**
  *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -18,6 +20,11 @@ class NotLikeQueryExprConverter extends AbstractQueryExprConverter
 	{
 		$matches = [];
 		preg_match(self::PATTERN, $exprValue, $matches);
+		
+		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
+			throw new BadQueryExprException(sprintf('the not like query expression converter does not support the following pattern "%s".', $exprValue));
+		}
+		
 		$value = $matches[1];
 		
 		return $dbDriver === 'orm' ? 

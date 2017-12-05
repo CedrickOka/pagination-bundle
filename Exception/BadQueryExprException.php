@@ -2,8 +2,10 @@
 namespace Oka\PaginationBundle\Exception;
 
 /**
- * 
+ *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- * 
+ *
  */
-class ObjectManagerNotSupportedException extends PaginationException {}
+class BadQueryExprException extends PaginationException
+{
+}
