@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 2.2.0 (2017-12-05)
+
+* Added `Oka\PaginationBundle\Converter\Exception\PaginationException` class
+* Made all exception classes inherited from the `PaginationException` class.
+* Added `FilterUtil` class.
+* Added `Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter` class.
+* Added `Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter` class.
+
 #### 2.1.2 (2017-11-29)
 
 * Fixed token not defined in the query.

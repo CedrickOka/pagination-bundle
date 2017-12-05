@@ -46,15 +46,7 @@ final class RequestParser
 				continue;
 			}
 			
-			if ($filterMap['type'] !== 'datetime') {
-				if (!is_string($value) || $filterMap['type'] !== 'string') {
-					settype($value, $filterMap['type']);
-				}
-			} else {
-				$value = new \DateTime(is_int($value) ? '@'.$value : $value);
-			}
-			
-			$criteria[$filterMap['field'] ?: $key] = $value;
+			$criteria[$filterMap['field'] ?: $key] = FilterUtil::castTo($value, $filterMap['type']);
 		}
 		
 		return $criteria;

@@ -82,13 +82,23 @@ class OkaPaginationExtension extends Extension
 		$mapConverters = [
 				[
 						'db_drivers' 	=> ['orm', 'mongodb'],
-						'pattern' 		=> LikeQueryExprConverter::PATTERN,
+						'pattern' 		=> \Oka\PaginationBundle\Converter\LikeQueryExprConverter::PATTERN,
 						'class' 		=> 'Oka\PaginationBundle\Converter\LikeQueryExprConverter'
 				],
 				[
 						'db_drivers' 	=> ['orm', 'mongodb'],
-						'pattern' 		=> NotLikeQueryExprConverter::PATTERN,
+						'pattern' 		=> \Oka\PaginationBundle\Converter\NotLikeQueryExprConverter::PATTERN,
 						'class' 		=> 'Oka\PaginationBundle\Converter\NotLikeQueryExprConverter'
+				],
+				[
+						'db_drivers' 	=> ['orm'],
+						'pattern' 		=> \Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter'
+				],
+				[
+						'db_drivers' 	=> ['mongodb'],
+						'pattern' 		=> \Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter'
 				]
 		];
 		
