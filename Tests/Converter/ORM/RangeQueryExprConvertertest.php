@@ -23,6 +23,13 @@ class RangeQueryExprConvertertest extends KernelTestCase
 		
 		$value = null;
 		/** @var \Doctrine\ORM\Query\Expr\Comparison $expr */
+		$expr = $converter->apply('orm', 'c', 'field', 'range[v1,v2]', ':field1', $value);
+		
+		$this->assertEquals([':field11' => 'v1', ':field12' => 'v2'], $value);
+		$this->assertEquals('c.field >= :field11 AND c.field <= :field12', $expr->__toString());
+		
+		$value = null;
+		/** @var \Doctrine\ORM\Query\Expr\Comparison $expr */
 		$expr = $converter->apply('orm', 'c', 'field', 'range[v1,]', null, $value);
 		
 		$this->assertEquals([':field' => 'v1'], $value);

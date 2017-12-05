@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 1.5.1 (2017-12-05)
+
+* Fixed duplicate named parameter generater caused by `\Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::appply()` method.
+
 #### 1.5.0 (2017-12-05)
 
 * Added `Oka\PaginationBundle\Converter\Exception\PaginationException` class
