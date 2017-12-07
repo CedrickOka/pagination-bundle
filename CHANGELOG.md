@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.4.1 (2017-12-07)
+
+* Improves comparison of booleans that must be done strictly.
+
 #### 2.4.0 (2017-12-07)
 
 * Defined by default `count` and `select` query like `distinct`.

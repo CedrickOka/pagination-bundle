@@ -385,7 +385,7 @@ class PaginationQuery
 			/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
 			$builder = $this->objectManager->createQueryBuilder($this->className);
 			
-			if (!empty($fields) && true == $distinct) {
+			if (!empty($fields) && true === $distinct) {
 				$builder->distinct($fields[0]);
 			}
 			
