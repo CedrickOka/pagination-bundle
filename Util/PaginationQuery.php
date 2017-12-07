@@ -303,7 +303,7 @@ class PaginationQuery
 			} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 				$this->fullyItems = $this->countQuery->getSingleScalarResult();
 			} else {
-				$this->internalCountQuery = $this->createCountQuery($this->_queryParts['where']);
+				$this->internalCountQuery = $this->createCountQuery($this->_queryParts['select'], $this->_queryParts['where'], $this->_queryParts['distinct']);
 				$this->fullyItems = (int) ($this->internalCountQuery instanceof \Doctrine\ORM\Query ?
 						$this->internalCountQuery->getSingleScalarResult() : $this->internalCountQuery->execute());
 			}
@@ -360,24 +360,36 @@ class PaginationQuery
 	/**
 	 * Create internal count items query
 	 * 
+	 * @param array $fields
 	 * @param array $criteria
+	 * @param bool $distinct
 	 * @return \Doctrine\ORM\AbstractQuery|\Doctrine\ODM\MongoDB\Query\Query
 	 */
-	protected function createCountQuery(array $criteria = [])
+	protected function createCountQuery(array $fields = [], array $criteria = [], $distinct = true)
 	{
 		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
-			/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
-			$classMetadata = $this->objectManager->getClassMetadata($this->className);
-			$identifiers = $classMetadata->getIdentifierFieldNames();
-			
 			/** @var \Doctrine\ORM\QueryBuilder $builder */
-			$builder = $this->objectManager->createQueryBuilder()
-							->select((new \Doctrine\ORM\Query\Expr())->countDistinct('p.' . $identifiers[0]))
-							->from($this->className, 'p');
+			$builder = $this->objectManager->createQueryBuilder();
+			
+			if (empty($fields)) {
+				/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
+				$classMetadata = $this->objectManager->getClassMetadata($this->className);
+				$identifier = $classMetadata->getIdentifierFieldNames()[0];
+			} else {
+				$identifier = implode(', p.', $fields);
+			}
+			
+			$builder->select($distinct ? $builder->expr()->countDistinct('p.' . $identifier) : $builder->expr()->count('p.' . $identifier))
+					->from($this->className, 'p');
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-			/** @var Doctrine\ODM\MongoDB\Query\Builder $builder */
-			$builder = $this->objectManager->createQueryBuilder($this->className)
-							->count();
+			/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
+			$builder = $this->objectManager->createQueryBuilder($this->className);
+			
+			if (!empty($fields) && true == $distinct) {
+				$builder->distinct($fields[0]);
+			}
+			
+			$builder->count();
 		} else {
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
@@ -396,19 +408,12 @@ class PaginationQuery
 	 * @param bool $distinct
 	 * @return \Doctrine\ORM\AbstractQuery|\Doctrine\ODM\MongoDB\Query\Query
 	 */
-	protected function createSelectQuery(array $fields = [], array $criteria = [], array $orderBy = [], $distinct = false)
+	protected function createSelectQuery(array $fields = [], array $criteria = [], array $orderBy = [], $distinct = true)
 	{
 		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
 			/** @var \Doctrine\ORM\QueryBuilder $builder */
 			$builder = $this->objectManager->createQueryBuilder();
-			
-			if (empty($fields)) {
-				$builder->select('p');
-			} else {
-				foreach ($fields as $field) {
-					$builder->addSelect('p.' . $field);
-				}
-			}
+			$builder->select(empty($fields) ? 'p' : 'p.' . implode(', p.', $fields));
 			
 			if (true === $distinct) {
 				$builder->distinct();
@@ -422,19 +427,19 @@ class PaginationQuery
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-			/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
-			$classMetadata = $this->objectManager->getClassMetadata($this->className);
-			$identifier = $classMetadata->getIdentifierFieldNames()[0];
 			/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
 			$builder = $this->objectManager->createQueryBuilder($this->className);
 			
 			if (!empty($fields)) {
 				$builder->select($fields);
-				$identifier = $fields[0];
-			}
-			
-			if (true === $distinct) {
-				$builder->distinct($identifier);
+				
+				if (true === $distinct) {
+					$builder->distinct($fields[0]);
+				}
+			} elseif (true === $distinct) {
+				/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
+				$classMetadata = $this->objectManager->getClassMetadata($this->className);
+				$builder->distinct($classMetadata->getIdentifierFieldNames()[0]);
 			}
 			
 			$builder->skip($this->getItemOffset())

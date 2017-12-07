@@ -168,7 +168,7 @@ class PaginationManager
 		
 		$query = new PaginationQuery($objectManager, $this->manipulator, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
 		$query->addQueryPart('select', RequestParser::parseQueryToArray($request, 'fields', ',', []));
-		$query->addQueryPart('distinct', (boolean) RequestParser::getRequestParameterValue($request, 'distinct', false));
+		$query->addQueryPart('distinct', (boolean) RequestParser::getRequestParameterValue($request, 'distinct', true));
 		
 		return $query;
 	}

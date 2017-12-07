@@ -1,10 +1,14 @@
 CHANGELOG
 =========
 
+#### 2.4.0 (2017-12-07)
+
+* Defined by default `count` and `select` query like `distinct`.
+
 #### 2.3.0 (2017-12-07)
 
-* added `Oka\PaginationBundle\Util\PaginationQuery::addQueryPart()` method.
-* added `Oka\PaginationBundle\Util\PaginationQuery::getQueryParts()` method.
+* Added `Oka\PaginationBundle\Util\PaginationQuery::addQueryPart()` method.
+* Added `Oka\PaginationBundle\Util\PaginationQuery::getQueryParts()` method.
 * Added `oka_pagination.request.query_map.fields` configuration values.
 * Added `oka_pagination.request.query_map.distinct` configuration values.
 * Allowed to select specific fields return to a page.
