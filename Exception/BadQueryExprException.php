@@ -6,6 +6,4 @@ namespace Oka\PaginationBundle\Exception;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class BadQueryExprException extends PaginationException
-{
-}
+class BadQueryExprException extends PaginationException {}
