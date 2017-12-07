@@ -166,7 +166,11 @@ class PaginationManager
 			$objectManager = $this->container->get('oka_pagination.default.object_manager');
 		}
 		
-		return new PaginationQuery($objectManager, $this->manipulator, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
+		$query = new PaginationQuery($objectManager, $this->manipulator, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
+		$query->addQueryPart('select', RequestParser::parseQueryToArray($request, 'fields', ',', []));
+		$query->addQueryPart('distinct', (boolean) RequestParser::getRequestParameterValue($request, 'distinct', false));
+		
+		return $query;
 	}
 	
 	/**

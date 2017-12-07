@@ -155,6 +155,8 @@ class Configuration implements ConfigurationInterface
 						->scalarNode('item_per_page')->cannotBeEmpty()->defaultValue('item_per_page')->end()
 						->scalarNode('sort')->cannotBeEmpty()->defaultValue('sort')->end()
 						->scalarNode('desc')->cannotBeEmpty()->defaultValue('desc')->end()
+						->scalarNode('distinct')->cannotBeEmpty()->defaultValue('distinct')->end()
+						->scalarNode('fields')->cannotBeEmpty()->defaultValue('fields')->end()
 						->arrayNode('filters')
 							->treatNullLike([])
 						 	->requiresAtLeastOneElement()

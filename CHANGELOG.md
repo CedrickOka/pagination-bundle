@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 2.3.0 (2017-12-07)
+
+* added `Oka\PaginationBundle\Util\PaginationQuery::addQueryPart()` method.
+* added `Oka\PaginationBundle\Util\PaginationQuery::getQueryParts()` method.
+* Added `oka_pagination.request.query_map.fields` configuration values.
+* Added `oka_pagination.request.query_map.distinct` configuration values.
+* Allowed to select specific fields return to a page.
+
 #### 2.2.0 (2017-12-05)
 
 * Added `Oka\PaginationBundle\Converter\Exception\PaginationException` class

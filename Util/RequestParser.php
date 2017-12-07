@@ -35,9 +35,10 @@ final class RequestParser
 	/**
 	 * @param Request $request
 	 * @param array $filterMaps
+	 * @param bool $andCast
 	 * @return mixed[]
 	 */
-	public static function extractFiltersInRequest(Request $request, array $filterMaps)
+	public static function extractFiltersInRequest(Request $request, array $filterMaps, $andCast = true)
 	{
 		$criteria = [];
 		
@@ -46,7 +47,7 @@ final class RequestParser
 				continue;
 			}
 			
-			$criteria[$filterMap['field'] ?: $key] = FilterUtil::castTo($value, $filterMap['type']);
+			$criteria[$filterMap['field'] ?: $key] = $andCast ? FilterUtil::castTo($value, $filterMap['type']) : $value;
 		}
 		
 		return $criteria;

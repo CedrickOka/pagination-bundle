@@ -43,7 +43,10 @@ class PaginationQuery
 	/**
 	 * @var array $options
 	 */
-	protected $options;
+	protected $options = [
+		'twig_extension_enabled' 	=> true,
+		'strict_mode' 				=> true
+	];
 	
 	/**
 	 * @var array $config
@@ -56,14 +59,14 @@ class PaginationQuery
 	protected $page;
 	
 	/**
-	 * @var array $criteria
+	 * @var array $_queryParts
 	 */
-	protected $criteria;
-	
-	/**
-	 * @var array $orderBy
-	 */
-	protected $orderBy;
+	private $_queryParts = [
+		'distinct' 	=> false,
+		'select' 	=> [],
+		'where' 	=> [],
+		'orderBy' 	=> []
+    ];
 	
 	/**
 	 * @var string $className
@@ -83,7 +86,7 @@ class PaginationQuery
 	/**
 	 * @var int $fullyItems
 	 */
-	protected $fullyItems;
+	protected $fullyItems = 0;
 	
 	/**
 	 * @var AbstractQuery $selectQuery
@@ -135,11 +138,8 @@ class PaginationQuery
 			if ($diff = array_diff(array_keys($options), ['twig_extension_enabled', 'strict_mode'])) {
 				throw new \InvalidArgumentException(sprintf('The following options are not supported "%s"', implode(', ', $diff)));
 			}
-		} else {
-			$options = [
-					'twig_extension_enabled' 	=> true,
-					'strict_mode' 				=> true
-			];
+			
+			$this->options = $options;
 		}
 		
 		$this->objectManager = $objectManager;
@@ -147,14 +147,52 @@ class PaginationQuery
 		$this->twig = $twig;
 		
 		$this->managerName = $managerName;
-		$this->options = $options;
 		$this->config = $config;
-		$this->criteria = $criteria;
-		$this->orderBy = $orderBy;
-		$this->fullyItems = 0;
 		
+		$this->addQueryPart('where', $criteria);
+		$this->addQueryPart('orderBy', $orderBy);
 		$this->loadConfig($config);
 		$this->setPage($page);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getQueryParts()
+	{
+		return $this->_queryParts;
+	}
+	
+	/**
+	 * Either appends to or replaces a single, generic query part.
+	 *
+	 * The available parts are: 'select', 'distinct', 'where' and 'orderBy'.
+	 * 
+	 * @param string $queryPartName
+	 * @param mixed $queryPart
+	 * @param bool $append
+	 */
+	public function addQueryPart($queryPartName, $queryPart, $append = false)
+	{
+		$isMultiple = is_array($this->_queryParts[$queryPartName]);
+		
+		if ($append && $isMultiple) {
+			if (is_array($queryPart)) {
+				foreach ($queryPart as $key => $part) {
+					if (is_numeric($key)) {
+						$this->_queryParts[$queryPartName][] = $part;
+					} else {
+						$this->_queryParts[$queryPartName][$key] = $part;
+					}
+				}
+			} else {
+				$this->_queryParts[$queryPartName][] = $queryPart;
+			}
+		} else {
+			$this->_queryParts[$queryPartName] = ($isMultiple && !is_array($queryPart)) ? [$queryPart] : $queryPart;
+		}
+		
+		return $this;
 	}
 	
 	/**
@@ -257,7 +295,7 @@ class PaginationQuery
 			
 			if ($this->countItemsCallable instanceof \Closure) {
 				$fn = $this->countItemsCallable;
-				$this->fullyItems = $fn($objectRepository, $this->criteria);
+				$this->fullyItems = $fn($objectRepository, $this->_queryParts['where']);
 					
 				if (!is_integer($this->fullyItems)) {
 					throw new \UnexpectedValueException('The closure "countItemsCallable" returned an unexcepted value.');
@@ -265,7 +303,7 @@ class PaginationQuery
 			} elseif ($this->countQuery instanceof \Doctrine\ORM\Query/* || $this->countQuery instanceof \Doctrine\ODM\MongoDB\Query\Query*/) {
 				$this->fullyItems = $this->countQuery->getSingleScalarResult();
 			} else {
-				$this->internalCountQuery = $this->createCountQuery($this->criteria);
+				$this->internalCountQuery = $this->createCountQuery($this->_queryParts['where']);
 				$this->fullyItems = (int) ($this->internalCountQuery instanceof \Doctrine\ORM\Query ?
 						$this->internalCountQuery->getSingleScalarResult() : $this->internalCountQuery->execute());
 			}
@@ -273,7 +311,7 @@ class PaginationQuery
 			if ($this->fullyItems > 0) {
 				if ($this->selectItemsCallable instanceof \Closure) {
 					$fn = $this->selectItemsCallable;
-					$items = $fn($objectRepository, $this->criteria, $this->orderBy, $this->itemPerPage, $this->getItemOffset());
+					$items = $fn($objectRepository, $this->_queryParts['where'], $this->_queryParts['orderBy'], $this->itemPerPage, $this->getItemOffset());
 			
 					if (!is_array($items)) {
 						throw new \UnexpectedValueException('The closure "selectItemsCallable" returned an unexcepted value.');
@@ -283,7 +321,7 @@ class PaginationQuery
 												->setMaxResults($this->itemPerPage)
 												->getResult();
 				} else {
-					$this->internalSelectQuery = $this->createSelectQuery($this->criteria);
+					$this->internalSelectQuery = $this->createSelectQuery($this->_queryParts['select'], $this->_queryParts['where'], $this->_queryParts['orderBy'], $this->_queryParts['distinct']);
 					$items = $this->internalSelectQuery instanceof \Doctrine\ORM\Query ?
 					$this->internalSelectQuery->getResult() : $this->internalSelectQuery->execute()->toArray(false);
 				}
@@ -328,11 +366,16 @@ class PaginationQuery
 	protected function createCountQuery(array $criteria = [])
 	{
 		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
+			/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
+			$classMetadata = $this->objectManager->getClassMetadata($this->className);
+			$identifiers = $classMetadata->getIdentifierFieldNames();
+			
 			/** @var \Doctrine\ORM\QueryBuilder $builder */
 			$builder = $this->objectManager->createQueryBuilder()
-							->select('COUNT(DISTINCT p)')
+							->select((new \Doctrine\ORM\Query\Expr())->countDistinct('p.' . $identifiers[0]))
 							->from($this->className, 'p');
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+			/** @var Doctrine\ODM\MongoDB\Query\Builder $builder */
 			$builder = $this->objectManager->createQueryBuilder($this->className)
 							->count();
 		} else {
@@ -347,28 +390,57 @@ class PaginationQuery
 	/**
 	 * Create internal select items query
 	 * 
+	 * @param array $fields
 	 * @param array $criteria
 	 * @param array $orderBy
-	 * @return \Doctrine\ORM\AbstractQuery|\Doctrine\ODM\MongoDB\DocumentManager
+	 * @param bool $distinct
+	 * @return \Doctrine\ORM\AbstractQuery|\Doctrine\ODM\MongoDB\Query\Query
 	 */
-	protected function createSelectQuery(array $criteria = [])
+	protected function createSelectQuery(array $fields = [], array $criteria = [], array $orderBy = [], $distinct = false)
 	{
 		if ($this->objectManager instanceof \Doctrine\ORM\EntityManager) {
-			$builder = $this->objectManager->createQueryBuilder()
-							->select('p')
-							->from($this->className, 'p')
-							->setFirstResult($this->getItemOffset())
-							->setMaxResults($this->itemPerPage);
+			/** @var \Doctrine\ORM\QueryBuilder $builder */
+			$builder = $this->objectManager->createQueryBuilder();
 			
-			foreach ($this->orderBy as $key => $value) {
+			if (empty($fields)) {
+				$builder->select('p');
+			} else {
+				foreach ($fields as $field) {
+					$builder->addSelect('p.' . $field);
+				}
+			}
+			
+			if (true === $distinct) {
+				$builder->distinct();
+			}
+			
+			$builder->from($this->className, 'p')
+					->setFirstResult($this->getItemOffset())
+					->setMaxResults($this->itemPerPage);
+			
+			foreach ($orderBy as $key => $value) {
 				$builder->orderBy(sprintf('p.%s', $key), $value);
 			}
 		} elseif ($this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-			$builder = $this->objectManager->createQueryBuilder($this->className)
-							->skip($this->getItemOffset())
-							->limit($this->itemPerPage);
+			/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
+			$classMetadata = $this->objectManager->getClassMetadata($this->className);
+			$identifier = $classMetadata->getIdentifierFieldNames()[0];
+			/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
+			$builder = $this->objectManager->createQueryBuilder($this->className);
 			
-			foreach ($this->orderBy as $key => $value) {
+			if (!empty($fields)) {
+				$builder->select($fields);
+				$identifier = $fields[0];
+			}
+			
+			if (true === $distinct) {
+				$builder->distinct($identifier);
+			}
+			
+			$builder->skip($this->getItemOffset())
+					->limit($this->itemPerPage);
+			
+			foreach ($orderBy as $key => $value) {
 				$builder->sort($key, $value);
 			}
 		} else {
@@ -412,8 +484,8 @@ class PaginationQuery
 		$this->resultSet = new PaginationResultSet(
 				$this->page, 
 				$this->itemPerPage, 
-				$this->criteria, 
-				$this->orderBy, 
+				$this->_queryParts['where'], 
+				$this->_queryParts['orderBy'], 
 				$this->getItemOffset(), 
 				$this->fullyItems, 
 				$this->countPage(), 
