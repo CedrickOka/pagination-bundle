@@ -376,7 +376,7 @@ class PaginationQuery
 				$classMetadata = $this->objectManager->getClassMetadata($this->className);
 				$identifier = $classMetadata->getIdentifierFieldNames()[0];
 			} else {
-				$identifier = implode(', p.', $fields);
+				$identifier = $fields[0]; // Replace with $identifier = implode(', p.', $fields);
 			}
 			
 			$builder->select($distinct ? $builder->expr()->countDistinct('p.' . $identifier) : $builder->expr()->count('p.' . $identifier))

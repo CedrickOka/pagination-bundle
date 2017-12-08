@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.4.2 (2017-12-08)
+
+* Fixed bad count query caused by many fields given for query projection.
+
 #### 2.4.1 (2017-12-07)
 
 * Improves comparison of booleans that must be done strictly.
