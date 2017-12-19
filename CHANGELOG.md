@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.4.3 (2017-12-19)
+
+* Fixed bad parameter given has `preg_match()` function in `QueryBuilderManipulator::supports()` method.
+
 #### 2.4.2 (2017-12-08)
 
 * Fixed bad count query caused by many fields given for query projection.

@@ -109,7 +109,11 @@ class QueryBuilderManipulator
 		if (!in_array($dbDriver, $mapConverter['db_drivers'], SORT_REGULAR)) {
 			return false;
 		}
-
+		
+		if (!is_string($exprValue)) {
+			return false;
+		}
+		
 		return (boolean) preg_match($mapConverter['pattern'], $exprValue);
 	}
 }
