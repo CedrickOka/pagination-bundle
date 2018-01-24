@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.4.4 (2018-01-24)
+
+* Fixed `oka_pagination.pagination_managers.*.template` configuration values bad definition.
+
 #### 2.4.3 (2017-12-19)
 
 * Fixed bad parameter given has `preg_match()` function in `QueryBuilderManipulator::supports()` method.

@@ -32,7 +32,13 @@ class Configuration implements ConfigurationInterface
 				->append($this->getEntityManageNameNodeDefinition())
 				->append($this->getItemPerPageNodeDefinition())
 				->append($this->getMaxPageNumberNodeDefinition())
-				->append($this->getTemplateNodeDefinition())
+				->scalarNode('template')
+					->cannotBeEmpty()
+					->defaultValue(TwigExtension::DEFAULT_TEMPLATE)
+					->treatNullLike(TwigExtension::DEFAULT_TEMPLATE)
+					->treatTrueLike(TwigExtension::DEFAULT_TEMPLATE)
+					->treatFalseLike(TwigExtension::DEFAULT_TEMPLATE)
+				->end()
 				->append($this->getRequestNodeDefinition())
 				->arrayNode('twig')
 					->addDefaultsIfNotSet()
@@ -76,7 +82,7 @@ class Configuration implements ConfigurationInterface
 							->append($this->getEntityManageNameNodeDefinition())
 							->append($this->getItemPerPageNodeDefinition())
 							->append($this->getMaxPageNumberNodeDefinition())
-							->append($this->getTemplateNodeDefinition())
+							->scalarNode('template')->defaultNull()->end()
 							->append($this->getRequestNodeDefinition())
 						->end()
 					->end()
@@ -122,20 +128,6 @@ class Configuration implements ConfigurationInterface
 	{
 		$node = new IntegerNodeDefinition('max_page_number');
 		$node->min(1)->defaultValue(400)->end();
-		
-		return $node;
-	}
-	
-	protected function getTemplateNodeDefinition()
-	{
-		$node = new ScalarNodeDefinition('template');
-		$node
-			->cannotBeEmpty()
-			->defaultValue(TwigExtension::DEFAULT_TEMPLATE)
-			->treatNullLike(TwigExtension::DEFAULT_TEMPLATE)
-			->treatTrueLike(TwigExtension::DEFAULT_TEMPLATE)
-			->treatFalseLike(TwigExtension::DEFAULT_TEMPLATE)
-		->end();
 		
 		return $node;
 	}

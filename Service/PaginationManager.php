@@ -81,6 +81,9 @@ class PaginationManager
 		if ($this->managerBag->has($name)) {
 			$config = $this->managerBag->get($name);
 			
+			if (null === $config['template']) {
+				$config['template'] = $this->defaultManagerConfig['template'];
+			}
 		} elseif (class_exists($name)) {
 			$config = $this->defaultManagerConfig;
 			$config['class'] = $name;
