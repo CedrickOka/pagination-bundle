@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+#### 2.5.0 (2018-05-19)
+
+* Changed project folders structure.
+* Added `.gitignore` file.
+
 #### 2.4.4 (2018-01-24)
 
 * Fixed `oka_pagination.pagination_managers.*.template` configuration values bad definition.

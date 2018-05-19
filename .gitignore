@@ -1,0 +1,27 @@
+# Created by https://www.gitignore.io/api/eclipse,composer
+
+### Composer ###
+
+composer.lock
+composer.phar
+/vendor/
+
+### Eclipse ###
+
+bin/
+tmp/
+*.tmp
+*.bak
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+### Eclipse Patch ###
+
+# Eclipse Core		
+.project

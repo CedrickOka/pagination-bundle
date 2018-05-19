@@ -430,16 +430,8 @@ class PaginationQuery
 			/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
 			$builder = $this->objectManager->createQueryBuilder($this->className);
 			
-			if (!empty($fields)) {
+			if (false === empty($fields)) {
 				$builder->select($fields);
-				
-				if (true === $distinct) {
-					$builder->distinct($fields[0]);
-				}
-			} elseif (true === $distinct) {
-				/** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata */
-				$classMetadata = $this->objectManager->getClassMetadata($this->className);
-				$builder->distinct($classMetadata->getIdentifierFieldNames()[0]);
 			}
 			
 			$builder->skip($this->getItemOffset())
