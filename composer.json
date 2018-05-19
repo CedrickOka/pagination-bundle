@@ -1,12 +1,52 @@
 {
-	"autoload" : {
-		"psr-4" : {
-			"Coka\\Pagination-bundle\\" : "src"
-		}
-	},
 	"name" : "coka/pagination-bundle",
 	"type" : "symfony-bundle",
+	"description" : "Symfony Oka pagination bundle",
+	"homepage" : "https://github.com/CedrickOka/oka-pagination",
+	"license" : "MIT",
+	"keywords" : [
+		"twig",
+		"doctrine2",
+		"pagination"
+	],
+	"authors" : [{
+			"name" : "Cedrick Oka",
+			"email" : "okacedrick@gmail.com"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Oka\\PaginationBundle\\" : "src"
+		},
+		"exclude-from-classmap" : [
+			"/Tests/"
+		]
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Oka\\PaginationBundle\\Tests\\" : "src/Tests/"
+		}
+	},
 	"require" : {
-		"php" : ">=5.6"
+		"php" : ">=5.6",
+		"doctrine/doctrine-bundle" : "~1.4",
+		"doctrine/orm" : "^2.4.8",
+		"symfony/symfony" : "^2.8 || ^3.0"
+	},
+	"require-dev": {
+		"symfony/phpunit-bridge": "^3.0"
+	},
+	"suggest" : {
+		"alcaeus/mongo-php-adapter": "^1.1",
+		"doctrine/mongodb-odm-bundle": "^3.4"
+	},
+	"minimum-stability" : "dev",
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "2.x.x-dev"
+		}
+	},
+	"support" : {
+		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/Resources/doc/index.md"
 	}
 }

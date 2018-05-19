@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.5.1 (2018-05-19)
+
+* Fixed bug `composer.json` bad definition.
+
 #### 2.5.0 (2018-05-19)
 
 * Changed project folders structure.
