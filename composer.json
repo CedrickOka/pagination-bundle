@@ -33,12 +33,12 @@
 		"doctrine/orm" : "^2.4.8",
 		"symfony/symfony" : "^2.8 || ^3.0"
 	},
-	"require-dev": {
-		"symfony/phpunit-bridge": "^3.0"
+	"require-dev" : {
+		"symfony/phpunit-bridge" : "^3.0"
 	},
 	"suggest" : {
-		"alcaeus/mongo-php-adapter": "^1.1",
-		"doctrine/mongodb-odm-bundle": "^3.4"
+		"alcaeus/mongo-php-adapter" : "^1.1",
+		"doctrine/mongodb-odm-bundle" : "^3.4"
 	},
 	"minimum-stability" : "dev",
 	"extra" : {
@@ -50,4 +50,3 @@
 		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/Resources/doc/index.md"
 	}
 }
-

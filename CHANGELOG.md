@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+#### 2.6.0 (2018-06-21)
+
+* Added `Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter` class.
+* Added `Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter` class.
+* Renamed from `Oka\PaginationBundle\Converter\LikeQueryExprConverter` to `Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter`.
+* Renamed from `Oka\PaginationBundle\Converter\NotLikeQueryExprConverter` to `Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter`.
+
 #### 2.5.1 (2018-05-19)
 
 * Fixed bug `composer.json` bad definition.

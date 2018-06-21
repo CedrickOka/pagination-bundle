@@ -24,7 +24,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 		$leftExpr = $alias.'.'.$field;
 		
 		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
-			throw new BadQueryExprException(sprintf('the range query expression converter does not support the following pattern "%s".', $exprValue));
+			throw new BadQueryExprException(sprintf('The range query expression converter does not support the following pattern "%s".', $exprValue));
 		}
 		
 		switch (true) {
@@ -32,13 +32,13 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 				$rightExpr = $namedParameter ?: ':'.$field;
 				$value[$rightExpr] = trim($matches[2]);
 				
-				return $this->createGreaterExpr($leftExpr, $matches[1], $rightExpr);
+				return $this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr);
 				
 			case !$matches[2] && $matches[3]:
 				$rightExpr = $namedParameter ?: ':'.$field;
 				$value[$rightExpr] = trim($matches[3]);
 				
-				return $this->createLessExpr($leftExpr, $matches[4], $rightExpr);
+				return $this->createLessThanExpr($leftExpr, $matches[4], $rightExpr);
 				
 			case $matches[2] && $matches[3]:
 				$rightExpr1 = ($namedParameter ?: ':'.$field) . '1';
@@ -47,12 +47,12 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 				$value[$rightExpr2] = trim($matches[3]);
 				
 				return (new \Doctrine\ORM\Query\Expr())->andX(
-						$this->createGreaterExpr($leftExpr, $matches[1], $rightExpr1), 
-						$this->createLessExpr($leftExpr, $matches[4], $rightExpr2)
+						$this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr1), 
+						$this->createLessThanExpr($leftExpr, $matches[4], $rightExpr2)
 					);
 				
 			default:
-				throw new BadQueryExprException('the range query expression converter requires left or right value of range');
+				throw new BadQueryExprException('The range query expression converter requires left or right value of range');
 		}
 	}
 	
@@ -65,7 +65,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 		return $dbDriver === 'orm' && preg_match(self::PATTERN, $exprValue);
 	}
 	
-	private function createGreaterExpr($leftExpr, $operator, $rightExpr)
+	private function createGreaterThanExpr($leftExpr, $operator, $rightExpr)
 	{
 		if ($operator === ']') {
 			return (new \Doctrine\ORM\Query\Expr())->gt($leftExpr, $rightExpr);
@@ -74,7 +74,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 		}
 	}
 	
-	private function createLessExpr($leftExpr, $operator, $rightExpr)
+	private function createLessThanExpr($leftExpr, $operator, $rightExpr)
 	{
 		if ($operator === '[') {
 			return (new \Doctrine\ORM\Query\Expr())->lt($leftExpr, $rightExpr);

@@ -1,6 +1,7 @@
 <?php
-namespace Oka\PaginationBundle\Converter;
+namespace Oka\PaginationBundle\Converter\DBAL;
 
+use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
 /**
@@ -8,9 +9,9 @@ use Oka\PaginationBundle\Exception\BadQueryExprException;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class LikeQueryExprConverter extends AbstractQueryExprConverter
+class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 {
-	const PATTERN = '#^like\((.+)\)$#i';
+	const PATTERN = '#^neq\((.+)\)$#i';
 	
 	/**
 	 * {@inheritdoc}
@@ -22,14 +23,14 @@ class LikeQueryExprConverter extends AbstractQueryExprConverter
 		preg_match(self::PATTERN, $exprValue, $matches);
 		
 		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
-			throw new BadQueryExprException(sprintf('the like query expression converter does not support the following pattern "%s".', $exprValue));
+			throw new BadQueryExprException(sprintf('The not equal query expression converter does not support the following pattern "%s".', $exprValue));
 		}
 		
 		$value = $matches[1];
 		
 		return $dbDriver === 'orm' ? 
-				(new \Doctrine\ORM\Query\Expr())->like($alias.'.'.$field, $namedParameter ?: ':'.$field) : 
-				(new \Doctrine\MongoDB\Query\Expr())->field($field)->text($value);
+				(new \Doctrine\ORM\Query\Expr())->neq($alias.'.'.$field, $namedParameter ?: ':'.$field) : 
+				(new \Doctrine\MongoDB\Query\Expr())->field($field)->notEqual($value);
 	}
 	
 	/**

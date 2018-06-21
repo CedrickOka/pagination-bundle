@@ -82,13 +82,23 @@ class OkaPaginationExtension extends Extension
 		$mapConverters = [
 				[
 						'db_drivers' 	=> ['orm', 'mongodb'],
-						'pattern' 		=> \Oka\PaginationBundle\Converter\LikeQueryExprConverter::PATTERN,
-						'class' 		=> 'Oka\PaginationBundle\Converter\LikeQueryExprConverter'
+						'pattern' 		=> \Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter'
 				],
 				[
 						'db_drivers' 	=> ['orm', 'mongodb'],
-						'pattern' 		=> \Oka\PaginationBundle\Converter\NotLikeQueryExprConverter::PATTERN,
-						'class' 		=> 'Oka\PaginationBundle\Converter\NotLikeQueryExprConverter'
+						'pattern' 		=> \Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter'
+				],
+				[
+						'db_drivers' 	=> ['orm', 'mongodb'],
+						'pattern' 		=> \Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter'
+				],
+				[
+						'db_drivers' 	=> ['orm', 'mongodb'],
+						'pattern' 		=> \Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter::PATTERN,
+						'class' 		=> 'Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter'
 				],
 				[
 						'db_drivers' 	=> ['orm'],
