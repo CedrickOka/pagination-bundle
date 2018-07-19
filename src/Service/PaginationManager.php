@@ -31,9 +31,9 @@ class PaginationManager
 	protected $managerBag;
 	
 	/**
-	 * @var QueryBuilderManipulator $manipulator
+	 * @var QueryBuilderHandler $qbHandler
 	 */
-	protected $manipulator;
+	protected $qbHandler;
 	
 	/**
 	 * @var array $defaultManagerConfig
@@ -50,17 +50,17 @@ class PaginationManager
 	 * 
 	 * @param ContainerInterface $container
 	 * @param PaginationManagerBag $managerBag
-	 * @param QueryBuilderManipulator $manipulator
+	 * @param QueryBuilderHandler $qbHandler
 	 * @param integer $itemPerPage
 	 * @param integer $maxPageNumber
 	 * @param string $template
 	 * @param array $requestConfig
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, QueryBuilderManipulator $manipulator, $itemPerPage, $maxPageNumber, $template = null, array $requestConfig)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, QueryBuilderHandler $qbHandler, $itemPerPage, $maxPageNumber, $template = null, array $requestConfig)
 	{
 		$this->container = $container;
 		$this->managerBag = $managerBag;
-		$this->manipulator = $manipulator;
+		$this->qbHandler = $qbHandler;
 		$this->defaultManagerConfig = [
 				'item_per_page' 	=> $itemPerPage,
 				'max_page_number' 	=> $maxPageNumber,
@@ -169,7 +169,7 @@ class PaginationManager
 			$objectManager = $this->container->get('oka_pagination.default.object_manager');
 		}
 		
-		$query = new PaginationQuery($objectManager, $this->manipulator, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
+		$query = new PaginationQuery($objectManager, $this->qbHandler, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
 		$query->addQueryPart('select', RequestParser::parseQueryToArray($request, 'fields', ',', []));
 		$query->addQueryPart('distinct', (boolean) RequestParser::getRequestParameterValue($request, 'distinct', true));
 		

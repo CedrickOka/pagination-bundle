@@ -5,20 +5,29 @@ services:
 
 #Services
     oka_pagination.manager_bag:
+        public: false
         class: Oka\PaginationBundle\Service\PaginationManagerBag
         arguments: [[]]
-        public: false
 
     oka_pagination.manager:
+        public: true
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ '@service_container', '@oka_pagination.manager_bag', '@oka_pagination.query_builder_manipulator', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
+        arguments: [ '@service_container', '@oka_pagination.manager_bag', '@oka_pagination.query_builder_handler', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
+
+    oka_pagination.query_builder_handler:
+        public: true
+        class: Oka\PaginationBundle\Service\QueryBuilderHandler
+        arguments: [[]]
 
     oka_pagination.query_builder_manipulator:
-        class: Oka\PaginationBundle\Service\QueryBuilderManipulator
-        arguments: [[]]
+        alias: 'oka_pagination.query_builder_handler'
+        public: true
+#        deprecated: 'The "%service_id%" service is deprecated since 2.7.0 and will be removed in 3.0.0. Use "oka_pagination.query_builder_handler" instead.'
+#        class: Oka\PaginationBundle\Service\QueryBuilderHandler
+#        arguments: [[]]
 
 #Twig extension
     oka_pagination.twig.extension:
+        public: false
         class: Oka\PaginationBundle\Twig\OkaPaginationExtension
         arguments: [ '@oka_pagination.manager' ]
-        public: false

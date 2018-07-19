@@ -24,7 +24,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 		$leftExpr = $alias.'.'.$field;
 		
 		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
-			throw new BadQueryExprException(sprintf('The range query expression converter does not support the following pattern "%s".', $exprValue));
+			throw new BadQueryExprException(sprintf('The query expression converter "range" does not support the following pattern "%s".', $exprValue));
 		}
 		
 		switch (true) {

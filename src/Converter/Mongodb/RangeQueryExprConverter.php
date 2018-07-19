@@ -22,7 +22,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 		$matches = [];
 		
 		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
-			throw new BadQueryExprException(sprintf('the range query expression converter does not support the following pattern "%s".', $exprValue));
+			throw new BadQueryExprException(sprintf('The query expression converter "range" does not support the following pattern "%s".', $exprValue));
 		}
 		
 		switch (true) {

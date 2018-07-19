@@ -20,10 +20,9 @@ class LikeQueryExprConverter extends AbstractQueryExprConverter
 	public function apply($dbDriver, $alias, $field, $exprValue, $namedParameter = null, &$value = null)
 	{
 		$matches = [];
-		preg_match(self::PATTERN, $exprValue, $matches);
 		
 		if (!preg_match(self::PATTERN, $exprValue, $matches)) {
-			throw new BadQueryExprException(sprintf('The like query expression converter does not support the following pattern "%s".', $exprValue));
+			throw new BadQueryExprException(sprintf('The query expression converter "like" does not support the following pattern "%s".', $exprValue));
 		}
 		
 		$value = $matches[1];

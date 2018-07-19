@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 2.7.0 (2018-07-19)
+
+* Updated `composer.json`.
+* Added service ID `oka_pagination.query_builder_handler`.
+* Defined service ID `oka_pagination.query_builder_manipulator` like alias of service ID `oka_pagination.query_builder_handler`.
+* Added `Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter` class.
+* Added `Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter` class.
+
 #### 2.6.0 (2018-06-21)
 
 * Added `Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter` class.

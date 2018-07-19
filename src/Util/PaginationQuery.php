@@ -4,7 +4,7 @@ namespace Oka\PaginationBundle\Util;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\AbstractQuery;
 use Oka\PaginationBundle\Exception\ObjectManagerNotSupportedException;
-use Oka\PaginationBundle\Service\QueryBuilderManipulator;
+use Oka\PaginationBundle\Service\QueryBuilderHandler;
 use Oka\PaginationBundle\Twig\OkaPaginationExtension;
 use Twig\Environment;
 
@@ -26,9 +26,9 @@ class PaginationQuery
 	protected $objectManager;
 	
 	/**
-	 * @var QueryBuilderManipulator $manipulator
+	 * @var QueryBuilderHandler $qbHandler
 	 */
-	protected $manipulator;
+	protected $qbHandler;
 	
 	/**
 	 * @var Environment $twig
@@ -122,7 +122,7 @@ class PaginationQuery
 	 * Constructor.
 	 * 
 	 * @param ObjectManager $objectManager
-	 * @param QueryBuilderManipulator $manipulator
+	 * @param QueryBuilderHandler $qbHandler
 	 * @param Environment $twig
 	 * @param string $managerName
 	 * @param array $options
@@ -132,7 +132,7 @@ class PaginationQuery
 	 * @param array $orderBy
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct(ObjectManager $objectManager, QueryBuilderManipulator $manipulator, Environment $twig, $managerName, array $options, array $config, $page, array $criteria = [], array $orderBy = [])
+	public function __construct(ObjectManager $objectManager, QueryBuilderHandler $qbHandler, Environment $twig, $managerName, array $options, array $config, $page, array $criteria = [], array $orderBy = [])
 	{
 		if (!empty($options)) {
 			if ($diff = array_diff(array_keys($options), ['twig_extension_enabled', 'strict_mode'])) {
@@ -143,7 +143,7 @@ class PaginationQuery
 		}
 		
 		$this->objectManager = $objectManager;
-		$this->manipulator = $manipulator;
+		$this->qbHandler = $qbHandler;
 		$this->twig = $twig;
 		
 		$this->managerName = $managerName;
@@ -394,7 +394,7 @@ class PaginationQuery
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
 		
-		$this->manipulator->applyExprFromArray($builder, 'p', $criteria);
+		$this->qbHandler->applyExprFromArray($builder, 'p', $criteria);
 		
 		return $builder->getQuery();
 	}
@@ -444,7 +444,7 @@ class PaginationQuery
 			throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
 		
-		$this->manipulator->applyExprFromArray($builder, 'p', $criteria);
+		$this->qbHandler->applyExprFromArray($builder, 'p', $criteria);
 		
 		return $builder->getQuery();
 	}

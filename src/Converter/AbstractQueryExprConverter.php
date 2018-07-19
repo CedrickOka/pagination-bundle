@@ -16,4 +16,9 @@ abstract class AbstractQueryExprConverter implements QueryExprConverterInterface
 	{
 		return false;
 	}
+	
+	protected function getQueryExpr($dbDriver)
+	{
+	    return $dbDriver === 'orm' ? new \Doctrine\ORM\Query\Expr() : new \Doctrine\MongoDB\Query\Expr();
+	}
 }
