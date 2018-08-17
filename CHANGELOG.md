@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.7.1 (2018-08-17)
+
+* Fixed an error in `README.md` file.
+
 #### 2.7.0 (2018-07-19)
 
 * Updated `composer.json`.

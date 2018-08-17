@@ -16,15 +16,15 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"Oka\\PaginationBundle\\" : "src"
+			"Oka\\PaginationBundle\\" : "src/"
 		},
 		"exclude-from-classmap" : [
-			"/Tests/"
+			"/tests/"
 		]
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"Oka\\PaginationBundle\\Tests\\" : "src/Tests/"
+			"Oka\\PaginationBundle\\Tests\\" : "tests/"
 		}
 	},
 	"require" : {
@@ -48,7 +48,6 @@
 		}
 	},
 	"support" : {
-		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/Resources/doc/index.md"
+		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/src/Resources/doc/index.md"
 	}
 }
-
