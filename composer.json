@@ -35,8 +35,7 @@
 		"symfony/event-dispatcher" : "^3.4 || ^4.0",
 		"symfony/dependency-injection" : "^3.4 || ^4.0",
 		"symfony/console" : "^3.4 || ^4.0",
-		"symfony/config" : "^3.4 || ^4.0",
-		"twig/twig" : "^2.5"
+		"symfony/config" : "^3.4 || ^4.0"
 	},
 	"require-dev" : {
 		"doctrine/doctrine-bundle" : "~1.4",
@@ -46,10 +45,11 @@
 		"symfony/phpunit-bridge" : "^3.0"
 	},
 	"suggest" : {
-		"doctrine/doctrine-bundle" : "~1.4",
-		"doctrine/orm" : "^2.4.8",
 		"alcaeus/mongo-php-adapter" : "^1.1",
-		"doctrine/mongodb-odm-bundle" : "^3.4"
+		"doctrine/doctrine-bundle" : "~1.4",
+		"doctrine/mongodb-odm-bundle" : "^3.4",
+		"doctrine/orm" : "^2.4.8",
+		"twig/twig" : "^2.5"
 	},
 	"config" : {
 		"platform" : {
@@ -57,10 +57,9 @@
 		}
 	},
 	"prefer-stable" : true,
-	"minimum-stability" : "dev",
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "3.x.x-dev"
+			"dev-master" : "3.0.x-dev"
 		},
 		"symfony" : {
 			"allow-contrib" : "true"
