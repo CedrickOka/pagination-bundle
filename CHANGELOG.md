@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+#### 3.0.0 (2018-10-15)
+
+* [BC Break] Updated `composer.json` file and removed Symfony 2.8 support.
+* [BC Break] Updated `composer.json` file and added Symfony 4.0 support.
+
 #### 2.7.1 (2018-08-17)
 
 * Fixed an error in `README.md` file.

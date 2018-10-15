@@ -29,14 +29,18 @@
 	},
 	"require" : {
 		"php" : ">=5.6",
-		"doctrine/doctrine-bundle" : "~1.4",
-		"doctrine/orm" : "^2.4.8",
-		"symfony/symfony" : "^2.8 || ^3.4"
+		"symfony/symfony" : "^3.4 || ^4.1"
 	},
 	"require-dev" : {
+		"doctrine/doctrine-bundle" : "~1.4",
+		"doctrine/orm" : "^2.4.8",
+		"alcaeus/mongo-php-adapter" : "^1.1",
+		"doctrine/mongodb-odm-bundle" : "^3.4",
 		"symfony/phpunit-bridge" : "^3.0"
 	},
 	"suggest" : {
+		"doctrine/doctrine-bundle" : "~1.4",
+		"doctrine/orm" : "^2.4.8",
 		"alcaeus/mongo-php-adapter" : "^1.1",
 		"doctrine/mongodb-odm-bundle" : "^3.4"
 	},
@@ -44,7 +48,10 @@
 	"minimum-stability" : "dev",
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "2.x.x-dev"
+			"dev-master" : "3.x.x-dev"
+		},
+		"symfony" : {
+			"allow-contrib" : "true"
 		}
 	},
 	"support" : {

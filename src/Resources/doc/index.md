@@ -8,7 +8,7 @@ Prerequisites
 
 The OkaPaginationBundle has the following requirements:
  - PHP 5.5+
- - Symfony 2.8+
+ - Symfony 3.4+
  - Twig Extension
 
 Installation
