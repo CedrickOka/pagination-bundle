@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.0.1 (2018-10-15)
+
+* Fixed bad composer dependency.
+
 #### 3.0.0 (2018-10-15)
 
 * [BC Break] Updated `composer.json` file and removed Symfony 2.8 support.
