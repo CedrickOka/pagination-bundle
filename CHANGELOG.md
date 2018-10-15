@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.0.2 (2018-10-15)
+
+* Fixed bad composer dependency.
+
 #### 3.0.1 (2018-10-15)
 
 * Fixed bad composer dependency.
