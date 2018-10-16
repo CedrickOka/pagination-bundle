@@ -59,7 +59,7 @@
 	"prefer-stable" : true,
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "3.0.x-dev"
+			"dev-master" : "3.1.x-dev"
 		},
 		"symfony" : {
 			"allow-contrib" : "true"

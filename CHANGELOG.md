@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.0.4 (2018-10-16)
+
+* Improves composer configuration.
+
 #### 3.0.3 (2018-10-15)
 
 * Improves composer configuration.
