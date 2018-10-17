@@ -1,6 +1,14 @@
 <?php
 namespace Oka\PaginationBundle\Twig;
 
+if (false === class_exists('Twig_Extension')) {
+	class OkaPaginationExtension {
+		const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';
+		const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
+	}
+	return;
+}
+
 use Oka\PaginationBundle\Service\PaginationManager;
 
 /**
