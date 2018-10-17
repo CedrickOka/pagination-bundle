@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 2.7.2 (2018-10-17)
+
+* Fixed bug.
+
 #### 2.7.1 (2018-08-17)
 
 * Fixed an error in `README.md` file.
