@@ -22,12 +22,3 @@ services:
     oka_pagination.query_builder_manipulator:
         alias: 'oka_pagination.query_builder_handler'
         public: true
-#        deprecated: 'The "%service_id%" service is deprecated since 2.7.0 and will be removed in 3.0.0. Use "oka_pagination.query_builder_handler" instead.'
-#        class: Oka\PaginationBundle\Service\QueryBuilderHandler
-#        arguments: [[]]
-
-#Twig extension
-    oka_pagination.twig.extension:
-        public: false
-        class: Oka\PaginationBundle\Twig\OkaPaginationExtension
-        arguments: [ '@oka_pagination.manager' ]
