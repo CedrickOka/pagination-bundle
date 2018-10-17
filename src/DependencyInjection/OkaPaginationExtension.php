@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -68,10 +69,11 @@ class OkaPaginationExtension extends Extension
 	protected function loadTwigConfiguration(array $config, ContainerBuilder $container)
 	{
 		$container->setParameter('oka_pagination.twig.enable_extension', $config['twig']['enable_extension']);
-		$definition = $container->getDefinition('oka_pagination.twig.extension');
 		
-		if ($config['twig']['enable_extension'] === true) {
+		if (true === $config['twig']['enable_extension']) {
+			$definition = new Definition('Oka\PaginationBundle\Twig\OkaPaginationExtension', [new Reference('oka_pagination.manager')]);
 			$definition->addTag('twig.extension');
+			$container->setDefinition('oka_pagination.twig.extension', $definition);
 		}
 	}
 	
