@@ -39,11 +39,12 @@
 		"symfony/validator" : "^3.4 || ^4.1"
 	},
 	"require-dev" : {
+		"alcaeus/mongo-php-adapter" : "^1.1",
 		"doctrine/doctrine-bundle" : "~1.4",
 		"doctrine/orm" : "^2.4.8",
-		"alcaeus/mongo-php-adapter" : "^1.1",
 		"doctrine/mongodb-odm-bundle" : "^3.4",
-		"symfony/phpunit-bridge" : "^3.0"
+		"symfony/phpunit-bridge" : "^3.0",
+		"twig/twig" : "^2.5"
 	},
 	"suggest" : {
 		"alcaeus/mongo-php-adapter" : "^1.1",
@@ -57,10 +58,9 @@
 			"ext-mongo" : "1.6.16"
 		}
 	},
-	"prefer-stable" : true,
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "3.1.x-dev"
+			"dev-master" : "3.0.x-dev"
 		},
 		"symfony" : {
 			"allow-contrib" : "true"

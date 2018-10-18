@@ -1,14 +1,9 @@
 <?php
 namespace Oka\PaginationBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\Query;
 use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension as BundleExtension;
 use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Util\PaginationQuery;
-use Oka\PaginationBundle\Util\PaginationResultSet;
 use Oka\PaginationBundle\Util\RequestParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,7 +100,7 @@ class PaginationManager
 	 * @param integer $hydrationMode
 	 * @throws SortAttributeNotAvailableException
 	 * @throws \UnexpectedValueException
-	 * @return PaginationResultSet
+	 * @return \Oka\PaginationBundle\Util\PaginationResultSet
 	 */
 	public function paginate($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true, $hydrationMode = PaginationQuery::HYDRATE_OBJECT)
 	{
@@ -169,9 +164,13 @@ class PaginationManager
 			$objectManager = $this->container->get('oka_pagination.default.object_manager');
 		}
 		
-		$query = new PaginationQuery($objectManager, $this->qbHandler, $this->container->get('twig'), $managerName, $options, $config, $page, $criteria, $orderBy);
+		$query = new PaginationQuery($objectManager, $this->qbHandler, null, $managerName, $options, $config, $page, $criteria, $orderBy);
 		$query->addQueryPart('select', RequestParser::parseQueryToArray($request, 'fields', ',', []));
 		$query->addQueryPart('distinct', (boolean) RequestParser::getRequestParameterValue($request, 'distinct', true));
+		
+		if (true === $options['twig_extension_enabled']) {
+			$query->setTwig($this->container->get('twig'));
+		}
 		
 		return $query;
 	}
@@ -181,15 +180,8 @@ class PaginationManager
 	 * 
 	 * @return string
 	 */
-	public function getLastManagerName() {
-		return $this->lastManagerName;
-	}
-	
-	/**
-	 * @deprecated Use instead PaginationManager::createQuery()
-	 */
-	public function prepare($managerName, Request $request, array $criteria = [], array $orderBy = [], $strictMode = true)
+	public function getLastManagerName()
 	{
-		return $this->createQuery($managerName, $request, $criteria, $orderBy, $strictMode);
+		return $this->lastManagerName;
 	}
 }

@@ -6,7 +6,6 @@ use Doctrine\ORM\AbstractQuery;
 use Oka\PaginationBundle\Exception\ObjectManagerNotSupportedException;
 use Oka\PaginationBundle\Service\QueryBuilderHandler;
 use Oka\PaginationBundle\Twig\OkaPaginationExtension;
-use Twig\Environment;
 
 /**
  *
@@ -31,7 +30,7 @@ class PaginationQuery
 	protected $qbHandler;
 	
 	/**
-	 * @var Environment $twig
+	 * @var \Twig\Environment $twig
 	 */
 	protected $twig;
 	
@@ -123,7 +122,7 @@ class PaginationQuery
 	 * 
 	 * @param ObjectManager $objectManager
 	 * @param QueryBuilderHandler $qbHandler
-	 * @param Environment $twig
+	 * @param \Twig\Environment $twig
 	 * @param string $managerName
 	 * @param array $options
 	 * @param array $config
@@ -132,7 +131,7 @@ class PaginationQuery
 	 * @param array $orderBy
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct(ObjectManager $objectManager, QueryBuilderHandler $qbHandler, Environment $twig, $managerName, array $options, array $config, $page, array $criteria = [], array $orderBy = [])
+	public function __construct(ObjectManager $objectManager, QueryBuilderHandler $qbHandler, \Twig\Environment $twig = null, $managerName, array $options, array $config, $page, array $criteria = [], array $orderBy = [])
 	{
 		if (!empty($options)) {
 			if ($diff = array_diff(array_keys($options), ['twig_extension_enabled', 'strict_mode'])) {
@@ -153,6 +152,11 @@ class PaginationQuery
 		$this->addQueryPart('orderBy', $orderBy);
 		$this->loadConfig($config);
 		$this->setPage($page);
+	}
+	
+	public function setTwig(\Twig\Environment $twig)
+	{
+		$this->twig = $twig;
 	}
 	
 	/**
