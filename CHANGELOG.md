@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.0.8 (2018-11-20)
+
+* Improves dependency injection.
+
 #### 3.0.7 (2018-10-18)
 
 * Fixed bug.
