@@ -13,13 +13,21 @@ services:
     oka_pagination.manager:
         public: true
         class: Oka\PaginationBundle\Service\PaginationManager
-        arguments: [ '@service_container', '@oka_pagination.manager_bag', '@oka_pagination.query_builder_handler', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
+        arguments: [ '@service_container', '@oka_pagination.manager_bag', '@oka_pagination.query_builder_manipulator', '%oka_pagination.item_per_page%', '%oka_pagination.max_page_number%', '%oka_pagination.template%', '%oka_pagination.request%' ]
 
-    oka_pagination.query_builder_handler:
+    oka_pagination.query_builder_manipulator:
         public: true
         class: Oka\PaginationBundle\Service\QueryBuilderHandler
         arguments: [[]]
 
-    oka_pagination.query_builder_manipulator:
+    oka_pagination.query_builder_handler:
         public: true
-        alias: 'oka_pagination.query_builder_handler'
+        alias: oka_pagination.query_builder_manipulator
+
+    Oka\PaginationBundle\Service\QueryBuilderHandler:
+        public: true
+        alias: oka_pagination.query_builder_manipulator
+
+    Oka\PaginationBundle\Service\PaginationManager:
+        public: true
+        alias: oka_pagination.manager
