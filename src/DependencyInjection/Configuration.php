@@ -26,6 +26,30 @@ class Configuration implements ConfigurationInterface
 		$rootNode = $treeBuilder->root('oka_pagination');
 		
 		$rootNode
+			->beforeNormalization()
+			->always(static function($v){
+				if (false === isset($v['pagination_managers']) || false === isset($v['request'])) {
+					return $v;
+				}
+				
+				foreach ($v['pagination_managers'] as $key => $manager) {
+					if (false === isset($manager['request'])) {
+						$v['pagination_managers'][$key]['request'] = $v['request'];
+						
+					} else {
+						if (true === isset($v['request']['query_map'])) {
+							$v['pagination_managers'][$key]['request']['query_map'] = array_merge($v['request']['query_map'], isset($manager['request']['query_map']) ? $manager['request']['query_map'] : []);
+						}
+						
+						if (true === isset($v['request']['sort'])) {
+							$v['pagination_managers'][$key]['request']['sort'] = array_merge($v['request']['sort'], isset($manager['request']['sort']) ? $manager['request']['sort'] : []);
+						}
+					}
+				}
+				
+				return $v;
+			})
+			->end()
 			->addDefaultsIfNotSet()
 			->children()
 				->append($this->getDBDriverNodeDefinition())
@@ -168,25 +192,19 @@ class Configuration implements ConfigurationInterface
 						->end()
 					->end()
 				->end()
-				->append($this->getSortNodeDefinition(false))
-			->end()
-		->end();
-		
-		return $node;
-	}
-	
-	protected function getSortNodeDefinition()
-	{
-		$node = new ArrayNodeDefinition('sort');
-		$node
-			->info('Request sort configuration')
-			->addDefaultsIfNotSet()
-			->children()
-				->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(',')->end()
-				->arrayNode('attributes_availables')
-					->treatNullLike([])
-					->prototype('scalar')->end()
+				
+				->arrayNode('sort')
+					->info('Request sort configuration')
+					->addDefaultsIfNotSet()
+					->children()
+						->scalarNode('delimiter')->cannotBeEmpty()->defaultValue(',')->end()
+						->arrayNode('attributes_availables')
+							->treatNullLike([])
+							->prototype('scalar')->end()
+						->end()
+					->end()
 				->end()
+				
 			->end()
 		->end();
 		

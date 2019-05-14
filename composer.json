@@ -6,7 +6,7 @@
 	"license" : "MIT",
 	"keywords" : [
 		"twig",
-		"doctrine2",
+		"doctrine",
 		"pagination"
 	],
 	"authors" : [{
@@ -70,4 +70,3 @@
 		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/src/Resources/doc/index.md"
 	}
 }
-
