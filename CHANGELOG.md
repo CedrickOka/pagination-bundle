@@ -258,4 +258,3 @@ CHANGELOG
 * Fixed pagination result set attribute `pageNumber` is undefined.
 * Fixed pagination manger bad hydratation mode.
 * Update composer file.
-
