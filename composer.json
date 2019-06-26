@@ -2,7 +2,7 @@
 	"name" : "coka/pagination-bundle",
 	"type" : "symfony-bundle",
 	"description" : "Symfony Oka pagination bundle",
-	"homepage" : "https://github.com/CedrickOka/oka-pagination",
+	"homepage" : "https://github.com/CedrickOka/pagination-bundle",
 	"license" : "MIT",
 	"keywords" : [
 		"twig",
@@ -67,6 +67,6 @@
 		}
 	},
 	"support" : {
-		"docs" : "https://github.com/CedrickOka/oka-pagination/blob/master/src/Resources/doc/index.md"
+		"docs" : "https://github.com/CedrickOka/pagination-bundle/blob/master/src/Resources/doc/index.md"
 	}
 }
