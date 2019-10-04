@@ -10,6 +10,7 @@ This bundle provides a flexible pagination system.
 [![Monthly Downloads](https://poser.pugx.org/coka/pagination-bundle/d/monthly)](https://packagist.org/packages/coka/pagination-bundle)
 [![Daily Downloads](https://poser.pugx.org/coka/pagination-bundle/d/daily)](https://packagist.org/packages/coka/pagination-bundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/57ae9110-63f5-41ab-b355-79f4fe3a2803/mini.png)](https://insight.sensiolabs.com/projects/57ae9110-63f5-41ab-b355-79f4fe3a2803)
+[![Travis CI](https://travis-ci.org/CedrickOka/pagination-bundle.svg?branch=master)](https://travis-ci.org/CedrickOka/pagination-bundle)
 
 Latest updates
 --------------

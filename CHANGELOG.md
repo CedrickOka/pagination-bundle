@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.2.0 (2019-10-04)
+
+* Added travis.yml for CI.
+
 #### 3.1.0 (2019-05-14)
 
 * Sets `oka_pagination.pagination_managers.*.request` configuration values not supplied with defined values by default in `oka_pagination.request` configuration values.
