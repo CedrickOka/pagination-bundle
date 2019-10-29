@@ -31,9 +31,9 @@ class PaginationManager
 	protected $qbHandler;
 	
 	/**
-	 * @var array $defaultManagerConfig
+	 * @var array $defaultConfig
 	 */
-	private $defaultManagerConfig;
+	private $defaultConfig;
 	
 	/**
 	 * @var string $lastManagerName
@@ -46,22 +46,18 @@ class PaginationManager
 	 * @param ContainerInterface $container
 	 * @param PaginationManagerBag $managerBag
 	 * @param QueryBuilderHandler $qbHandler
-	 * @param integer $itemPerPage
-	 * @param integer $maxPageNumber
-	 * @param string $template
-	 * @param array $requestConfig
+	 * @param array $config
 	 */
-	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, QueryBuilderHandler $qbHandler, $itemPerPage, $maxPageNumber, $template = null, array $requestConfig)
+	public function __construct(ContainerInterface $container, PaginationManagerBag $managerBag, QueryBuilderHandler $qbHandler, array $config)
 	{
+		if ($diff = array_diff(array_keys($config), ['db_driver', 'model_manager_name', 'item_per_page', 'max_page_number', 'template', 'request'])) {
+			throw new \InvalidArgumentException(sprintf('The following configuration are not supported "%s".', implode(', ', $diff)));
+		}
+		
 		$this->container = $container;
 		$this->managerBag = $managerBag;
 		$this->qbHandler = $qbHandler;
-		$this->defaultManagerConfig = [
-				'item_per_page' 	=> $itemPerPage,
-				'max_page_number' 	=> $maxPageNumber,
-				'template' 			=> $template,
-				'request' 			=> $requestConfig
-		];
+		$this->defaultConfig = $config;
 	}
 	
 	/**
@@ -73,14 +69,14 @@ class PaginationManager
 	 */
 	public function getManagerConfig($name)
 	{
-		if ($this->managerBag->has($name)) {
+		if (true === $this->managerBag->has($name)) {
 			$config = $this->managerBag->get($name);
 			
 			if (null === $config['template']) {
-				$config['template'] = $this->defaultManagerConfig['template'];
+				$config['template'] = $this->defaultConfig['template'];
 			}
-		} elseif (class_exists($name)) {
-			$config = $this->defaultManagerConfig;
+		} elseif (true === class_exists($name)) {
+			$config = $this->defaultConfig;
 			$config['class'] = $name;
 		} else {
 			throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $name));
@@ -156,7 +152,7 @@ class PaginationManager
 		$criteria = empty($filters) ? $criteria : array_merge($criteria, $filters);
 		$orderBy = empty($sortAttributes) ? $orderBy : array_merge($orderBy, $sortAttributes);
 		
-		if (isset($config['model_manager_name']) && isset($config['db_driver'])) {
+		if ($config['db_driver'] !== $this->defaultConfig['db_driver'] || $config['model_manager_name'] !== $this->defaultConfig['model_manager_name']) {
 			/** @var \Doctrine\Bundle\DoctrineBundle\Registry $registry */
 			$registry = $this->container->get(BundleExtension::$doctrineDrivers[$config['db_driver']]['registry']);
 			$objectManager = $registry->getManager($config['model_manager_name']);

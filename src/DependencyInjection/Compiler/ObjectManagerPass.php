@@ -3,6 +3,7 @@ namespace Oka\PaginationBundle\DependencyInjection\Compiler;
 
 use Oka\PaginationBundle\DependencyInjection\OkaPaginationExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -19,8 +20,9 @@ class ObjectManagerPass implements CompilerPassInterface
 		
 		if (true === $container->has(OkaPaginationExtension::$doctrineDrivers[$driver]['registry'])) {
 			$definition = $container->getDefinition('oka_pagination.default.object_manager');
-			$definition->addArgument('oka_pagination.model_manager_name');
+			$definition->addArgument(new Parameter('oka_pagination.model_manager_name'));
 			$definition->setFactory([new Reference(OkaPaginationExtension::$doctrineDrivers[$driver]['registry']), 'getManager']);
+			$definition->setPublic(true);
 		}
 	}
 }
