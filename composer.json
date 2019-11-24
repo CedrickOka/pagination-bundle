@@ -40,7 +40,7 @@
 	},
 	"require-dev" : {
 		"alcaeus/mongo-php-adapter" : "^1.1",
-		"doctrine/doctrine-bundle" : "~1.4",
+		"doctrine/doctrine-bundle" : "^1.4 || ^2.0",
 		"doctrine/orm" : "^2.4.8",
 		"doctrine/mongodb-odm-bundle" : "^3.4",
 		"symfony/phpunit-bridge" : "^3.0",

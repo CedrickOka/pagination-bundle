@@ -48,11 +48,6 @@ class PaginationQuery
 	];
 	
 	/**
-	 * @var array $config
-	 */
-	protected $config;
-	
-	/**
 	 * @var int $page
 	 */
 	protected $page;
@@ -144,9 +139,7 @@ class PaginationQuery
 		$this->objectManager = $objectManager;
 		$this->qbHandler = $qbHandler;
 		$this->twig = $twig;
-		
 		$this->managerName = $managerName;
-		$this->config = $config;
 		
 		$this->addQueryPart('where', $criteria);
 		$this->addQueryPart('orderBy', $orderBy);
@@ -356,6 +349,10 @@ class PaginationQuery
 	 */
 	protected function loadConfig(array $config)
 	{
+	    if (1 < (int) $config['item_per_page']) {
+	        throw new \LogicException(sprintf('The number of items per page must be greater than 0, "%s" given.', $config['item_per_page']));
+	    }
+	    
 		$this->className = $config['class'];
 		$this->itemPerPage = (int) $config['item_per_page'];
 		$this->maxPageNumber = (int) $config['max_page_number'];		
