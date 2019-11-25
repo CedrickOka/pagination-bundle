@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 3.2.6 (2019-11-25)
+
+* Updated composer branch alias.
+
 #### 3.2.5 (2019-11-25)
 
 * Fixed bug.
