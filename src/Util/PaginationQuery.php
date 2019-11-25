@@ -349,7 +349,7 @@ class PaginationQuery
 	 */
 	protected function loadConfig(array $config)
 	{
-	    if (1 < (int) $config['item_per_page']) {
+	    if (1 > (int) $config['item_per_page']) {
 	        throw new \LogicException(sprintf('The number of items per page must be greater than 0, "%s" given.', $config['item_per_page']));
 	    }
 	    

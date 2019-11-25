@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+#### 3.2.5 (2019-11-25)
+
+* Fixed bug.
+
+#### 3.2.4 (2019-11-24)
+
+* Fixed security alerts.
+
+#### 3.2.3 (2019-11-24)
+
+* Fixed security alerts.
+
+#### 3.2.2 (2019-11-24)
+
+* Fixed bug.
+
+#### 3.2.1 (2019-10-29)
+
+* Fixed bug.
+
 #### 3.2.1 (2019-10-29)
 
 * Fixed bug.
