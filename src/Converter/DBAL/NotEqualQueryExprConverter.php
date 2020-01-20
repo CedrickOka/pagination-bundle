@@ -1,6 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Converter\DBAL;
 
+use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
@@ -14,10 +15,10 @@ class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 	const PATTERN = '#^neq\((.+)\)$#i';
 	
 	/**
-	 * {@inheritdoc}
-	 * @see \Oka\PaginationBundle\Converter\QueryExprConverter::apply()
+	 * {@inheritDoc}
+	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::apply()
 	 */
-	public function apply($dbDriver, $alias, $field, $exprValue, $namedParameter = null, &$value = null)
+	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null)
 	{
 		$matches = [];
 		
@@ -27,16 +28,16 @@ class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 		
 		$value = $matches[1];
 		
-		return $dbDriver === 'orm' ? 
-				(new \Doctrine\ORM\Query\Expr())->neq($alias.'.'.$field, $namedParameter ?: ':'.$field) : 
-				(new \Doctrine\MongoDB\Query\Expr())->field($field)->notEqual($value);
+		return $queryBuilder instanceof QueryBuilder ?
+    		$queryBuilder->expr()->neq($alias.'.'.$field, $namedParameter ?: ':'.$field) :
+    		$queryBuilder->expr()->field($field)->notEqual($value);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\AbstractQueryExprConverter::supports()
 	 */
-	public function supports($dbDriver, $exprValue)
+	public function supports(object $queryBuilder, string $exprValue) :bool
 	{
 		return (boolean) preg_match(self::PATTERN, $exprValue);
 	}

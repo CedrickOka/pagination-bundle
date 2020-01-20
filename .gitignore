@@ -4,6 +4,7 @@
 
 composer.lock
 composer.phar
+/var/
 /vendor/
 
 ### Eclipse ###

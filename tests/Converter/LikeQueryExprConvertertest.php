@@ -1,8 +1,8 @@
 <?php
 namespace Oka\PaginationBundle\Tests\Converter;
 
+use Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Oka\PaginationBundle\Converter\LikeQueryExprConverter;
 
 /**
  *

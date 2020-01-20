@@ -19,14 +19,14 @@ class OkaPaginationExtension extends Extension
 	 * @var array $doctrineDrivers
 	 */
 	public static $doctrineDrivers = [
-			'orm' => [
-					'registry' => 'doctrine',
-					'tag' => 'doctrine.event_subscriber',
-			],
-			'mongodb' => [
-					'registry' => 'doctrine_mongodb',
-					'tag' => 'doctrine_mongodb.odm.event_subscriber',
-			]
+		'orm' => [
+			'registry' => 'doctrine',
+			'tag' => 'doctrine.event_subscriber',
+		],
+		'mongodb' => [
+			'registry' => 'doctrine_mongodb',
+			'tag' => 'doctrine_mongodb.odm.event_subscriber',
+		]
 	];
 	
 	/**
@@ -74,56 +74,57 @@ class OkaPaginationExtension extends Extension
 	
 	protected function loadQueryExprConverter(array $config, ContainerBuilder $container)
 	{
+	    // TODO: Use class loader instead here
 		$mapConverters = [
-				[
-						'db_drivers' => ['orm', 'mongodb'],
-						'pattern' => \Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm', 'mongodb'],
-						'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm', 'mongodb'],
-						'pattern' => \Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm', 'mongodb'],
-						'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm'],
-						'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm'],
-						'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['orm'],
-						'pattern' => \Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter'
-				],
-				[
-						'db_drivers' => ['mongodb'],
-						'pattern' => \Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter::PATTERN,
-						'class' => 'Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter'
-				]
+			[
+				'db_drivers' => ['orm', 'mongodb'],
+				'pattern' => \Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm', 'mongodb'],
+				'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm', 'mongodb'],
+				'pattern' => \Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm', 'mongodb'],
+				'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm'],
+				'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm'],
+				'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['orm'],
+				'pattern' => \Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter'
+			],
+			[
+				'db_drivers' => ['mongodb'],
+				'pattern' => \Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter::PATTERN,
+				'class' => 'Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter'
+			]
 		];
 		
-		if (!empty($config['query_expr_converters'])) {
+		if (false === empty($config['query_expr_converters'])) {
 			foreach ($config['query_expr_converters'] as $converter) {
 				$mapConverters[] = $converter;
 			}
 		}
 		
-		$definition = $container->getDefinition('oka_pagination.query_builder_manipulator');
+		$definition = $container->getDefinition('oka_pagination.query_builder_handler');
 		$definition->replaceArgument(0, $mapConverters);
 	}
 }

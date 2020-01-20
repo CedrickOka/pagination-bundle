@@ -20,11 +20,4 @@ class RequestParserTest extends KernelTestCase
 		$this->assertEquals([], RequestParser::parseQueryToArray($request, 'empty', ','));
 		$this->assertEquals(['name', 'createdAt', 'updatedAt'], RequestParser::parseQueryToArray($request, 'sort', ','));
 	}
-	
-	public function testExtractFiltersInRequest() {
-		$var = 1;
-		settype($var, 'array');
-		
-		$this->assertInternalType('array', $var);
-	}
 }

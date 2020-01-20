@@ -1,0 +1,38 @@
+framework:
+    test: true
+    secret: 'secret'
+    default_locale: 'fr'
+    session:
+        storage_id: session.storage.mock_file
+    php_errors:
+        log: true
+
+    cache:
+        # Put the unique name of your app here: the prefix seed
+        # is used to compute stable namespaces for cache keys.
+        #prefix_seed: your_vendor_name/app_name
+
+        # The app cache caches to the filesystem by default.
+        # Other options include:
+
+        # Redis
+        #app: cache.adapter.redis
+        #default_redis_provider: redis://localhost
+
+        # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
+        #app: cache.adapter.apcu
+
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        #server_version: '5.7'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+
+oka_pagination:
+    db_driver: orm

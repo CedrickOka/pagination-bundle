@@ -94,11 +94,8 @@ final class RequestParser
 	/**
 	 * Sanitize request query value
 	 * Decode et trim value
-	 * 
-	 * @param stirng $query
-	 * @return string
 	 */
-	public static function sanitizeQuery($query)
+	public static function sanitizeQuery(string $query) :string
 	{
 		return trim(rawurldecode($query));
 	}

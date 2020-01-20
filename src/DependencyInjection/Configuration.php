@@ -22,8 +22,8 @@ class Configuration implements ConfigurationInterface
 	 */
 	public function getConfigTreeBuilder()
 	{
-		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root('oka_pagination');
+	    $treeBuilder = new TreeBuilder('oka_pagination');
+		$rootNode = $treeBuilder->getRootNode();
 		
 		$rootNode
 			->beforeNormalization()

@@ -2,35 +2,30 @@
 namespace Oka\PaginationBundle\Twig;
 
 if (false === class_exists('Twig_Extension')) {
-	class OkaPaginationExtension {
-		const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';
-		const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
-	}
-	return;
+    class OkaPaginationExtension {
+        const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';
+        const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
+    }
+    
+    return;
 }
 
 use Oka\PaginationBundle\Service\PaginationManager;
+use Twig\TwigFunction;
+use Twig\Extension\GlobalsInterface;
 
 /**
  *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class OkaPaginationExtension extends \Twig_Extension implements GlobalsInterface
 {
 	const TWIG_GLOBAL_VAR_NAME = 'oka_pagination';
 	const DEFAULT_TEMPLATE = 'OkaPaginationBundle:Pagination:paginate.html.twig';
 	
-	/**
-	 * @var PaginationManager $pm
-	 */
 	protected $pm;
 	
-	/**
-	 * Constructor.
-	 * 
-	 * @param PaginationManager $pm
-	 */
 	public function __construct(PaginationManager $pm)
 	{
 		$this->pm = $pm;
@@ -49,8 +44,8 @@ class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_
 	public function getFunctions()
 	{
 		return [
-				new \Twig_SimpleFunction('paginate', [$this, 'renderDefaultView'], ['needs_environment' => true, 'is_safe' => ['html']]),
-				new \Twig_SimpleFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']])
+		    new TwigFunction('paginate', [$this, 'renderDefaultView'], ['needs_environment' => true, 'is_safe' => ['html']]),
+		    new TwigFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']])
 		];
 	}
 	
@@ -87,10 +82,10 @@ class OkaPaginationExtension extends \Twig_Extension implements \Twig_Extension_
 		}
 		
 		return $env->render($config['template'], [
-				'route' 		=> $route, 
-				'params' 		=> $params,
-				'managerName' 	=> $name,
-				'context' 		=> $globals[self::TWIG_GLOBAL_VAR_NAME][$name]
+			'route'       => $route, 
+			'params'      => $params,
+			'managerName' => $name,
+			'context'     => $globals[self::TWIG_GLOBAL_VAR_NAME][$name]
 		]);
 	}
 }

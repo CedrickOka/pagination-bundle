@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.0.0 (2020-01-20)
+
+* Removed support of PHP 5.6 and symfony 3.4.
+
 #### 3.2.6 (2019-11-25)
 
 * Updated composer branch alias.

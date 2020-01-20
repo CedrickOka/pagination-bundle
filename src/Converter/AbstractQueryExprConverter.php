@@ -10,15 +10,10 @@ abstract class AbstractQueryExprConverter implements QueryExprConverterInterface
 {
 	/**
 	 * {@inheritDoc}
-	 * @see \Oka\PaginationBundle\Converter\QueryExprConverter::supports()
+	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::supports()
 	 */
-	public function supports($dbDriver, $exprValue)
+	public function supports(object $queryBuilder, string $exprValue) :bool
 	{
 		return false;
-	}
-	
-	protected function getQueryExpr($dbDriver)
-	{
-	    return $dbDriver === 'orm' ? new \Doctrine\ORM\Query\Expr() : new \Doctrine\MongoDB\Query\Expr();
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Converter\ORM;
 
+use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
@@ -14,10 +15,10 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 	const PATTERN = '#^range(\[|\])(.*),(.*)(\[|\])$#i';
 	
 	/**
-	 * {@inheritdoc}
-	 * @see \Oka\PaginationBundle\Converter\QueryExprConverter::apply()
+	 * {@inheritDoc}
+	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::apply()
 	 */
-	public function apply($dbDriver, $alias, $field, $exprValue, $namedParameter = null, &$value = null)
+	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null)
 	{
 		$value = [];
 		$matches = [];
@@ -47,9 +48,9 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 				$value[$rightExpr2] = trim($matches[3]);
 				
 				return (new \Doctrine\ORM\Query\Expr())->andX(
-						$this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr1), 
-						$this->createLessThanExpr($leftExpr, $matches[4], $rightExpr2)
-					);
+					$this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr1), 
+					$this->createLessThanExpr($leftExpr, $matches[4], $rightExpr2)
+				);
 				
 			default:
 				throw new BadQueryExprException('The range query expression converter requires left or right value of range');
@@ -60,26 +61,22 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\AbstractQueryExprConverter::supports()
 	 */
-	public function supports($dbDriver, $exprValue)
+	public function supports(object $queryBuilder, string $exprValue) :bool
 	{
-		return $dbDriver === 'orm' && preg_match(self::PATTERN, $exprValue);
+	    return $queryBuilder instanceof QueryBuilder && preg_match(self::PATTERN, $exprValue);
 	}
 	
 	private function createGreaterThanExpr($leftExpr, $operator, $rightExpr)
 	{
-		if ($operator === ']') {
-			return (new \Doctrine\ORM\Query\Expr())->gt($leftExpr, $rightExpr);
-		} else {
-			return (new \Doctrine\ORM\Query\Expr())->gte($leftExpr, $rightExpr);			
-		}
+	    return ']' === $operator ? 
+    	    (new \Doctrine\ORM\Query\Expr())->gt($leftExpr, $rightExpr) : 
+    	    (new \Doctrine\ORM\Query\Expr())->gte($leftExpr, $rightExpr);
 	}
 	
 	private function createLessThanExpr($leftExpr, $operator, $rightExpr)
 	{
-		if ($operator === '[') {
-			return (new \Doctrine\ORM\Query\Expr())->lt($leftExpr, $rightExpr);
-		} else {
-			return (new \Doctrine\ORM\Query\Expr())->lte($leftExpr, $rightExpr);
-		}
+	    return '[' === $operator ? 
+	       (new \Doctrine\ORM\Query\Expr())->lt($leftExpr, $rightExpr) : 
+	       (new \Doctrine\ORM\Query\Expr())->lte($leftExpr, $rightExpr);
 	}
 }

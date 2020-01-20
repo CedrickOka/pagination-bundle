@@ -16,21 +16,16 @@ services:
         arguments:
           - '@service_container'
           - '@oka_pagination.manager_bag'
-          - '@oka_pagination.query_builder_manipulator'
+          - '@oka_pagination.query_builder_handler'
           - {db_driver: '%oka_pagination.db_driver%', model_manager_name: '%oka_pagination.model_manager_name%', item_per_page: '%oka_pagination.item_per_page%', max_page_number: '%oka_pagination.max_page_number%', template: '%oka_pagination.template%', request: '%oka_pagination.request%'}
 
-    oka_pagination.query_builder_manipulator:
-        public: true
+    oka_pagination.query_builder_handler:
         class: Oka\PaginationBundle\Service\QueryBuilderHandler
         arguments: [[]]
 
-    oka_pagination.query_builder_handler:
-        public: true
-        alias: oka_pagination.query_builder_manipulator
-
     Oka\PaginationBundle\Service\QueryBuilderHandler:
         public: true
-        alias: oka_pagination.query_builder_manipulator
+        alias: oka_pagination.query_builder_handler
 
     Oka\PaginationBundle\Service\PaginationManager:
         public: true

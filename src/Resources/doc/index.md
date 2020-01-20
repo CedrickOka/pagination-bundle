@@ -7,8 +7,8 @@ Prerequisites
 =============
 
 The OkaPaginationBundle has the following requirements:
- - PHP 5.5+
- - Symfony 3.4+
+ - PHP 7.2+
+ - Symfony 4.4
 
 Installation
 ============

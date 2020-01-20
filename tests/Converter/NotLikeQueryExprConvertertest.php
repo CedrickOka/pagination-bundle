@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Tests\Converter;
 
-use Oka\PaginationBundle\Converter\NotLikeQueryExprConverter;
+use Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
