@@ -31,7 +31,7 @@ class IsNullQueryExprConverter extends AbstractQueryExprConverter
 		        break;
 		        
 		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
-		        $queryBuilder->expr()->field($field)->equal($value);
+		        $queryBuilder->expr()->field($field)->equals($value);
 		        break;
 		        
 		    default:
