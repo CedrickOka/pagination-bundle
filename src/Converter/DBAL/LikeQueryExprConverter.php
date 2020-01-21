@@ -1,7 +1,6 @@
 <?php
 namespace Oka\PaginationBundle\Converter\DBAL;
 
-use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
@@ -28,9 +27,18 @@ class LikeQueryExprConverter extends AbstractQueryExprConverter
 		
 		$value = $matches[1];
 		
-		return $queryBuilder instanceof QueryBuilder ?
-    		$queryBuilder->expr()->like($alias.'.'.$field, $namedParameter ?: ':'.$field) :
-    		$queryBuilder->expr()->field($field)->text($value);
+		switch (true) {
+		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
+		        $queryBuilder->expr()->like($alias.'.'.$field, $namedParameter ?: ':'.$field);
+		        break;
+		        
+		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
+		        $queryBuilder->expr()->field($field)->text($value);
+		        break;
+		        
+		    default:
+		        break;
+		}
 	}
 	
 	/**
@@ -39,6 +47,6 @@ class LikeQueryExprConverter extends AbstractQueryExprConverter
 	 */
 	public function supports(object $queryBuilder, string $exprValue) :bool
 	{
-		return (boolean) preg_match(self::PATTERN, $exprValue);
+	    return (bool) preg_match(self::PATTERN, $exprValue);
 	}
 }

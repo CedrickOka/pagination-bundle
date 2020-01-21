@@ -79,42 +79,42 @@ class OkaPaginationExtension extends Extension
 			[
 				'db_drivers' => ['orm', 'mongodb'],
 				'pattern' => \Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\DBAL\EqualQueryExprConverter::class
 			],
 			[
 				'db_drivers' => ['orm', 'mongodb'],
 				'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\DBAL\NotEqualQueryExprConverter::class
 			],
 			[
 				'db_drivers' => ['orm', 'mongodb'],
 				'pattern' => \Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\DBAL\LikeQueryExprConverter::class
 			],
 			[
 				'db_drivers' => ['orm', 'mongodb'],
 				'pattern' => \Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\DBAL\NotLikeQueryExprConverter::class
 			],
 			[
-				'db_drivers' => ['orm'],
-				'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\ORM\IsNullQueryExprConverter'
+			    'db_drivers' => ['orm', 'mongodb'],
+			    'pattern' => \Oka\PaginationBundle\Converter\DBAL\IsNullQueryExprConverter::PATTERN,
+			    'class' => \Oka\PaginationBundle\Converter\DBAL\IsNullQueryExprConverter::class
 			],
 			[
-				'db_drivers' => ['orm'],
-				'pattern' => \Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\ORM\IsNotNullQueryExprConverter'
+			    'db_drivers' => ['orm', 'mongodb'],
+			    'pattern' => \Oka\PaginationBundle\Converter\DBAL\IsNotNullQueryExprConverter::PATTERN,
+			    'class' => \Oka\PaginationBundle\Converter\DBAL\IsNotNullQueryExprConverter::class
 			],
 			[
 				'db_drivers' => ['orm'],
 				'pattern' => \Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\ORM\RangeQueryExprConverter::class
 			],
 			[
 				'db_drivers' => ['mongodb'],
 				'pattern' => \Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter::PATTERN,
-				'class' => 'Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter'
+				'class' => \Oka\PaginationBundle\Converter\Mongodb\RangeQueryExprConverter::class
 			]
 		];
 		

@@ -1,7 +1,6 @@
 <?php
 namespace Oka\PaginationBundle\Converter\DBAL;
 
-use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
@@ -28,9 +27,18 @@ class EqualQueryExprConverter extends AbstractQueryExprConverter
 		
 		$value = $matches[1];
 		
-		return $queryBuilder instanceof QueryBuilder ? 
-    		$queryBuilder->expr()->eq($alias.'.'.$field, $namedParameter ?: ':'.$field) : 
-    		$queryBuilder->expr()->field($field)->equals($value);
+		switch (true) {
+		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
+		        $queryBuilder->expr()->eq($alias.'.'.$field, $namedParameter ?: ':'.$field);
+		        break;
+		        
+		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
+		        $queryBuilder->expr()->field($field)->equals($value);
+		        break;
+		        
+		    default:
+		        break;
+		}
 	}
 	
 	/**

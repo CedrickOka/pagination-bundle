@@ -1,7 +1,6 @@
 <?php
-namespace Oka\PaginationBundle\Converter\ORM;
+namespace Oka\PaginationBundle\Converter\DBAL;
 
-use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Converter\AbstractQueryExprConverter;
 use Oka\PaginationBundle\Exception\BadQueryExprException;
 
@@ -26,7 +25,18 @@ class IsNullQueryExprConverter extends AbstractQueryExprConverter
 		
 		$value = null;
 		
-		return (new \Doctrine\ORM\Query\Expr())->isNull($alias.'.'.$field);
+		switch (true) {
+		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
+		        $queryBuilder->expr()->isNull($alias.'.'.$field);
+		        break;
+		        
+		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
+		        $queryBuilder->expr()->field($field)->equal($value);
+		        break;
+		        
+		    default:
+		        break;
+		}
 	}
 	
 	/**
@@ -35,6 +45,6 @@ class IsNullQueryExprConverter extends AbstractQueryExprConverter
 	 */
 	public function supports(object $queryBuilder, string $exprValue) :bool
 	{
-	    return $queryBuilder instanceof QueryBuilder && preg_match(self::PATTERN, $exprValue);
+	    return (bool) preg_match(self::PATTERN, $exprValue);
 	}
 }
