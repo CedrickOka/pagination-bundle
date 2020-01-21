@@ -28,15 +28,10 @@ class IsNotNullQueryExprConverter extends AbstractQueryExprConverter
 		
 		switch (true) {
 		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
-    		    $queryBuilder->expr()->isNotNull($alias.'.'.$field);
-    		    break;
+		        return $queryBuilder->expr()->isNotNull($alias.'.'.$field);
 		    
 		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
-    		    $queryBuilder->expr()->field($field)->notEqual($value);
-    		    break;
-		    
-		    default:
-		        break;
+		        return $queryBuilder->expr()->field($field)->notEqual($value);
 		}
 	}
 	

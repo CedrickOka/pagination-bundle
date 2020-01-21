@@ -29,14 +29,11 @@ class NotLikeQueryExprConverter extends AbstractQueryExprConverter
 		
 		switch (true) {
 		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
-		        $queryBuilder->expr()->notLike($alias.'.'.$field, $namedParameter ?: ':'.$field);
+		        return $queryBuilder->expr()->notLike($alias.'.'.$field, $namedParameter ?: ':'.$field);
 		        break;
 		        
 		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
-		        $queryBuilder->expr()->not($queryBuilder->expr()->field($field)->text($value));
-		        break;
-		        
-		    default:
+		        return $queryBuilder->expr()->not($queryBuilder->expr()->field($field)->text($value));
 		        break;
 		}
 	}

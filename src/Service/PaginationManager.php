@@ -121,8 +121,8 @@ class PaginationManager
 		$this->lastManagerName = $managerName;
 		$config = $this->getManagerConfig($managerName);
 		$options = [
-				'twig_extension_enabled' 	=> $this->container->getParameter('oka_pagination.twig.enable_extension'),
-				'strict_mode' 				=> $strictMode
+			'twig_extension_enabled' => $this->container->getParameter('oka_pagination.twig.enable_extension'),
+			'strict_mode' => $strictMode
 		];
 		
 		$sortConfig = $config['request']['sort'];

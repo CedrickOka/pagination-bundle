@@ -29,15 +29,10 @@ class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 		
 		switch (true) {
 		    case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
-		        $queryBuilder->expr()->neq($alias.'.'.$field, $namedParameter ?: ':'.$field);
-		        break;
+		        return $queryBuilder->expr()->neq($alias.'.'.$field, $namedParameter ?: ':'.$field);
 		        
 		    case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
-		        $queryBuilder->expr()->field($field)->notEqual($value);
-		        break;
-		        
-		    default:
-		        break;
+		        return $queryBuilder->expr()->field($field)->notEqual($value);
 		}
 	}
 	

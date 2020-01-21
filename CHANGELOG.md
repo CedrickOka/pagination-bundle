@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.1.2 (2020-01-21)
+
+* Fixed bug.
+
 #### 4.0.2 (2020-01-21)
 
 * Added query expression `isNull()` and `ìsNotNull` for monogdb driver.

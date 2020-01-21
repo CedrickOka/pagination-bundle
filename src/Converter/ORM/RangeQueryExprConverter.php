@@ -18,7 +18,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::apply()
 	 */
-	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null)
+	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null) :?object
 	{
 		$value = [];
 		$matches = [];
@@ -32,13 +32,11 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 			case $matches[2] && !$matches[3]:
 				$rightExpr = $namedParameter ?: ':'.$field;
 				$value[$rightExpr] = trim($matches[2]);
-				
 				return $this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr);
 				
 			case !$matches[2] && $matches[3]:
 				$rightExpr = $namedParameter ?: ':'.$field;
 				$value[$rightExpr] = trim($matches[3]);
-				
 				return $this->createLessThanExpr($leftExpr, $matches[4], $rightExpr);
 				
 			case $matches[2] && $matches[3]:
@@ -46,7 +44,6 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 				$rightExpr2 = ($namedParameter ?: ':'.$field) . '2';
 				$value[$rightExpr1] = trim($matches[2]);
 				$value[$rightExpr2] = trim($matches[3]);
-				
 				return (new \Doctrine\ORM\Query\Expr())->andX(
 					$this->createGreaterThanExpr($leftExpr, $matches[1], $rightExpr1), 
 					$this->createLessThanExpr($leftExpr, $matches[4], $rightExpr2)

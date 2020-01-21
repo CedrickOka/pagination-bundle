@@ -55,7 +55,7 @@ class QueryBuilderHandler
 		
 		if ($qb instanceof QueryBuilder) {
 			if (false === isset($expr)) {
-				$expr = (new \Doctrine\ORM\Query\Expr())->eq($alias.'.'.$field, $namedParameter);
+			    $expr = $qb->expr()->eq($alias.'.'.$field, $namedParameter);
 				$qb->setParameter($namedParameter, $exprValue);
 			} else {
 				switch (true) {
@@ -103,6 +103,6 @@ class QueryBuilderHandler
 			return false;
 		}
 		
-		return (boolean) preg_match($mapConverter['pattern'], $exprValue);
+		return (bool) preg_match($mapConverter['pattern'], $exprValue);
 	}
 }
