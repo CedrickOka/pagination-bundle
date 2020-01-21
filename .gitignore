@@ -2,6 +2,7 @@
 
 ### Composer ###
 
+.phpunit.*
 composer.lock
 composer.phar
 /var/
