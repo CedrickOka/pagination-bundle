@@ -22,8 +22,14 @@ class Configuration implements ConfigurationInterface
 	 */
 	public function getConfigTreeBuilder()
 	{
-		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root('oka_pagination');
+	    $treeBuilder = new TreeBuilder('oka_pagination');
+	    
+	    if (true === method_exists($treeBuilder, 'getRootNode')) {
+	        $rootNode = $treeBuilder->getRootNode();
+	    } else {
+	        // BC layer for symfony/config 4.1 and older
+	        $rootNode = $treeBuilder->root('oka_pagination');
+	    }
 		
 		$rootNode
 			->beforeNormalization()
