@@ -74,7 +74,6 @@ class OkaPaginationExtension extends Extension
 	
 	protected function loadQueryExprConverter(array $config, ContainerBuilder $container)
 	{
-	    // TODO: Use class loader instead here
 		$mapConverters = [
 			[
 				'db_drivers' => ['orm', 'mongodb'],
