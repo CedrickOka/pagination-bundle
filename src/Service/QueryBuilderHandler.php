@@ -1,8 +1,13 @@
 <?php
 namespace Oka\PaginationBundle\Service;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Utility\PersisterHelper;
 use Oka\PaginationBundle\Converter\QueryExprConverterInterface;
 
 /**
@@ -54,9 +59,17 @@ class QueryBuilderHandler
 		}
 		
 		if ($qb instanceof QueryBuilder) {
+		    $type = null;
+		    
+		    if ($entity = $qb->getRootEntities()[0] ?? null) {
+		        $em = $qb->getEntityManager();
+		        $types = $this->getTypes($field, $value, $em, $em->getClassMetadata($entity));
+		        $type = $types[0] ?? null;
+		    }
+		    
 			if (false === isset($expr)) {
 			    $expr = $qb->expr()->eq($alias.'.'.$field, $namedParameter);
-				$qb->setParameter($namedParameter, $exprValue);
+			    $qb->setParameter($namedParameter, $exprValue, $type);
 			} else {
 				switch (true) {
 					case is_array($value):
@@ -66,7 +79,7 @@ class QueryBuilderHandler
 						break;
 						
 					case null !== $value:
-						$qb->setParameter($namedParameter, $value);
+					    $qb->setParameter($namedParameter, $value, $type);
 						break;
 				}
 			}
@@ -86,10 +99,10 @@ class QueryBuilderHandler
 	 */
 	public function applyExprFromArray($qb, string $alias, array $criteria)
 	{
-		$pos = 0;
-		
+	    $pos = 0;
+	    
 		foreach ($criteria as $field => $exprValue) {
-			$this->applyExprFromString($qb, $alias, $field, $exprValue, ':'.$field.($pos++));
+		    $this->applyExprFromString($qb, $alias, $field, $exprValue, ':'.$field.($pos++));
 		}
 	}
 
@@ -104,5 +117,59 @@ class QueryBuilderHandler
 		}
 		
 		return (bool) preg_match($mapConverter['pattern'], $exprValue);
+	}
+	
+	/**
+	 * Infers field types to be used by parameter type casting.
+	 *
+	 * @param string        $field
+	 * @param mixed         $value
+	 * @param ClassMetadata $class
+	 *
+	 * @return array
+	 *
+	 * @throws \Doctrine\ORM\Query\QueryException
+	 */
+	private function getTypes($field, $value, EntityManagerInterface $em, ClassMetadata $class)
+	{
+	    $types = [];
+	    
+	    switch (true) {
+	        case (isset($class->fieldMappings[$field])):
+	            $types = array_merge($types, [$class->fieldMappings[$field]['type']]);
+	            break;
+	            
+	        case (isset($class->associationMappings[$field])):
+	            $assoc = $class->associationMappings[$field];
+	            $class = $em->getClassMetadata($assoc['targetEntity']);
+	            
+	            if (! $assoc['isOwningSide']) {
+	                $assoc = $class->associationMappings[$assoc['mappedBy']];
+	                $class = $em->getClassMetadata($assoc['targetEntity']);
+	            }
+	            
+	            $columns = $assoc['type'] === ClassMetadata::MANY_TO_MANY
+	            ? $assoc['relationToTargetKeyColumns']
+	            : $assoc['sourceToTargetKeyColumns'];
+	            
+	            foreach ($columns as $column){
+	                $types[] = PersisterHelper::getTypeOfColumn($column, $class, $em);
+	            }
+	            break;
+	            
+	        default:
+	            $types[] = null;
+	            break;
+	    }
+	    
+	    if (is_array($value)) {
+	        return array_map(function ($type) {
+	            $type = Type::getType($type);
+	            
+	            return $type->getBindingType() + Connection::ARRAY_PARAM_OFFSET;
+	        }, $types);
+	    }
+	    
+	    return $types;
 	}
 }

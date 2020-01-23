@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.1.4 (2020-01-23)
+
+* [QueryBuillder] Add a temporary patch to manage defining the type of fields in the `\Doctrine\ORM\QueryBuilder::setParameter()` method.
+
 #### 4.1.2 (2020-01-21)
 
 * Fixed bug.

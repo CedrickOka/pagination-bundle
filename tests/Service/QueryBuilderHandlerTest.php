@@ -28,7 +28,6 @@ class QueryBuilderHandlerTest extends KernelTestCase
 	    $handler = static::$container->get(QueryBuilderHandler::class);
 	    $handler->applyExprFromArray($qb, 't', ['enabled' => true, 'name' => 'like(www%)']);
 		
-		var_dump($qb->getDQLPart('where'));
 		$this->assertEquals(true, preg_match('#^not\((.+)\)$#i', 'not(apapapa)'));
 	}
 }
