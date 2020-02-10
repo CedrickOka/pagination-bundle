@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.2.0 (2020-02-10)
+
+* [QueryBuillder] Used `Doctrine\ORM\Utility\PersisterHelper` class for determines type of field.
+
 #### 4.1.4 (2020-01-23)
 
 * [QueryBuillder] Add a temporary patch to manage defining the type of fields in the `\Doctrine\ORM\QueryBuilder::setParameter()` method.
