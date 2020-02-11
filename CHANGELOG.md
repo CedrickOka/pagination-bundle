@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.2.1 (2020-02-11)
+
+* [QueryBuillder] Fixed bug.
+
 #### 4.2.0 (2020-02-10)
 
 * [QueryBuillder] Used `Doctrine\ORM\Utility\PersisterHelper` class for determines type of field.

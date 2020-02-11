@@ -59,7 +59,7 @@ class QueryBuilderHandler
 		    
 		    if ($entity = $qb->getRootEntities()[0] ?? null) {
 		        $em = $qb->getEntityManager();
-		        $type = PersisterHelper::getTypeOfField($field, $em->getClassMetadata($entity), $em);
+		        $type = PersisterHelper::getTypeOfField($field, $em->getClassMetadata($entity), $em)[0];
 		    }
 		    
 			if (false === isset($expr)) {
