@@ -24,14 +24,11 @@ class QueryBuilderHandler
 	 * Apply Expr() object in query builder with expression value
 	 * 
 	 * @param QueryBuilder|Builder $qb
-	 * @param string $alias
-	 * @param string $field
 	 * @param string $exprValue
-	 * @param string $namedParameter
 	 * @throws \InvalidArgumentException
 	 * @throws \RuntimeException
 	 */
-	public function applyExprFromString($qb, string $alias, string $field, string $exprValue, string $namedParameter = null) :void
+	public function applyExprFromString($qb, string $alias, string $field, $exprValue, string $namedParameter = null) :void
 	{
 		if (!$qb instanceof QueryBuilder && !$qb instanceof Builder) {
 			throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an instance of "%s" or "%s", "%s" given.', __METHOD__, QueryBuilder::class, Builder::class, gettype($qb)));
