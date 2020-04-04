@@ -9,10 +9,10 @@ namespace Oka\PaginationBundle\Converter;
 abstract class AbstractQueryExprConverter implements QueryExprConverterInterface
 {
 	/**
-	 * {@inheritDoc}
-	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::supports()
-	 */
-	public function supports(object $queryBuilder, string $exprValue) :bool
+     * {@inheritDoc}
+     * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::supports()
+     */
+	public function supports(object $queryBuilder, $exprValue) :bool
 	{
 		return false;
 	}

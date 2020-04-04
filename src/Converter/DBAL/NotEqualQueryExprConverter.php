@@ -17,7 +17,7 @@ class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::apply()
 	 */
-	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null)
+	public function apply(object $queryBuilder, string $alias, string $field, $exprValue, string $namedParameter = null, &$value = null)
 	{
 		$matches = [];
 		
@@ -40,7 +40,7 @@ class NotEqualQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\AbstractQueryExprConverter::supports()
 	 */
-	public function supports(object $queryBuilder, string $exprValue) :bool
+	public function supports(object $queryBuilder, $exprValue) :bool
 	{
 		return (bool) preg_match(self::PATTERN, $exprValue);
 	}

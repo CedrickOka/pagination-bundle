@@ -18,7 +18,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\QueryExprConverterInterface::apply()
 	 */
-	public function apply(object $queryBuilder, string $alias, string $field, string $exprValue, string $namedParameter = null, &$value = null) :?object
+	public function apply(object $queryBuilder, string $alias, string $field, $exprValue, string $namedParameter = null, &$value = null) :?object
 	{
 		$value = [];
 		$matches = [];
@@ -58,7 +58,7 @@ class RangeQueryExprConverter extends AbstractQueryExprConverter
 	 * {@inheritDoc}
 	 * @see \Oka\PaginationBundle\Converter\AbstractQueryExprConverter::supports()
 	 */
-	public function supports(object $queryBuilder, string $exprValue) :bool
+	public function supports(object $queryBuilder, $exprValue) :bool
 	{
 	    return $queryBuilder instanceof QueryBuilder && preg_match(self::PATTERN, $exprValue);
 	}

@@ -24,7 +24,7 @@ class QueryBuilderHandler
 	 * Apply Expr() object in query builder with expression value
 	 * 
 	 * @param QueryBuilder|Builder $qb
-	 * @param string $exprValue
+	 * @param mixed $exprValue
 	 * @throws \InvalidArgumentException
 	 * @throws \RuntimeException
 	 */
