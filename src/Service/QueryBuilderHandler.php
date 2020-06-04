@@ -35,7 +35,7 @@ class QueryBuilderHandler
 		}
 		
 		$value = $exprValue;
-		$namedParameter = $namedParameter ?: ':'.$field;
+		$namedParameter = $namedParameter ?: ':'.str_replace('.', '_', $field);
 		$dbDriver = $qb instanceof QueryBuilder ? 'orm' : 'mongodb';
 		
 		foreach ($this->mapConverters as $mapConverter) {

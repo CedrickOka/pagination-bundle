@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 4.2.4 (2020-06-04)
+
+* [QueryBuillder] Fixed bug.
+
 #### 4.2.2 (2020-04-04)
 
 * [QueryBuillder] Fixed bug.
