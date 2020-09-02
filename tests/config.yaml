@@ -33,6 +33,65 @@ doctrine:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/tests/Entity'
+                prefix: 'Oka\PaginationBundle\Tests\Entity'
+                alias: App
+
+doctrine_mongodb:
+    auto_generate_proxy_classes: true
+    auto_generate_hydrator_classes: true
+    connections:
+        default:
+            server: '%env(resolve:MONGODB_URL)%'
+            options: {}
+    default_database: '%env(resolve:MONGODB_DB)%'
+    document_managers:
+        default:
+            auto_mapping: true
+            mappings:
+                App:
+                    is_bundle: false
+                    type: annotation
+                    dir: '%kernel.project_dir%/tests/Document'
+                    prefix: 'Oka\PaginationBundle\Tests\Document'
+                    alias: App
 
 oka_pagination:
     db_driver: orm
+    pagination_managers:
+        page_orm:
+            db_driver: orm
+            class: Oka\PaginationBundle\Tests\Entity\Page
+            filters:
+                field:
+                    property_name: field
+                    cast_type: string
+                    searchable: true
+                    ordering:
+                        direction: asc
+                createdAt:
+                    property_name: createdAt
+                    cast_type: datetime
+                    searchable: true
+                    ordering:
+                        direction: desc
+        page_mongodb:
+            db_driver: mongodb
+            class: Oka\PaginationBundle\Tests\Document\Page
+            filters:
+                field:
+                    property_name: field
+                    cast_type: string
+                    searchable: true
+                    ordering:
+                        direction: asc
+                createdAt:
+                    property_name: createdAt
+                    cast_type: datetime
+                    searchable: true
+                    ordering:
+                        direction: desc

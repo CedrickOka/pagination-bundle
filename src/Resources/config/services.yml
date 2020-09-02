@@ -1,32 +1,32 @@
 services:
-#Factory
-    oka_pagination.default.object_manager:
-        public: false
-        class: Doctrine\Common\Persistence\ObjectManager
+    Oka\PaginationBundle\Pagination\FilterExpression\:
+        resource: '../../Pagination/FilterExpression/*'
+        exclude: '../../Pagination/FilterExpression/{EvaluationResult.php,FilterExpressionHandler.php}'
+        tags:
+          - {name: oka_pagination.filter_expression}
 
-#Services
-    oka_pagination.manager_bag:
-        public: false
-        class: Oka\PaginationBundle\Service\PaginationManagerBag
+    oka_pagination.pagination_configuration_bag_configurator:
+        class: Oka\PaginationBundle\Pagination\ConfigurationBagConfigurator
+        arguments: ['%oka_pagination.pagination_managers%']
+
+    oka_pagination.pagination_configuration_bag:
+        class: Oka\PaginationBundle\Pagination\ConfigurationBag
+        configurator: '@oka_pagination.pagination_configuration_bag_configurator'
+
+    oka_pagination.page_route_loader:
+        class: Oka\PaginationBundle\Routing\PageRouteLoader
+        arguments: ['@oka_pagination.pagination_configuration_bag']
+        tags:
+          - {name: routing.route_loader}
+
+    oka_pagination.filter_expression_handler:
+        class: Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler
         arguments: [[]]
 
-    oka_pagination.manager:
+    oka_pagination.pagination_manager:
         public: true
-        class: Oka\PaginationBundle\Service\PaginationManager
-        arguments:
-          - '@service_container'
-          - '@oka_pagination.manager_bag'
-          - '@oka_pagination.query_builder_handler'
-          - {db_driver: '%oka_pagination.db_driver%', model_manager_name: '%oka_pagination.model_manager_name%', item_per_page: '%oka_pagination.item_per_page%', max_page_number: '%oka_pagination.max_page_number%', template: '%oka_pagination.template%', request: '%oka_pagination.request%'}
+        class: Oka\PaginationBundle\Pagination\PaginationManager
+        arguments: ['', '@oka_pagination.pagination_configuration_bag', '@oka_pagination.filter_expression_handler']
 
-    oka_pagination.query_builder_handler:
-        class: Oka\PaginationBundle\Service\QueryBuilderHandler
-        arguments: [[]]
-
-    Oka\PaginationBundle\Service\QueryBuilderHandler:
-        public: true
-        alias: oka_pagination.query_builder_handler
-
-    Oka\PaginationBundle\Service\PaginationManager:
-        public: true
-        alias: oka_pagination.manager
+    Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler: '@oka_pagination.filter_expression_handler'
+    Oka\PaginationBundle\Pagination\PaginationManager: '@oka_pagination.pagination_manager'
