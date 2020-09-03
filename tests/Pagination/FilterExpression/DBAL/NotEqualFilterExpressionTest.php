@@ -33,6 +33,17 @@ class NotEqualFilterExpressionTest extends KernelTestCase
 	/**
 	 * @covers
 	 */
+	public function testThatFilterCanSupportEvaluation()
+	{
+		$filterExpression = new NotEqualFilterExpression();
+		
+		$this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'neq(text)'));
+		$this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'neq(text)'));
+	}
+	
+	/**
+	 * @covers
+	 */
 	public function testThatFilterCanEvaluateOrmExpression()
 	{
 		$filterExpression = new NotEqualFilterExpression();

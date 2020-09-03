@@ -167,7 +167,6 @@ class Query
 		$items = [];
 		$itemOffset = $this->getItemOffset();
 		$dbalQueryBuilder = $this->dbalQueryBuilder ?? $this->createDBALQueryBuilder();
-		
 		/** @var \Doctrine\Persistence\Mapping\ClassMetadata $classMetadata */
 		$classMetadata = $this->objectManager->getClassMetadata($this->className);
 		
@@ -179,7 +178,6 @@ class Query
 			/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
 			$filter = $this->filters->get($key);
 			$propertyName = $filter->getPropertyName();
-			$castType = $filter->getCastType();
 			$propertyType = null;
 			
 			if ($dbalQueryBuilder instanceof QueryBuilder) {
@@ -187,55 +185,46 @@ class Query
 				$propertyName = sprintf('%s.%s', $this->dqlAlias, $propertyName);
 			}
 			
-			$this->filterHandler->evaluate($dbalQueryBuilder, $propertyName, $value, $castType, $propertyType);
+			$this->filterHandler->evaluate($dbalQueryBuilder, $propertyName, $value, $filter->getCastType(), $propertyType);
 		}
 		
 		if ($dbalQueryBuilder instanceof QueryBuilder) {
 			$identifier = sprintf('%s.%s', $this->dqlAlias, $classMetadata->getIdentifierFieldNames()[0]);
-			$dbalQueryBuilder = $this->handleORMQueryBuilder($dbalQueryBuilder)
-									 ->from($this->className, $this->dqlAlias);
-			
-			$type = PersisterHelper::getTypeOfField($key, $this->className, $this->objectManager)[0] ?? null;
-			$this->filterHandler->evaluate($dbalQueryBuilder, $key, $value, $type);
-			
-			$fullyItems = (int) $dbalQueryBuilder
-									->select(true === $this->queryParts['distinct'] ? 
-								 		$dbalQueryBuilder->expr()->countDistinct($identifier) : 
-								 		$dbalQueryBuilder->expr()->count($identifier)
-									)
-									->getQuery()
-									->getSingleScalarResult();
+			$fullyItems = (int) $dbalQueryBuilder->select(true === $this->queryParts['distinct'] ?
+													$dbalQueryBuilder->expr()->countDistinct($identifier) :
+													$dbalQueryBuilder->expr()->count($identifier)
+												)
+												->from($this->className, $this->dqlAlias)
+												->getQuery()
+												->getSingleScalarResult();
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
 					$dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $sort), $order);
 				}
 				
-				$items = $dbalQueryBuilder
-							->setFirstResult($itemOffset)
-							->setMaxResults($this->itemPerPage)
-							->select($this->dqlAlias)
-							->getQuery()
-							->getResult();
+				$items = $dbalQueryBuilder->select($this->dqlAlias)
+										  ->setFirstResult($itemOffset)
+										  ->setMaxResults($this->itemPerPage)
+										  ->getQuery()
+										  ->getResult();
 			}
 		} elseif ($dbalQueryBuilder instanceof Builder) {
-			$fullyItems = (int) $dbalQueryBuilder
-									->count()
-									->getQuery()
-									->execute();
+			$fullyItems = (int) $dbalQueryBuilder->count()
+												 ->getQuery()
+												 ->execute();
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
 					$dbalQueryBuilder->sort($sort, $order);
 				}
 				
-				$items = $dbalQueryBuilder
-							->find()
-							->skip($itemOffset)
-							->limit($this->itemPerPage)
-							->getQuery()
-							->execute()
-							->toArray(false);
+				$items = $dbalQueryBuilder->find()
+										  ->skip($itemOffset)
+										  ->limit($this->itemPerPage)
+										  ->getQuery()
+										  ->execute()
+										  ->toArray(false);
 			}
 		}
 		

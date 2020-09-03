@@ -26,6 +26,16 @@ class RangeORMFilterExpressionTest extends KernelTestCase
 	/**
 	 * @covers
 	 */
+	public function testThatFilterCanSupportEvaluation()
+	{
+		$filterExpression = new RangeORMFilterExpression();
+		
+		$this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'range[1,2]'));
+	}
+	
+	/**
+	 * @covers
+	 */
 	public function testThatFilterCanEvaluateExpression()
 	{
 		$filterExpression = new RangeORMFilterExpression();

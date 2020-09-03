@@ -27,6 +27,16 @@ class RangeODMFilterExpressionTest extends KernelTestCase
 	/**
 	 * @covers
 	 */
+	public function testThatFilterCanSupportEvaluation()
+	{
+		$filterExpression = new RangeODMFilterExpression();
+		
+		$this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'range[1,2]'));
+	}
+	
+	/**
+	 * @covers
+	 */
 	public function testThatFilterCanEvaluateExpression()
 	{
 		$filterExpression = new RangeODMFilterExpression();

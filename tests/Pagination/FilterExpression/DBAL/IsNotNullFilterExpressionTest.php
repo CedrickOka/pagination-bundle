@@ -33,6 +33,17 @@ class IsNotNullFilterExpressionTest extends KernelTestCase
 	/**
 	 * @covers
 	 */
+	public function testThatFilterCanSupportEvaluation()
+	{
+		$filterExpression = new IsNotNullFilterExpression();
+		
+		$this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'isNotNull()'));
+		$this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'isNotNull()'));
+	}
+	
+	/**
+	 * @covers
+	 */
 	public function testThatFilterCanEvaluateOrmExpression()
 	{
 		$filterExpression = new IsNotNullFilterExpression();

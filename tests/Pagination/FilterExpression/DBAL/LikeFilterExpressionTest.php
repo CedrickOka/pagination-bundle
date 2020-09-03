@@ -33,6 +33,17 @@ class LikeFilterExpressionTest extends KernelTestCase
 	/**
 	 * @covers
 	 */
+	public function testThatFilterCanSupportEvaluation()
+	{
+		$filterExpression = new LikeFilterExpression();
+		
+		$this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'like(text)'));
+		$this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'like(text)'));
+	}
+	
+	/**
+	 * @covers
+	 */
 	public function testThatFilterCanEvaluateOrmExpression()
 	{
 		$filterExpression = new LikeFilterExpression();
