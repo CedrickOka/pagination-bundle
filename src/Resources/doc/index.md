@@ -116,8 +116,8 @@ oka_pagination:
                 item_per_page: item_per_page
                 sort: sort
                 desc: desc
-		         fields: fields
-		         distinct: distinct
+                fields: fields
+                distinct: distinct
 ```
 
 Step 4: Use the bundle is simple
