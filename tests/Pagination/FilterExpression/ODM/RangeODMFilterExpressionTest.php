@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\ODM;
 
-use Oka\PaginationBundle\Pagination\FilterExpression\ODM\RangeFilterExpression;
+use Oka\PaginationBundle\Pagination\FilterExpression\ODM\RangeODMFilterExpression;
 use Oka\PaginationBundle\Tests\Document\Page;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class RangeFilterExpressionTest extends KernelTestCase
+class RangeODMFilterExpressionTest extends KernelTestCase
 {
 	/**
 	 * @var \Doctrine\ODM\MongoDB\DocumentManager
@@ -29,7 +29,7 @@ class RangeFilterExpressionTest extends KernelTestCase
 	 */
 	public function testThatFilterCanEvaluateExpression()
 	{
-		$filterExpression = new RangeFilterExpression();
+		$filterExpression = new RangeODMFilterExpression();
 		$queryBuilder = $this->documentManager->createQueryBuilder(Page::class);
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range[1,2]', 'int');

@@ -12,11 +12,11 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PageRouteLoader implements RouteLoaderInterface
 {
-	private $configs;
+	private $configurations;
 	
-	public function __construct(ConfigurationBag $configs)
+	public function __construct(ConfigurationBag $configurations)
 	{
-		$this->configs = $configs;
+		$this->configurations = $configurations;
 	}
 	
 	public function __invoke() :RouteCollection

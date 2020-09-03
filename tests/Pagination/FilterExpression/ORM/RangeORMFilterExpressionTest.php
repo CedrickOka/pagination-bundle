@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\ORM;
 
-use Oka\PaginationBundle\Pagination\FilterExpression\ORM\RangeFilterExpression;
+use Oka\PaginationBundle\Pagination\FilterExpression\ORM\RangeORMFilterExpression;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class RangeFilterExpressionTest extends KernelTestCase
+class RangeORMFilterExpressionTest extends KernelTestCase
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -28,7 +28,7 @@ class RangeFilterExpressionTest extends KernelTestCase
 	 */
 	public function testThatFilterCanEvaluateExpression()
 	{
-		$filterExpression = new RangeFilterExpression();
+		$filterExpression = new RangeORMFilterExpression();
 		$queryBuilder = $this->entityManager->createQueryBuilder();
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range[1,2]', 'int');

@@ -11,7 +11,7 @@ use Oka\PaginationBundle\Pagination\Filter;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class RangeFilterExpression extends AbstractORMFilterExpression
+class RangeORMFilterExpression extends AbstractORMFilterExpression
 {
 	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
 	{

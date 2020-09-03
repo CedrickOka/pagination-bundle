@@ -53,7 +53,7 @@ class PaginationManagerTest extends KernelTestCase
 	{
 		/** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
 		$paginationManager = static::$container->get('oka_pagination.pagination_manager');
-		$request = new Request(['createdAt' => date('c')]);
+		$request = new Request(['createdAt' => sprintf('neq(%s)', date('c'))]);
 		$page = $paginationManager->paginate('page_mongodb', $request);
 		
 		$this->assertEquals(1, $page->getPage());
