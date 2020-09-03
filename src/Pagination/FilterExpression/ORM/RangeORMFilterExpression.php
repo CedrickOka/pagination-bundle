@@ -3,8 +3,9 @@ namespace Oka\PaginationBundle\Pagination\FilterExpression\ORM;
 
 use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Exception\BadFilterExpressionException;
-use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 use Oka\PaginationBundle\Pagination\Filter;
+use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
+use Oka\PaginationBundle\Pagination\FilterExpression\RangeFilterExpressionTrait;
 
 /**
  *
@@ -13,12 +14,14 @@ use Oka\PaginationBundle\Pagination\Filter;
  */
 class RangeORMFilterExpression extends AbstractORMFilterExpression
 {
+	use RangeFilterExpressionTrait;
+	
 	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
 	{
 		$matches = [];
 		
 		if (!preg_match(self::getExpressionPattern(), $value, $matches)) {
-			throw new BadFilterExpressionException(sprintf('The range filter expression does not support the following value "%s".', $value));
+			throw new BadFilterExpressionException(sprintf('The orm range filter expression does not support the following value "%s".', $value));
 		}
 		
 		$start = trim($matches['start']);
@@ -54,10 +57,5 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
 		return '[' === $rightOperator ? 
 			$queryBuilder->expr()->lt($field, '?') : 
 			$queryBuilder->expr()->lte($field, '?');
-	}
-	
-	protected static function getExpressionPattern() :string
-	{
-		return '#^range(?<leftOperator>\[|\])(?<start>.*),(?<end>.*)(?<rightOperator>\[|\])$#i';
 	}
 }

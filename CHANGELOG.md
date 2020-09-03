@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.0.1 (2020-09-03)
+
+* Fixed bug.
+
 #### 5.0.0 (2020-09-02)
 
 * [BC Break] Changed configuration values.

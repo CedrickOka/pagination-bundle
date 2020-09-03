@@ -5,6 +5,7 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use Oka\PaginationBundle\Exception\BadFilterExpressionException;
 use Oka\PaginationBundle\Pagination\Filter;
 use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
+use Oka\PaginationBundle\Pagination\FilterExpression\RangeFilterExpressionTrait;
 
 /**
  *
@@ -13,12 +14,14 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  */
 class RangeODMFilterExpression extends AbstractODMFilterExpression
 {
+	use RangeFilterExpressionTrait;
+	
 	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
 	{
 		$matches = [];
 		
 		if (!preg_match(self::getExpressionPattern(), $value, $matches)) {
-			throw new BadFilterExpressionException(sprintf('The range filter expression does not support the following value "%s".', $value));
+			throw new BadFilterExpressionException(sprintf('The odm range filter expression does not support the following value "%s".', $value));
 		}
 		
 		$start = trim($matches['start']);
@@ -55,10 +58,5 @@ class RangeODMFilterExpression extends AbstractODMFilterExpression
 		return '[' === $rightOperator ? 
 		    $queryBuilder->expr()->field($field)->lt($end) : 
 		    $queryBuilder->expr()->field($field)->lte($end);
-	}
-	
-	protected static function getExpressionPattern() :string
-	{
-		return '#^range(?<leftOperator>\[|\])(?<start>.*),(?<end>.*)(?<rightOperator>\[|\])$#i';
 	}
 }

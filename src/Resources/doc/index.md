@@ -81,8 +81,8 @@ oka_pagination:
         item_per_page: item_per_page                        # The defaults number of items by page query parameter name
         sort: sort                                          # The defaults sort field query parameter name
         desc: desc                                          # The defaults sort direction query parameter name
-        fields: ~                                           # The defaults sort direction query parameter name
-        distinct: true                                      # The defaults sort direction query parameter name
+        fields: fields                                      # The defaults sort direction query parameter name
+        distinct: distinct                                  # The defaults sort direction query parameter name
     twig:
         template: '@OkaPagination:widget:pagination.html.twig' # The defaults twig template used for shown pagination widget
     pagination_managers:
@@ -116,8 +116,8 @@ oka_pagination:
                 item_per_page: item_per_page
                 sort: sort
                 desc: desc
-		         fields: ~
-		         distinct: true
+		         fields: fields
+		         distinct: distinct
 ```
 
 Step 4: Use the bundle is simple
