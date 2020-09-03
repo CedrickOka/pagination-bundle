@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+#### 5.0.0 (2020-09-02)
+
+* [BC Break] Changed configuration values.
+* [BC Break] Replaced query converter by filter expression and fixed bad cast value.
+* Desactivated the Twig template support
+
 #### 4.2.4 (2020-06-04)
 
 * [QueryBuillder] Fixed bug.

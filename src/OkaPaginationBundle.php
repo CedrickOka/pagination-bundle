@@ -18,7 +18,6 @@ class OkaPaginationBundle extends Bundle
 	{
 		parent::build($container);
 		
-// 		$container->addCompilerPass(new TwigExtensionPass());
 		$container->addCompilerPass(new FilterExpressionsPass());
 		$container->addCompilerPass(new DoctrineRegistryServiceLocatorPass());
 	}

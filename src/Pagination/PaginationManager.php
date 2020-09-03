@@ -81,7 +81,7 @@ class PaginationManager
 			unset($sortAttributes[$key]);
 		}
 		
-		if (false === empty($sortAttributes)) {
+		if (true === $strictMode && false === empty($sortAttributes)) {
 			throw new SortAttributeNotAvailableException($sortAttributes, sprintf('Invalid request sort attributes "%s" not avalaible.', implode(', ', $sortAttributes)));
 		}
 		
@@ -94,21 +94,21 @@ class PaginationManager
 			$objectManager, 
 			$this->filterHandler, 
 			$configuration->getClassName(), 
-			(int) $request->get($queryMappings['item_per_page'], $configuration->getItemPerPage()), 
+			(int) $request->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()), 
 			$configuration->getMaxPageNumber(), 
 			$filters,
-			(int) $request->get($queryMappings['page'], 1),
+			(int) $request->get($queryMappings['page'], '1'),
 			true === empty($_criteria) ? $criteria : array_merge($criteria, $_criteria),
 			true === empty($_orderBy) ? $orderBy : array_merge($orderBy, $_orderBy)
 		);
 		
 		$query->addQueryPart('select', $this->parseQueryToArray($request, $queryMappings['fields'], ',', []));
-		$query->addQueryPart('distinct', (boolean) $request->get($queryMappings['distinct'], true));
+		$query->addQueryPart('distinct', $request->query->has($queryMappings['distinct']));
 		
 		return $query;
 	}
 	
-	protected function parseQueryToArray(Request $request, string $key, $delimiter = null, $defaultValue = null)
+	protected function parseQueryToArray(Request $request, string $key, string $delimiter = null, $defaultValue = null)
 	{
 		$value = $request->query->get($key, $defaultValue);
 		
