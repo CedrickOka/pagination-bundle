@@ -1,7 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Pagination\FilterExpression\ODM;
 
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ODM\MongoDB\Query\Builder;
 use Oka\PaginationBundle\Pagination\FilterExpression\AbstractFilterExpression;
 
 /**
@@ -13,6 +13,6 @@ abstract class AbstractODMFilterExpression extends AbstractFilterExpression
 {
 	public function supports(object $queryBuilder, string $value) :bool
 	{
-		return parent::supports($queryBuilder, $value) && $queryBuilder instanceof QueryBuilder;
+		return parent::supports($queryBuilder, $value) && $queryBuilder instanceof Builder;
 	}
 }
