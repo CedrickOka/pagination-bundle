@@ -1,6 +1,7 @@
 <?php
 namespace Oka\PaginationBundle\Pagination;
 
+use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,6 +75,14 @@ class PaginationManager
 			}
 			
 			$_orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
+			
+			if (false !== ($sort = array_search($key, $sortAttributes))) {
+				unset($sortAttributes[$sort]);
+			}
+		}
+		
+		if (false === empty($sortAttributes)) {
+			throw new SortAttributeNotAvailableException($sortAttributes, sprintf('Invalid request sort attributes "%s" not available.', implode(',', $sortAttributes)));
 		}
 		
 		/** @var \Doctrine\Persistence\ManagerRegistry $registry */

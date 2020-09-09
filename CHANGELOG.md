@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.2.1 (2020-09-09)
+
+* Fix that exception must be throw if sort attribute is not exist.
+
 #### 5.2.0 (2020-09-09)
 
 * Improves code and fixed bug.

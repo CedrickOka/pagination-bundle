@@ -292,7 +292,7 @@ class Query
 	protected function getSortName(string $sort) :string
 	{
 		if (false === $this->filters->has($sort)) {
-			throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not avalaible.', $sort));
+			throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not available.', $sort));
 		}
 		
 		/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
