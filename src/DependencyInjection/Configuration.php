@@ -233,7 +233,7 @@ class Configuration implements ConfigurationInterface
 				->arrayNode('order')
 					->treatNullLike([])
 					->enumPrototype()
-						->values(['asc', 'desc'])
+						->values(['asc', 'desc', 'ASC', 'DESC'])
 						->defaultValue('asc')
 					->end()
 				->end()

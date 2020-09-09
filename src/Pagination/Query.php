@@ -8,6 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 use Oka\PaginationBundle\Exception\FilterNotAvailableException;
 use Oka\PaginationBundle\Exception\ObjectManagerNotSupportedException;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
+use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 
 /**
  *
@@ -200,7 +201,7 @@ class Query
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
-					$dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $sort), $order);
+					$dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortName($sort)), $order);
 				}
 				
 				$items = $dbalQueryBuilder->select($this->dqlAlias)
@@ -216,7 +217,7 @@ class Query
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
-					$dbalQueryBuilder->sort($sort, $order);
+					$dbalQueryBuilder->sort($this->getSortName($sort), $order);
 				}
 				
 				$items = $dbalQueryBuilder->find()
@@ -283,5 +284,17 @@ class Query
 		}
 		
 		return $pageNumber;
+	}
+	
+	protected function getSortName(string $sort) :string
+	{
+		if (false === $this->filters->has($sort)) {
+			throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not avalaible.', $sort));
+		}
+		
+		/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
+		$filter = $this->filters->get($sort);
+		
+		return $filter->getPropertyName();
 	}
 }

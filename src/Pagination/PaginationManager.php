@@ -65,7 +65,7 @@ class PaginationManager
 					continue;
 				}
 				
-				$criteria[$filter->getPropertyName()] = $value;
+				$criteria[$key] = $value;
 			}
 			
 			if (false === $filter->isOrderable()) {
@@ -76,7 +76,7 @@ class PaginationManager
 				continue;
 			}
 			
-			$_orderBy[$filter->getPropertyName()] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
+			$_orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
 			
 			if (false !== ($key = array_search($key, $sortAttributes))) {
 				unset($sortAttributes[$key]);

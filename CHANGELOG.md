@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.1.1 (2020-09-09)
+
+* Fixed bug.
+
 #### 5.1.0 (2020-09-09)
 
 * Fixed error "Invalid request sort attributes not avalaible" throw every time.
