@@ -62,36 +62,37 @@ doctrine_mongodb:
 
 oka_pagination:
     db_driver: orm
+    filters:
+        createdAt:
+            property_name: createdAt
+            cast_type: datetime
+            searchable: true
+            orderable: true
+    sort:
+        order:
+            createdAt: desc
     pagination_managers:
         page_orm:
             db_driver: orm
             class: Oka\PaginationBundle\Tests\Entity\Page
             filters:
-                field:
-                    property_name: field
-                    cast_type: string
+                number:
+                    property_name: number
+                    cast_type: int
                     searchable: true
-                    ordering:
-                        direction: asc
-                createdAt:
-                    property_name: createdAt
-                    cast_type: datetime
-                    searchable: true
-                    ordering:
-                        direction: desc
+                    orderable: true
+            sort:
+                order:
+                    number: desc
         page_mongodb:
             db_driver: mongodb
             class: Oka\PaginationBundle\Tests\Document\Page
             filters:
-                field:
-                    property_name: field
-                    cast_type: string
+                number:
+                    property_name: number
+                    cast_type: int
                     searchable: true
-                    ordering:
-                        direction: asc
-                createdAt:
-                    property_name: createdAt
-                    cast_type: datetime
-                    searchable: true
-                    ordering:
-                        direction: desc
+                    orderable: true
+            sort:
+                order:
+                    number: asc

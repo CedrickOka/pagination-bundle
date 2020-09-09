@@ -72,19 +72,25 @@ Add the following configuration to your `config.yml`.
 oka_pagination:
     db_driver: orm
     object_manager_name: default
-    item_per_page: 10                                       # The defaults number of items to show by page
-    max_page_number: 4000                                   # The defaults number max of page to show
+    item_per_page: 10                      # The defaults number of items to show by page
+    max_page_number: 4000                  # The defaults number max of page to show
+    filters:
+        createdAt:
+            cast_type: datetime
+            orderable: true
     sort:
-        delimiter: ','                                      # The defaults sort query delimiter value
+        delimiter: ','                     # The defaults sort query delimiter value
+        order:                             # The defaults order
+            createdAt: DESC
     query_mappings:
-        page: page                                          # The defaults page query parameter name
-        item_per_page: item_per_page                        # The defaults number of items by page query parameter name
-        sort: sort                                          # The defaults sort field query parameter name
-        desc: desc                                          # The defaults sort direction query parameter name
-        fields: fields                                      # The defaults sort direction query parameter name
-        distinct: distinct                                  # The defaults sort direction query parameter name
+        page: page                         # The defaults page query parameter name
+        item_per_page: item_per_page       # The defaults number of items by page query parameter name
+        sort: sort                         # The defaults sort field query parameter name
+        desc: desc                         # The defaults sort direction query parameter name
+        fields: fields                     # The defaults sort direction query parameter name
+        distinct: distinct                 # The defaults sort direction query parameter name
     twig:
-        template: '@OkaPagination:widget:pagination.html.twig' # The defaults twig template used for shown pagination widget
+        template: '@OkaPagination:widget:pagination.html.twig'    # The defaults twig template used for shown pagination widget
     pagination_managers:
         foo:
             db_driver: orm
@@ -96,21 +102,20 @@ oka_pagination:
             filters:
                 id:
                     cast_type: int
-                    ordering:
-                        enabled: false
                 name:
-                    field: name            # Not required if the filter name is equal to the field name.
-                    cast_type: string      # The PHP type in which the filter value will be casted. The available values are `array`, `boolean`, `bool`, `double`, `float`, `real`, `integer`, `int`, `string`, `datetime`, `object`.
-                    property_name: name
-                    searchable: true       # Indicates whether the filter can be used as a search filter, the defaults value is `true`.
-                    ordering:              # Allows you to configure how the filter should be used to order the results.
-                        direction: ASC
+                    property_name: lastName    # Not required if the filter name is equal to the field name.
+                    cast_type: string          # The PHP type in which the filter value will be casted. The available values are `array`, `boolean`, `bool`, `double`, `float`, `real`, `integer`, `int`, `string`, `datetime`, `object`.
+                    searchable: false          # Indicates whether the filter can be used for filter the request, the defaults value is `true`.
+                    orderable: true            # Indicates whether the filter can be used for sort the request, the defaults value is `true`.
                 enabled:
                     cast_type: boolean
-                    ordering:
-                        direction: DESC
+                createdAt:
+                    cast_type: datetime
+                    orderable: true
             sort:
-                delimiter: ','
+                order:
+                    enabled: DESC
+                    createdAt: ASC
             query_mappings:
                 page: page
                 item_per_page: item_per_page
@@ -140,7 +145,10 @@ use App\Entity\Foo;
 
 //...
 
-public function listAction(Request $request)
+/**
+ * @Route("/foo/list", methods="GET", name="app_foo_list")
+ */
+public function list(Request $request)
 {
     /** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
     $paginationManager = $this->get('oka_pagination.pagination_manager');

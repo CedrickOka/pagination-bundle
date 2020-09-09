@@ -19,10 +19,10 @@ class Page
 	protected $id;
 	
 	/**
-	 * @ORM\Column(type="string")
-	 * @var string
+	 * @ORM\Column(type="integer")
+	 * @var int
 	 */
-	protected $field;
+	protected $number;
 	
 	/**
 	 * @ORM\Column(name="created_at", type="datetime")

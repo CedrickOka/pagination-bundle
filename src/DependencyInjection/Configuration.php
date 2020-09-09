@@ -26,10 +26,20 @@ class Configuration implements ConfigurationInterface
 	    /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode */
 		$rootNode = $treeBuilder->getRootNode();
 		
+		$validateOrder = static function($v){
+			foreach ($v['sort']['order'] as $filterName => $direction) {
+				if (false === array_key_exists($filterName, $v['filters'])) {
+					return true;
+				}
+			}
+			
+			return false;
+		};
+		
 		$rootNode
     		->beforeNormalization()
 	    		->always(static function($v){
-	    		    if (false === isset($v['pagination_managers'])) {
+	    			if (false === isset($v['pagination_managers']) || true === empty($v['pagination_managers'])) {
 	    		        return $v;
 	    		    }
 	    		    
@@ -44,7 +54,7 @@ class Configuration implements ConfigurationInterface
     		            }
     		            
     		            if (true === isset($v['sort'])) {
-    		                $v['pagination_managers'][$key]['sort'] = array_merge($v['sort'], $config['sort'] ??[]);
+    		                $v['pagination_managers'][$key]['sort'] = array_merge_recursive($v['sort'], $config['sort'] ??[]);
     		            }
     		            
     		            if (true === isset($v['query_mappings'])) {
@@ -56,6 +66,24 @@ class Configuration implements ConfigurationInterface
 	    		})
 	    	->end()
     		->addDefaultsIfNotSet()
+    		->validate()
+	    		->ifTrue(static function($v){
+	    			foreach ($v['sort']['order'] as $filterName => $direction) {
+	    				if (false === array_key_exists($filterName, $v['filters'])) {
+	    					return true;
+	    				}
+	    			}
+	    			
+	    			return false;
+	    		})
+	    		->thenInvalid('The configuration value "oka_pagination.sort.order" must only contains keys that matches to filter names.')
+    		->end()
+    		->validate()
+	    		->ifTrue(static function($v){
+	    			return array_key_exists('_defaults', $v['pagination_managers'] ?? []);
+	    		})
+	    		->thenInvalid('Invalid pagination manager name, the word "_defaults" is a reserved, it cannot be used for path "oka_pagination.pagination_managers._defaults".')
+    		->end()
     		->children()
 	    		->append($this->getDBDriverNodeDefinition())
 	    		->append($this->getObjectManageNameNodeDefinition())
@@ -67,14 +95,20 @@ class Configuration implements ConfigurationInterface
 	    		->append($this->getTwigNodeDefinition())
 	    		
 	    		->arrayNode('pagination_managers')
-		    		->treatNullLike([])
 		    		->requiresAtLeastOneElement()
-		    		->useAttributeAsKey('name')
 		    		->validate()
-		    			->ifTrue(static function($v){
-		    				true === array_key_exists('_defaults', $v);
-		    			})
-		    			->thenInvalid('The word "_defaults" is a reserved pagination name, it cannot be used.')
+			    		->ifTrue(static function($v){
+			    			foreach ($v as $key => $config) {
+			    				foreach ($config['sort']['order'] as $filterName => $direction) {
+			    					if (false === array_key_exists($filterName, $config['filters'])) {
+			    						return true;
+			    					}
+			    				}
+			    			}
+			    			
+			    			return false;
+			    		})
+		    			->thenInvalid('The configuration value "oka_pagination.pagination_managers.*.sort.order" must only contains keys that matches to filter names %s.')
 		    		->end()
 		    		->arrayPrototype()
 			    		->children()
@@ -180,17 +214,7 @@ class Configuration implements ConfigurationInterface
 					->end()
 					
 					->booleanNode('searchable')->defaultTrue()->end()
-					
-					->arrayNode('ordering')
-						->canBeDisabled()
-						->addDefaultsIfNotSet()
-						->children()
-							->enumNode('direction')
-								->values(['asc', 'desc'])
-								->defaultValue('asc')
-							->end()
-						->end()
-					->end()
+					->booleanNode('orderable')->defaultTrue()->end()
 				->end()
 			->end();
 		
@@ -202,8 +226,17 @@ class Configuration implements ConfigurationInterface
 		$node = new ArrayNodeDefinition('sort');
 		$node
 			->addDefaultsIfNotSet()
+			->treatNullLike([])
 			->children()
 				->scalarNode('delimiter')->defaultValue(',')->end()
+				
+				->arrayNode('order')
+					->treatNullLike([])
+					->enumPrototype()
+						->values(['asc', 'desc'])
+						->defaultValue('asc')
+					->end()
+				->end()
 			->end();
 		
 		return $node;
@@ -215,6 +248,11 @@ class Configuration implements ConfigurationInterface
 		$node
 			->addDefaultsIfNotSet()
 			->canBeEnabled()
+			->fixXmlConfig('default')
+			->fixXmlConfig('requirement')
+			->fixXmlConfig('option')
+			->fixXmlConfig('scheme')
+			->fixXmlConfig('method')
 			->children()
 				->scalarNode('path')->isRequired()->cannotBeEmpty()->end()
 				

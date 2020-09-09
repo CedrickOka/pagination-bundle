@@ -47,15 +47,16 @@ class PaginationManager
 	public function createQuery(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
 	{
 		$configuration = $this->getConfiguration($key);
-		$filters = $configuration->getFilters();
+		
 		$queryMappings = $configuration->getQueryMappings();
-		$sortConfig = $configuration->getSortConfig();
+		$filters = $configuration->getFilters();
+		$sort = $configuration->getSort();
 		
 		// Extract pagination criteria and sort in request
 		$_criteria = [];
 		$_orderBy = [];
-		$sortAttributes = $this->parseQueryToArray($request, $queryMappings['sort'], $sortConfig['delimiter']);
-		$descAttributes = $this->parseQueryToArray($request, $queryMappings['desc'], $sortConfig['delimiter']);
+		$sortAttributes = $this->parseQueryToArray($request, $queryMappings['sort'], $sort['delimiter']);
+		$descAttributes = $this->parseQueryToArray($request, $queryMappings['desc'], $sort['delimiter']);
 		
 		/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
 		foreach ($filters as $key => $filter) {
@@ -64,21 +65,22 @@ class PaginationManager
 					continue;
 				}
 				
-				$criteria[$key] = $value;
+				$criteria[$filter->getPropertyName()] = $value;
 			}
 			
-			$ordering = $filter->getOrdering();
-			
-			if (false === $ordering['enabled']) {
+			if (false === $filter->isOrderable()) {
 				continue;
 			}
 			
-			if (false === in_array($key, $sortAttributes)) {
+			if (false === in_array($key, $sortAttributes) && false === isset($sort['order'][$key])) {
 				continue;
 			}
 			
-			$_orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $ordering['direction'];
-			unset($sortAttributes[$key]);
+			$_orderBy[$filter->getPropertyName()] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
+			
+			if (false !== ($key = array_search($key, $sortAttributes))) {
+				unset($sortAttributes[$key]);
+			}
 		}
 		
 		if (true === $strictMode && false === empty($sortAttributes)) {

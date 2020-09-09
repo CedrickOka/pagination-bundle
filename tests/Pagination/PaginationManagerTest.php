@@ -51,14 +51,16 @@ class PaginationManagerTest extends KernelTestCase
 	 */
 	public function testThatPaginateDocumentPage()
 	{
+		$filterValue = sprintf('neq(%s)', date('c'));
+		
 		/** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
 		$paginationManager = static::$container->get('oka_pagination.pagination_manager');
-		$request = new Request(['createdAt' => sprintf('neq(%s)', date('c'))]);
+		$request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 		$page = $paginationManager->paginate('page_mongodb', $request);
 		
 		$this->assertEquals(1, $page->getPage());
 		$this->assertEquals(1, $page->getPageNumber());
 		$this->assertEquals(0, $page->getFullyItems());
-		$this->assertEquals($request->query->all(), $page->getFilters());
+		$this->assertEquals(['createdAt' => $filterValue], $page->getFilters());
 	}
 }

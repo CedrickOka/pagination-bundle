@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+#### 5.1.0 (2020-09-09)
+
+* Fixed error "Invalid request sort attributes not avalaible" throw every time.
+* Replaced configuration path "oka_pagination.filters.*.ordering" by "oka_pagination.sort.order".
+* Replaced configuration path "oka_pagination.pagination_managers.filters.*.ordering" by "oka_pagination.pagination_managers.sort.order".
+
 #### 5.0.3 (2020-09-03)
 
 * Fixed bug.

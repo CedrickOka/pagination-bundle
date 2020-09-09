@@ -13,19 +13,19 @@ final class Configuration
 	private $dbDriver;
 	private $itemPerPage;
 	private $maxPageNumber;
-	private $sortConfig;
+	private $sort;
 	private $queryMappings;
 	private $filters;
 	private $objectManagerName;
 	private $className;
 	private $route;
 	
-	public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sortConfig, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null)
+	public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null)
 	{
 		$this->dbDriver = $dbDriver;
 		$this->itemPerPage = $itemPerPage;
 		$this->maxPageNumber = $maxPageNumber;
-		$this->sortConfig = $sortConfig;
+		$this->sort = $sort;
 		$this->filters = $filters;
 		$this->objectManagerName = $objectManagerName;
 		$this->className = $className;
@@ -54,9 +54,9 @@ final class Configuration
 		return $this;
 	}
 	
-	public function getSortConfig() :array
+	public function getSort() :array
 	{
-		return $this->sortConfig;
+		return $this->sort;
 	}
 	
 	public function getQueryMappings() :array

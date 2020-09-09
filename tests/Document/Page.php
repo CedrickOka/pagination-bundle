@@ -18,10 +18,10 @@ class Page
 	protected $id;
 	
 	/**
-	 * @MongoDB\Field(type="string")
-	 * @var string
+	 * @MongoDB\Field(type="int")
+	 * @var int
 	 */
-	protected $field;
+	protected $number;
 	
 	/**
 	 * @MongoDB\Field(name="created_at", type="date")
