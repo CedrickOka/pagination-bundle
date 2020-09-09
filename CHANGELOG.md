@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.2.0 (2020-09-09)
+
+* Improves code and fixed bug.
+
 #### 5.1.1 (2020-09-09)
 
 * Fixed bug.

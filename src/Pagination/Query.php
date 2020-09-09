@@ -17,9 +17,6 @@ use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
  */
 class Query
 {
-	const HYDRATE_OBJECT = 0;
-	const HYDRATE_ARRAY = 1;
-	
 	private $objectManager;
 	private $filterHandler;
 	private $className;
@@ -163,7 +160,7 @@ class Query
 		return $this;
 	}
 	
-	public function fetch(string $hydrationMode = null)
+	public function execute() :Page
 	{
 		$items = [];
 		$itemOffset = $this->getItemOffset();
@@ -229,7 +226,7 @@ class Query
 			}
 		}
 		
-		$page = new Page(
+		return new Page(
 			$this->page, 
 			$this->itemPerPage, 
 			$this->queryParts['where'], 
@@ -239,8 +236,14 @@ class Query
 			$this->countPage($fullyItems), 
 			$items
 		);
-		
-		return self::HYDRATE_ARRAY === $hydrationMode ? $page->toArray() : $page;
+	}
+	
+	/**
+	 * @deprecated Use instead Query::execute() method.
+	 */
+	public function fetch() :Page
+	{
+		return $this->execute();
 	}
 	
 	/**

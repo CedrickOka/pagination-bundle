@@ -1,7 +1,6 @@
 <?php
 namespace Oka\PaginationBundle\Pagination;
 
-use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,11 +36,11 @@ class PaginationManager
 		throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $key));
 	}
 	
-	public function paginate(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true, $hydrationMode = Query::HYDRATE_OBJECT)
+	public function paginate(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Page
 	{
 		$query = $this->createQuery($key, $request, $criteria, $orderBy, $strictMode);
 		
-		return $query->fetch($hydrationMode);
+		return $query->execute();
 	}
 	
 	public function createQuery(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
@@ -61,11 +60,9 @@ class PaginationManager
 		/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
 		foreach ($filters as $key => $filter) {
 			if (true === $filter->isSearchable()) {
-				if (null === ($value = $request->get($key))) {
-					continue;
+				if (null !== ($value = $request->get($key))) {
+					$_criteria[$key] = $value;
 				}
-				
-				$criteria[$key] = $value;
 			}
 			
 			if (false === $filter->isOrderable()) {
@@ -77,14 +74,6 @@ class PaginationManager
 			}
 			
 			$_orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
-			
-			if (false !== ($key = array_search($key, $sortAttributes))) {
-				unset($sortAttributes[$key]);
-			}
-		}
-		
-		if (true === $strictMode && false === empty($sortAttributes)) {
-			throw new SortAttributeNotAvailableException($sortAttributes, sprintf('Invalid request sort attributes "%s" not avalaible.', implode(', ', $sortAttributes)));
 		}
 		
 		/** @var \Doctrine\Persistence\ManagerRegistry $registry */
@@ -110,7 +99,7 @@ class PaginationManager
 		return $query;
 	}
 	
-	protected function parseQueryToArray(Request $request, string $key, string $delimiter = null, $defaultValue = null)
+	protected function parseQueryToArray(Request $request, string $key, string $delimiter = null, $defaultValue = null) :array
 	{
 		$value = $request->query->get($key, $defaultValue);
 		
