@@ -47,14 +47,11 @@ class PaginationManager
 	public function createQuery(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
 	{
 		$configuration = $this->getConfiguration($key);
-		
 		$queryMappings = $configuration->getQueryMappings();
 		$filters = $configuration->getFilters();
 		$sort = $configuration->getSort();
 		
 		// Extract pagination criteria and sort in request
-		$_criteria = [];
-		$_orderBy = [];
 		$sortAttributes = $this->parseQueryToArray($request, $queryMappings['sort'], $sort['delimiter']);
 		$descAttributes = $this->parseQueryToArray($request, $queryMappings['desc'], $sort['delimiter']);
 		
@@ -62,7 +59,7 @@ class PaginationManager
 		foreach ($filters as $key => $filter) {
 			if (true === $filter->isSearchable()) {
 				if (null !== ($value = $request->get($key))) {
-					$_criteria[$key] = $value;
+					$criteria[$key] = $value;
 				}
 			}
 			
@@ -74,7 +71,7 @@ class PaginationManager
 				continue;
 			}
 			
-			$_orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
+			$orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
 			
 			if (false !== ($sort = array_search($key, $sortAttributes))) {
 				unset($sortAttributes[$sort]);
@@ -93,13 +90,13 @@ class PaginationManager
 		$query = new Query(
 			$objectManager, 
 			$this->filterHandler, 
-			$configuration->getClassName(), 
+			$configuration->getClassName() ?? $key, 
 			(int) $request->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()), 
 			$configuration->getMaxPageNumber(), 
 			$filters,
 			(int) $request->get($queryMappings['page'], '1'),
-			true === empty($_criteria) ? $criteria : array_merge($criteria, $_criteria),
-			true === empty($_orderBy) ? $orderBy : array_merge($orderBy, $_orderBy)
+			$criteria,
+			$orderBy
 		);
 		
 		$query->addQueryPart('select', $this->parseQueryToArray($request, $queryMappings['fields'], ',', []));

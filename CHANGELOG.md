@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.2.2 (2020-09-21)
+
+* Fixed bug when using a class name like first argument of "PaginationManager::paginate()" method.
+
 #### 5.2.1 (2020-09-09)
 
 * Fix that exception must be throw if sort attribute is not exist.
