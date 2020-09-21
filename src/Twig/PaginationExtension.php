@@ -13,8 +13,6 @@ use Twig\Extension\GlobalsInterface;
  */
 class PaginationExtension extends AbstractExtension implements GlobalsInterface
 {
-	const DEFAULT_TEMPLATE = '@OkaPagination:widget:pagination.html.twig';
-	
 	private $paginationManager;
 	
 	public function __construct(PaginationManager $paginationManager)
@@ -29,54 +27,54 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
 	
 	public function getGlobals()
 	{
-		return ['oka_pagination' => []];
+		return [
+			'oka_pagination' => [
+				'pages' => []
+			]
+		];
 	}
 	
 	public function getFunctions()
 	{
 		return [
-		    new TwigFunction('paginate', [$this, 'renderDefaultView'], ['needs_environment' => true, 'is_safe' => ['html']]),
+		    new TwigFunction('paginate', [$this, 'renderCurrentPaginationView'], ['needs_environment' => true, 'is_safe' => ['html']]),
 		    new TwigFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']])
 		];
 	}
 	
 	/**
-	 * Render pagination widget view
-	 * 
-	 * @param \Twig_Environment $env
-	 * @param string $route
-	 * @param array $params
-	 * @return string
+	 * Render current pagination widget view
 	 */
-	public function renderDefaultView(\Twig_Environment $env, $route, array $params = [])
+	public function renderCurrentPaginationView(\Twig_Environment $env, string $route, array $params = []) :string
 	{
-		return $this->renderView($env, $this->paginationManager->getLastManagerName(), $route, $params);
+		return $this->renderView($env, $this->getLocalGlobals($env)['current_manager_name'] ?? '_defaults', $route, $params);
 	}
 	
 	/**
 	 * Render pagination widget view
-	 * 
-	 * @param \Twig_Environment $env
-	 * @param string $name
-	 * @param string $route
-	 * @param array $params
 	 * @throws \InvalidArgumentException
-	 * @return string
 	 */
-	public function renderView(\Twig_Environment $env, $name, $route, array $params = [])
+	public function renderView(\Twig_Environment $env, string $managerName, string $route, array $parameters = []) :string
 	{
-		$config = $this->paginationManager->getConfiguration($name);
-		$globals = $env->getGlobals();
+		$globals = $this->getLocalGlobals($env);
 		
-		if (false === isset($globals['oka_pagination'][$name])) {
-			throw new \InvalidArgumentException(sprintf('The "%s" configuration key not found in twig global variables "oka_pagination".', $name));
+		if (false === isset($globals['pages'][$managerName])) {
+			throw new \InvalidArgumentException(sprintf('The configuration name "%s" is not found in twig global variables "oka_pagination.pages".', $managerName));
 		}
 		
-		return $env->render($config->getTemplate(), [
-			'route' => $route, 
-			'params' => $params,
-			'managerName' => $name,
-			'context' => $globals['oka_pagination'][$name]
+		/** @var \Oka\PaginationBundle\Pagination\Configuration $configuration */
+		$configuration = $this->paginationManager->getConfiguration($managerName);
+		
+		return $env->render($configuration->getTwig()['template'], [
+			'route' => $route,
+			'managerName' => $managerName,
+			'parameters' => $parameters,
+			'context' => $globals['pages'][$managerName]
 		]);
+	}
+	
+	private function getLocalGlobals(\Twig_Environment $env) :array
+	{
+		return $env->getGlobals()['oka_pagination'];
 	}
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Oka\PaginationBundle\DependencyInjection\Compiler;
 
+use Oka\PaginationBundle\OkaPaginationEvents;
+use Oka\PaginationBundle\EventListener\PageListener;
 use Oka\PaginationBundle\Twig\PaginationExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -19,12 +21,16 @@ class TwigExtensionPass implements CompilerPassInterface
 			return;
 		}
 		
-		if (false === $container->hasDefinition('twig.runtime_loader')) {
+		if (false === $container->hasDefinition('twig')) {
 			return;
 		}
-				
-		$definition = $container->register('oka_pagination.twig.extension', PaginationExtension::class);
-		$definition->addArgument(new Reference('oka_pagination.pagination_manager'));
-		$definition->addTag('twig.extension');
+		
+		$extension = $container->register('oka_pagination.twig.extension', PaginationExtension::class);
+		$extension->addArgument(new Reference('oka_pagination.pagination_manager'));
+		$extension->addTag('twig.extension');
+		
+		$listener = $container->register('oka_pagination.page.event_listener', PageListener::class);
+		$extension->addArgument(new Reference('twig'));
+		$listener->addTag('kernel.event_listener', ['event' => OkaPaginationEvents::PAGE, 'method' => 'onPage']);
 	}
 }

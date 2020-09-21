@@ -26,7 +26,7 @@ services:
     oka_pagination.pagination_manager:
         public: true
         class: Oka\PaginationBundle\Pagination\PaginationManager
-        arguments: ['', '@oka_pagination.pagination_configuration_bag', '@oka_pagination.filter_expression_handler']
+        arguments: ['', '@oka_pagination.pagination_configuration_bag', '@oka_pagination.filter_expression_handler', '@event_dispatcher']
 
     Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler: '@oka_pagination.filter_expression_handler'
     Oka\PaginationBundle\Pagination\PaginationManager: '@oka_pagination.pagination_manager'

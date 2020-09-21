@@ -19,8 +19,9 @@ final class Configuration
 	private $objectManagerName;
 	private $className;
 	private $route;
+	private $twig;
 	
-	public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null)
+	public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null, array $twig = [])
 	{
 		$this->dbDriver = $dbDriver;
 		$this->itemPerPage = $itemPerPage;
@@ -31,6 +32,12 @@ final class Configuration
 		$this->className = $className;
 		$this->queryMappings = $queryMappings;
 		$this->route = $route;
+		
+		if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
+			throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));
+		}
+		
+		$this->twig = $twig;
 	}
 	
 	public function getDBDriver() :string
@@ -82,5 +89,10 @@ final class Configuration
 	public function getRoute() :?Route
 	{
 		return $this->route;
+	}
+	
+	public function getTwig() :array
+	{
+		return $this->twig;
 	}
 }

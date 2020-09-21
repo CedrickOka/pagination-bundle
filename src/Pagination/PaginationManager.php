@@ -1,10 +1,13 @@
 <?php
 namespace Oka\PaginationBundle\Pagination;
 
+use Oka\PaginationBundle\OkaPaginationEvents;
+use Oka\PaginationBundle\Event\PageEvent;
 use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * 
@@ -16,37 +19,48 @@ class PaginationManager
 	private $registryLocator;
 	private $configurations;
 	private $filterHandler;
+	private $dispatcher;
 	
-	public function __construct(ServiceLocator $registryLocator, ConfigurationBag $configurations, FilterExpressionHandler $filterHandler)
+	public function __construct(ServiceLocator $registryLocator, ConfigurationBag $configurations, FilterExpressionHandler $filterHandler, EventDispatcherInterface $dispatcher)
 	{
 		$this->registryLocator = $registryLocator;
 		$this->configurations = $configurations;
 		$this->filterHandler = $filterHandler;
+		$this->dispatcher = $dispatcher;
 	}
 	
-	public function getConfiguration(string $key) :Configuration
+	public function getConfiguration(string $managerName) :Configuration
 	{
-		if (true === $this->configurations->has($key)) {
-			return $this->configurations->get($key);
+		if (true === $this->configurations->has($managerName)) {
+			return $this->configurations->get($managerName);
 		}
 		
-		if (true === class_exists($key)) {
+		if (true === class_exists($managerName)) {
 			return $this->configurations->getDefaults();
 		}
 		
-		throw new \InvalidArgumentException(sprintf('The "%s" configuration key is not attached to a pagination manager.', $key));
+		throw new \InvalidArgumentException(sprintf('The "%s" configuration name is not attached to a pagination manager.', $managerName));
 	}
 	
-	public function paginate(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Page
+	public function paginate(string $managerName, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Page
 	{
-		$query = $this->createQuery($key, $request, $criteria, $orderBy, $strictMode);
+		$configuration = $this->getConfiguration($managerName);
 		
-		return $query->execute();
+		$query = $this->createInternalQuery($managerName, $configuration, $request, $criteria, $orderBy, $strictMode);
+		$page = $query->execute();
+		
+		$this->dispatcher->dispatch(new PageEvent($managerName, $configuration, $page), OkaPaginationEvents::PAGE);
+		
+		return $page;
 	}
 	
-	public function createQuery(string $key, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
+	public function createQuery(string $managerName, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
 	{
-		$configuration = $this->getConfiguration($key);
+		return $this->createInternalQuery($managerName, $this->getConfiguration($managerName), $request, $criteria, $orderBy, $strictMode);
+	}
+	
+	protected function createInternalQuery(string $managerName, Configuration $configuration, Request $request, array $criteria = [], array $orderBy = [], bool $strictMode = true) :Query
+	{
 		$queryMappings = $configuration->getQueryMappings();
 		$filters = $configuration->getFilters();
 		$sort = $configuration->getSort();
@@ -88,11 +102,11 @@ class PaginationManager
 		$objectManager = $registry->getManager($configuration->getObjectManagerName());
 		
 		$query = new Query(
-			$objectManager, 
-			$this->filterHandler, 
-			$configuration->getClassName() ?? $key, 
-			(int) $request->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()), 
-			$configuration->getMaxPageNumber(), 
+			$objectManager,
+			$this->filterHandler,
+			$configuration->getClassName() ?? $managerName,
+			(int) $request->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()),
+			$configuration->getMaxPageNumber(),
 			$filters,
 			(int) $request->get($queryMappings['page'], '1'),
 			$criteria,

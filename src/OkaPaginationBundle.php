@@ -4,6 +4,7 @@ namespace Oka\PaginationBundle;
 
 use Oka\PaginationBundle\DependencyInjection\Compiler\DoctrineRegistryServiceLocatorPass;
 use Oka\PaginationBundle\DependencyInjection\Compiler\FilterExpressionsPass;
+use Oka\PaginationBundle\DependencyInjection\Compiler\TwigExtensionPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -18,6 +19,7 @@ class OkaPaginationBundle extends Bundle
 	{
 		parent::build($container);
 		
+		$container->addCompilerPass(new TwigExtensionPass());
 		$container->addCompilerPass(new FilterExpressionsPass());
 		$container->addCompilerPass(new DoctrineRegistryServiceLocatorPass());
 	}

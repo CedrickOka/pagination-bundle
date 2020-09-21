@@ -3,6 +3,8 @@ namespace Oka\PaginationBundle\Tests\Pagination;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Oka\PaginationBundle\Tests\Document\Page;
+use Oka\PaginationBundle\Pagination\PaginationManager;
 
 /**
  *
@@ -54,10 +56,16 @@ class PaginationManagerTest extends KernelTestCase
 		$filterValue = sprintf('neq(%s)', date('c'));
 		
 		/** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
-		$paginationManager = static::$container->get('oka_pagination.pagination_manager');
+		$paginationManager = static::$container->get(PaginationManager::class);
 		$request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
-		$page = $paginationManager->paginate('page_mongodb', $request);
 		
+		$page = $paginationManager->paginate(Page::class, $request);
+		$this->assertEquals(1, $page->getPage());
+		$this->assertEquals(1, $page->getPageNumber());
+		$this->assertEquals(0, $page->getFullyItems());
+		$this->assertEquals(['createdAt' => $filterValue], $page->getFilters());
+		
+		$page = $paginationManager->paginate('page_mongodb', $request);
 		$this->assertEquals(1, $page->getPage());
 		$this->assertEquals(1, $page->getPageNumber());
 		$this->assertEquals(0, $page->getFullyItems());

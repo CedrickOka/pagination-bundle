@@ -1,8 +1,6 @@
 <?php
 namespace Oka\PaginationBundle\DependencyInjection;
 
-use Oka\PaginationBundle\Pagination\Filter;
-use Oka\PaginationBundle\Pagination\FilterBag;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -41,6 +39,7 @@ class OkaPaginationExtension extends Extension
 				'query_mappings' => $config['query_mappings'],
 				'filters' => $config['filters'],
 				'object_manager_name' => $config['object_manager_name'],
+				'twig' => $config['twig']
 			]
 		];
 		
@@ -52,17 +51,5 @@ class OkaPaginationExtension extends Extension
 		
 		// Twig Configuration
 		$container->setParameter('oka_pagination.twig.enabled', $config['twig']['enabled']);
-		$container->setParameter('oka_pagination.twig.default_template', $config['twig']['template']);
-	}
-	
-	protected function createFilterBag(array $filters) :FilterBag
-	{
-		$bag = new FilterBag();
-		
-		foreach ($filters as $key => $filter) {
-			$bag->set($key, new Filter($filter['property_name'], $filter['cast_type'], $filter['searchable'], $filter['ordering']));
-		}
-		
-		return $bag;
 	}
 }

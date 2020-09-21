@@ -39,7 +39,8 @@ final class ConfigurationBagConfigurator
 						$manager['route']['schemes'],
 						$manager['route']['methods'],
 						$manager['route']['condition']
-					) : null
+					) : null,
+				$manager['twig']
 			));
 		}
 	}

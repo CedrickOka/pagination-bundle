@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 5.3.0 (2020-09-21)
+
+* Activated the Twig support.
+
+#### 5.2.3 (2020-09-21)
+
+* Fixed bug when using a class name like first argument of "PaginationManager::paginate()" method.
+
 #### 5.2.2 (2020-09-21)
 
 * Fixed bug when using a class name like first argument of "PaginationManager::paginate()" method.

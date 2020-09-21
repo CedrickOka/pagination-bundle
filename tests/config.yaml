@@ -61,7 +61,7 @@ doctrine_mongodb:
                     alias: App
 
 oka_pagination:
-    db_driver: orm
+    db_driver: mongodb
     filters:
         createdAt:
             property_name: createdAt
