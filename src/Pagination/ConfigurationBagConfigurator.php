@@ -50,7 +50,7 @@ final class ConfigurationBagConfigurator
 		$bag = new FilterBag();
 		
 		foreach ($filters as $key => $filter) {
-			$bag->set($key, new Filter($filter['property_name'], $filter['cast_type'], $filter['searchable'], $filter['orderable']));
+			$bag->set($key, new Filter($filter['property_name'], $filter['cast_type'], $filter['searchable'], $filter['orderable'], $filter['private']));
 		}
 		
 		return $bag;

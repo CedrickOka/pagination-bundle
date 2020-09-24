@@ -12,13 +12,15 @@ final class Filter
 	private $castType;
 	private $searchable;
 	private $orderable;
+	private $private;
 	
-	public function __construct(string $propertyName, string $castType, bool $searchable, bool $orderable)
+	public function __construct(string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
 	{
 		$this->propertyName = $propertyName;
 		$this->castType = $castType;
 		$this->searchable = $searchable;
 		$this->orderable = $orderable;
+		$this->private = $private;
 	}
 	
 	public function getPropertyName() :string
@@ -39,6 +41,11 @@ final class Filter
 	public function isOrderable() :bool
 	{
 		return $this->orderable;
+	}
+	
+	public function isPrivate() :bool
+	{
+		return $this->private;
 	}
 	
 	public static function castTo(string $value, string $type)

@@ -215,6 +215,7 @@ class Configuration implements ConfigurationInterface
 					
 					->booleanNode('searchable')->defaultTrue()->end()
 					->booleanNode('orderable')->defaultTrue()->end()
+					->booleanNode('private')->defaultFalse()->end()
 				->end()
 			->end();
 		

@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.4.0 (2020-09-24)
+
+* Added `oka_pagination.pagination_managers.*.filters.*.private` configuration values.
+
 #### 5.3.0 (2020-09-21)
 
 * Activated the Twig support.

@@ -71,6 +71,10 @@ class PaginationManager
 		
 		/** @var \Oka\PaginationBundle\Pagination\Filter $filter */
 		foreach ($filters as $key => $filter) {
+			if (true === $filter->isPrivate()) {
+				continue;
+			}
+			
 			if (true === $filter->isSearchable()) {
 				if (null !== ($value = $request->get($key))) {
 					$criteria[$key] = $value;

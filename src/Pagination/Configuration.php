@@ -23,6 +23,10 @@ final class Configuration
 	
 	public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null, array $twig = [])
 	{
+		if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
+			throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));
+		}
+		
 		$this->dbDriver = $dbDriver;
 		$this->itemPerPage = $itemPerPage;
 		$this->maxPageNumber = $maxPageNumber;
@@ -32,11 +36,6 @@ final class Configuration
 		$this->className = $className;
 		$this->queryMappings = $queryMappings;
 		$this->route = $route;
-		
-		if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
-			throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));
-		}
-		
 		$this->twig = $twig;
 	}
 	
