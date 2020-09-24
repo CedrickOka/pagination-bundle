@@ -98,7 +98,8 @@ oka_pagination:
             class: App\Entity\Foo
             item_per_page: 10
             max_page_number: 4000
-            template: '@OkaPagination:widget:pagination.html.twig'
+            twig:
+                template: '@OkaPagination:widget:pagination.html.twig'
             filters:
                 id:
                     cast_type: int
