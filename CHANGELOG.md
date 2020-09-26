@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.5.0 (2020-09-26)
+
+* Improves query pagination.
+
 #### 5.4.1 (2020-09-26)
 
 * Fixed bug on ORM filter expression.

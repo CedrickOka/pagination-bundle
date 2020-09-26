@@ -70,6 +70,8 @@ class Query
 		foreach ($orderBy as $key => $value) {
 			$this->addQueryPart('orderBy', [$key => $value], true);
 		}
+		
+		$this->dbalQueryBuilder = $this->createDBALQueryBuilder();
 	}
 	
 	public function getClassName() :string
@@ -150,6 +152,11 @@ class Query
 		return $this;
 	}
 	
+	public function getDBALQueryBuilder() :object
+	{
+		return $this->dbalQueryBuilder;
+	}
+	
 	public function setDBALQueryBuilder(object $dbalQueryBuilder) :self
 	{
 		if (!$dbalQueryBuilder instanceof QueryBuilder && !$dbalQueryBuilder instanceof Builder) {
@@ -165,7 +172,6 @@ class Query
 		$items = [];
 		$boundCounter = 1;
 		$itemOffset = $this->getItemOffset();
-		$builder = $this->dbalQueryBuilder ?? $this->createDBALQueryBuilder();
 		/** @var \Doctrine\Persistence\Mapping\ClassMetadata $classMetadata */
 		$classMetadata = $this->objectManager->getClassMetadata($this->className);
 		
@@ -179,19 +185,19 @@ class Query
 			$propertyName = $filter->getPropertyName();
 			$propertyType = null;
 			
-			if ($builder instanceof QueryBuilder) {
+			if ($this->dbalQueryBuilder instanceof QueryBuilder) {
 				$propertyType = PersisterHelper::getTypeOfField($propertyName, $classMetadata, $this->objectManager)[0] ?? null;
 				$propertyName = sprintf('%s.%s', $this->dqlAlias, $propertyName);
 			}
 			
-			$this->filterHandler->evaluate($builder, $propertyName, $value, $filter->getCastType(), $propertyType, $boundCounter);
+			$this->filterHandler->evaluate($this->dbalQueryBuilder, $propertyName, $value, $filter->getCastType(), $propertyType, $boundCounter);
 		}
 		
-		if ($builder instanceof QueryBuilder) {
+		if ($this->dbalQueryBuilder instanceof QueryBuilder) {
 			$identifier = sprintf('%s.%s', $this->dqlAlias, $classMetadata->getIdentifierFieldNames()[0]);
-			$fullyItems = (int) $builder->select(true === $this->queryParts['distinct'] ?
-											$builder->expr()->countDistinct($identifier) : 
-											$builder->expr()->count($identifier)
+			$fullyItems = (int) $this->dbalQueryBuilder->select(true === $this->queryParts['distinct'] ?
+											$this->dbalQueryBuilder->expr()->countDistinct($identifier) : 
+											$this->dbalQueryBuilder->expr()->count($identifier)
 										)
 										->from($this->className, $this->dqlAlias)
 										->getQuery()
@@ -199,31 +205,31 @@ class Query
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
-					$builder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortName($sort)), $order);
+					$this->dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortName($sort)), $order);
 				}
 				
-				$items = $builder->select($this->dqlAlias)
-								->setFirstResult($itemOffset)
-								->setMaxResults($this->itemPerPage)
-								->getQuery()
-								->getResult();
+				$items = $this->dbalQueryBuilder->select($this->dqlAlias)
+												->setFirstResult($itemOffset)
+												->setMaxResults($this->itemPerPage)
+												->getQuery()
+												->getResult();
 			}
-		} elseif ($builder instanceof Builder) {
-			$fullyItems = (int) $builder->count()
-										->getQuery()
-										->execute();
+		} elseif ($this->dbalQueryBuilder instanceof Builder) {
+			$fullyItems = (int) $this->dbalQueryBuilder->count()
+													   ->getQuery()
+													   ->execute();
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
-					$builder->sort($this->getSortName($sort), $order);
+					$this->dbalQueryBuilder->sort($this->getSortName($sort), $order);
 				}
 				
-				$items = $builder->find()
-								->skip($itemOffset)
-								->limit($this->itemPerPage)
-								->getQuery()
-								->execute()
-								->toArray(false);
+				$items = $this->dbalQueryBuilder->find()
+												->skip($itemOffset)
+												->limit($this->itemPerPage)
+												->getQuery()
+												->execute()
+												->toArray(false);
 			}
 		}
 		
@@ -255,12 +261,13 @@ class Query
 		switch (true) {
 			case $this->objectManager instanceof \Doctrine\ORM\EntityManager:
 				/** @var \Doctrine\ORM\QueryBuilder $builder */
-				return $this->objectManager->createQueryBuilder();
+				return $this->objectManager->createQueryBuilder()
+							->from($this->className, $this->dqlAlias);
 				
 			case $this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager:
 				/** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
 				return $this->objectManager->createQueryBuilder($this->className);
-			
+				
 			default:
 				throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
 		}
