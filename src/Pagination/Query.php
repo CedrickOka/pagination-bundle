@@ -163,6 +163,7 @@ class Query
 	public function execute() :Page
 	{
 		$items = [];
+		$boundCounter = 1;
 		$itemOffset = $this->getItemOffset();
 		$builder = $this->dbalQueryBuilder ?? $this->createDBALQueryBuilder();
 		/** @var \Doctrine\Persistence\Mapping\ClassMetadata $classMetadata */
@@ -183,7 +184,7 @@ class Query
 				$propertyName = sprintf('%s.%s', $this->dqlAlias, $propertyName);
 			}
 			
-			$this->filterHandler->evaluate($builder, $propertyName, $value, $filter->getCastType(), $propertyType);
+			$this->filterHandler->evaluate($builder, $propertyName, $value, $filter->getCastType(), $propertyType, $boundCounter);
 		}
 		
 		if ($builder instanceof QueryBuilder) {

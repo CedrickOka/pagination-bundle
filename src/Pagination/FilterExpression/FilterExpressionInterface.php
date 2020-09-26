@@ -18,5 +18,5 @@ interface FilterExpressionInterface
 	 * 
 	 * @param object $queryBuilder The query builder
 	 */
-	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult;
+	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult;
 }

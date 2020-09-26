@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.4.1 (2020-09-26)
+
+* Fixed bug on ORM filter expression.
+
 #### 5.4.0 (2020-09-24)
 
 * Added `oka_pagination.pagination_managers.*.filters.*.private` configuration values.

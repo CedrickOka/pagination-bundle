@@ -51,8 +51,8 @@ class NotLikeFilterExpressionTest extends KernelTestCase
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field NOT LIKE ?', $expr->__toString());
-		$this->assertContains('text', $result->getValues());
+		$this->assertEquals('p.field NOT LIKE ?1', $expr->__toString());
+		$this->assertContains('text', $result->getParameters());
 	}
 	
 	/**

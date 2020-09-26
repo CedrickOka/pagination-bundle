@@ -12,7 +12,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  */
 class IsNullFilterExpression extends AbstractFilterExpression
 {
-	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
+	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult
 	{
 		if (!preg_match(self::getExpressionPattern(), $value)) {
 			throw new BadFilterExpressionException(sprintf('The isNull filter expression does not support the following pattern "%s".', $value));

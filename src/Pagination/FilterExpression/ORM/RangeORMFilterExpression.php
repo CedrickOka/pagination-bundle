@@ -16,7 +16,7 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
 {
 	use RangeFilterExpressionTrait;
 	
-	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
+	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult
 	{
 		$matches = [];
 		
@@ -29,33 +29,45 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
 		
 		switch (true) {
 			case $start && !$end:
-				return new EvaluationResult($this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator']), [Filter::castTo($start, $castType)]);
+				return new EvaluationResult(
+					$this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator'], '?'.$boundCounter), 
+					[$boundCounter => Filter::castTo($start, $castType)]
+				);
 				
 			case !$start && $end:
-				return new EvaluationResult($this->createLessExpr($queryBuilder, $field, $matches['rightOperator']), [Filter::castTo($end, $castType)]);
+				return new EvaluationResult(
+					$this->createLessExpr($queryBuilder, $field, $matches['rightOperator'], '?'.$boundCounter), 
+					[$boundCounter => Filter::castTo($end, $castType)]
+				);
 				
 			case $start && $end:
-				return new EvaluationResult($queryBuilder->expr()->andX(
-					$this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator']),
-					$this->createLessExpr($queryBuilder, $field, $matches['rightOperator'])
-				), [Filter::castTo($start, $castType), Filter::castTo($end, $castType)]);
+				$start = $boundCounter;
+				$end = ++$boundCounter;
+				
+				return new EvaluationResult(
+					$queryBuilder->expr()->andX(
+						$this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator'], '?'.$start),
+						$this->createLessExpr($queryBuilder, $field, $matches['rightOperator'], '?'.$end)
+					), 
+					[$start => Filter::castTo($start, $castType), $end => Filter::castTo($end, $castType)]
+				);
 				
 			default:
 				throw new BadFilterExpressionException('The range filter expression requires left or right value.');
 		}
 	}
 	
-	protected function createGreaterExpr(QueryBuilder $queryBuilder, string $field, string $leftOperator)
+	protected function createGreaterExpr(QueryBuilder $queryBuilder, string $field, string $leftOperator, string $placeholder)
 	{
 		return ']' === $leftOperator ? 
-			$queryBuilder->expr()->gt($field, '?') : 
-			$queryBuilder->expr()->gte($field, '?');
+			$queryBuilder->expr()->gt($field, $placeholder) : 
+			$queryBuilder->expr()->gte($field, $placeholder);
 	}
 	
-	protected function createLessExpr(QueryBuilder $queryBuilder, $field, $rightOperator)
+	protected function createLessExpr(QueryBuilder $queryBuilder, $field, $rightOperator, string $placeholder)
 	{
 		return '[' === $rightOperator ? 
-			$queryBuilder->expr()->lt($field, '?') : 
-			$queryBuilder->expr()->lte($field, '?');
+			$queryBuilder->expr()->lt($field, $placeholder) : 
+			$queryBuilder->expr()->lte($field, $placeholder);
 	}
 }

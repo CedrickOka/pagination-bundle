@@ -13,7 +13,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  */
 class EqualFilterExpression extends AbstractFilterExpression
 {
-	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
+	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult
 	{
 		$matches = [];
 		
@@ -25,7 +25,7 @@ class EqualFilterExpression extends AbstractFilterExpression
 		
 		switch (true) {
 			case $queryBuilder instanceof \Doctrine\ORM\QueryBuilder:
-				return new EvaluationResult($queryBuilder->expr()->eq($field, '?'), [$value]);
+				return new EvaluationResult($queryBuilder->expr()->eq($field, '?'.$boundCounter), [$boundCounter => $value]);
 				
 			case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
 				return new EvaluationResult($queryBuilder->expr()->field($field)->equals($value));

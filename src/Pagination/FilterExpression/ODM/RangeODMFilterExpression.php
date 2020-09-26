@@ -16,7 +16,7 @@ class RangeODMFilterExpression extends AbstractODMFilterExpression
 {
 	use RangeFilterExpressionTrait;
 	
-	public function evaluate(object $queryBuilder, string $field, string $value, string $castType) :EvaluationResult
+	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult
 	{
 		$matches = [];
 		

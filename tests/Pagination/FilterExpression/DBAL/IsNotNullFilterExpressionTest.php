@@ -50,7 +50,7 @@ class IsNotNullFilterExpressionTest extends KernelTestCase
 		$result = $filterExpression->evaluate($this->entityManager->createQueryBuilder(), 'p.field', 'isNotNull()', 'string');
 		
 		$this->assertEquals('p.field IS NOT NULL', $result->getExpr());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 	}
 	
 	/**

@@ -51,8 +51,8 @@ class NotEqualFilterExpressionTest extends KernelTestCase
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field <> ?', $expr->__toString());
-		$this->assertContains('text', $result->getValues());
+		$this->assertEquals('p.field <> ?1', $expr->__toString());
+		$this->assertContains('text', $result->getParameters());
 	}
 	
 	/**

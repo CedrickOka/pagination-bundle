@@ -45,42 +45,42 @@ class RangeORMFilterExpressionTest extends KernelTestCase
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field >= ? AND p.field <= ?', $expr->__toString());
-		$this->assertEquals([1, 2], $result->getValues());
+		$this->assertEquals('p.field >= ?1 AND p.field <= ?2', $expr->__toString());
+		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range]1,2]', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field > ? AND p.field <= ?', $expr->__toString());
-		$this->assertEquals([1, 2], $result->getValues());
+		$this->assertEquals('p.field > ?1 AND p.field <= ?2', $expr->__toString());
+		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range[1,2[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field >= ? AND p.field < ?', $expr->__toString());
-		$this->assertEquals([1, 2], $result->getValues());
+		$this->assertEquals('p.field >= ?1 AND p.field < ?2', $expr->__toString());
+		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range]1,2[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field > ? AND p.field < ?', $expr->__toString());
-		$this->assertEquals([1, 2], $result->getValues());
+		$this->assertEquals('p.field > ?1 AND p.field < ?2', $expr->__toString());
+		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range]1,[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field > ?', $expr->__toString());
-		$this->assertEquals([1], $result->getValues());
+		$this->assertEquals('p.field > ?1', $expr->__toString());
+		$this->assertEquals([1 => 1], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range],2[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field < ?', $expr->__toString());
-		$this->assertEquals([2], $result->getValues());
+		$this->assertEquals('p.field < ?1', $expr->__toString());
+		$this->assertEquals([1 => 2], $result->getParameters());
 	}
 }

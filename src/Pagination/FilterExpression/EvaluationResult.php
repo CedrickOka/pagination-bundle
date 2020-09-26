@@ -9,12 +9,12 @@ namespace Oka\PaginationBundle\Pagination\FilterExpression;
 class EvaluationResult
 {
 	private $expr;
-	private $values;
+	private $parameters;
 	
-	public function __construct($expr, array $values = [])
+	public function __construct($expr, array $parameters = [])
 	{
 		$this->expr = $expr;
-		$this->values = $values;
+		$this->parameters = $parameters;
 	}
 	
 	public function getExpr()
@@ -22,20 +22,20 @@ class EvaluationResult
 		return $this->expr;
 	}
 	
-	public function getValues() :array
+	public function getParameters() :array
 	{
-		return $this->values;
+		return $this->parameters;
 	}
 	
-	public function addParameter($value) :self
+	public function addParameter($name, $value) :self
 	{
-		$this->values[] = $value;
+		$this->parameters[$name] = $value;
 		return $this;
 	}
 	
-	public function setValues(array $values) :self
+	public function setParameters(array $parameters) :self
 	{
-		$this->values = $values;
+		$this->parameters = $parameters;
 		return $this;
 	}
 }

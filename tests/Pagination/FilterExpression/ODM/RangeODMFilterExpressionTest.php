@@ -47,41 +47,41 @@ class RangeODMFilterExpressionTest extends KernelTestCase
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['$and' => [['field' => ['$gte' => 1]], ['field' => ['$lte' => 2]]]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range]1,2]', 'int');
 		/** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['$and' => [['field' => ['$gt' => 1]], ['field' => ['$lte' => 2]]]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range[1,2[', 'int');
 		/** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['$and' => [['field' => ['$gte' => 1]], ['field' => ['$lt' => 2]]]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range]1,2[', 'int');
 		/** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['$and' => [['field' => ['$gt' => 1]], ['field' => ['$lt' => 2]]]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range]1,[', 'int');
 		/** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['field' => ['$gt' => 1]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'field', 'range],2[', 'int');
 		/** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals(['field' => ['$lt' => 2]], $expr->getQuery());
-		$this->assertEmpty($result->getValues());
+		$this->assertEmpty($result->getParameters());
 	}
 }
