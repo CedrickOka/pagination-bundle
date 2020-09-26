@@ -199,7 +199,6 @@ class Query
 											$this->dbalQueryBuilder->expr()->countDistinct($identifier) : 
 											$this->dbalQueryBuilder->expr()->count($identifier)
 										)
-										->from($this->className, $this->dqlAlias)
 										->getQuery()
 										->getSingleScalarResult();
 			
