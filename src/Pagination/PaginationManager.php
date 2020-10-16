@@ -85,14 +85,20 @@ class PaginationManager
 				continue;
 			}
 			
-			if (false === in_array($key, $sortAttributes) && false === isset($sort['order'][$key])) {
+			$sortAssert = in_array($key, $sortAttributes);
+			
+			if (false === $sortAssert && false === isset($sort['order'][$key])) {
 				continue;
 			}
 			
-			$orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key] ?? 'ASC';
+			if (true === $sortAssert) {
+				$orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : 'ASC';
+			} else {
+				$orderBy[$key] = true === in_array($key, $descAttributes) ? 'DESC' : $sort['order'][$key];
+			}
 			
-			if (false !== ($sort = array_search($key, $sortAttributes))) {
-				unset($sortAttributes[$sort]);
+			if (false !== ($sortKey = array_search($key, $sortAttributes))) {
+				unset($sortAttributes[$sortKey]);
 			}
 		}
 		

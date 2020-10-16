@@ -26,16 +26,6 @@ class Configuration implements ConfigurationInterface
 	    /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode */
 		$rootNode = $treeBuilder->getRootNode();
 		
-		$validateOrder = static function($v){
-			foreach ($v['sort']['order'] as $filterName => $direction) {
-				if (false === array_key_exists($filterName, $v['filters'])) {
-					return true;
-				}
-			}
-			
-			return false;
-		};
-		
 		$rootNode
     		->beforeNormalization()
 	    		->always(static function($v){
