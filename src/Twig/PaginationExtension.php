@@ -5,6 +5,7 @@ use Oka\PaginationBundle\Pagination\PaginationManager;
 use Twig\TwigFunction;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
+use Twig\Environment;
 
 /**
  * 
@@ -25,7 +26,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
 		return 'oka_pagination.twig_extension';
 	}
 	
-	public function getGlobals()
+	public function getGlobals() :array
 	{
 		return [
 			'oka_pagination' => [
@@ -45,7 +46,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
 	/**
 	 * Render current pagination widget view
 	 */
-	public function renderCurrentPaginationView(\Twig_Environment $env, string $route, array $params = []) :string
+	public function renderCurrentPaginationView(Environment $env, string $route, array $params = []) :string
 	{
 		return $this->renderView($env, $this->getLocalGlobals($env)['current_manager_name'] ?? '_defaults', $route, $params);
 	}
@@ -54,7 +55,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
 	 * Render pagination widget view
 	 * @throws \InvalidArgumentException
 	 */
-	public function renderView(\Twig_Environment $env, string $managerName, string $route, array $parameters = []) :string
+	public function renderView(Environment $env, string $managerName, string $route, array $parameters = []) :string
 	{
 		$globals = $this->getLocalGlobals($env);
 		
@@ -73,7 +74,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
 		]);
 	}
 	
-	private function getLocalGlobals(\Twig_Environment $env) :array
+	private function getLocalGlobals(Environment $env) :array
 	{
 		return $env->getGlobals()['oka_pagination'];
 	}
