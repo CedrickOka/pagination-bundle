@@ -45,7 +45,7 @@ class InORMFilterExpressionTest extends KernelTestCase
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
-		$this->assertEquals('p.field IN(\'?1\', \'?2\')', $expr->__toString());
+		$this->assertEquals('p.field IN(?1,?2)', $expr->__toString());
 		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 	}
 }

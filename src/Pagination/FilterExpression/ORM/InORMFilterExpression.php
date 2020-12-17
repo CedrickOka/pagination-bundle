@@ -31,7 +31,7 @@ class InORMFilterExpression extends AbstractORMFilterExpression
 		--$boundCounter;
 		
 		/** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
-		return new EvaluationResult($queryBuilder->expr()->in($field, $values), $parameters);
+		return new EvaluationResult($queryBuilder->expr()->in($field, implode(',', $values)), $parameters);
 	}
 	
 	protected static function getExpressionPattern() :string
