@@ -1,5 +1,5 @@
 <?php
-namespace Oka\PaginationBundle\Pagination\FilterExpression\ORM;
+namespace Oka\PaginationBundle\Pagination\FilterExpression\ODM;
 
 use Oka\PaginationBundle\Exception\BadFilterExpressionException;
 use Oka\PaginationBundle\Pagination\Filter;
@@ -10,7 +10,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
  */
-class InORMFilterExpression extends AbstractORMFilterExpression
+class InODMFilterExpression extends AbstractODMFilterExpression
 {
 	public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1) :EvaluationResult
 	{
@@ -21,17 +21,13 @@ class InORMFilterExpression extends AbstractORMFilterExpression
 		}
 		
 		$values = [];
-		$parameters = [];
 		
 		foreach (explode(',', $matches[1]) as $value) {
-			$parameters[$boundCounter] = Filter::castTo($value, $castType);
-			$values[] = '?' . $boundCounter;
-			++$boundCounter;
+			$values[] = Filter::castTo($value, $castType);
 		}
-		--$boundCounter;
 		
-		/** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
-		return new EvaluationResult($queryBuilder->expr()->in($field, $values), $parameters);
+		/** @var \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder */
+		return new EvaluationResult($queryBuilder->expr()->field($field)->in($values));
 	}
 	
 	protected static function getExpressionPattern() :string
