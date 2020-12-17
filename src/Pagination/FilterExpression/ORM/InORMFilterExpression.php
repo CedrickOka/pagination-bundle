@@ -23,7 +23,7 @@ class InORMFilterExpression extends AbstractORMFilterExpression
 		$values = [];
 		$parameters = [];
 		
-		foreach (implode(',', $matches[1]) as $value) {
+		foreach (explode(',', $matches[1]) as $value) {
 			$parameters[$boundCounter] = Filter::castTo($value, $castType);
 			$values[] = '?' . $boundCounter;
 			++$boundCounter;

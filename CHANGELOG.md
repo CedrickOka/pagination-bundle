@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.6.1 (2020-12-17)
+
+* Fixed bug in filter expression `in()` for orm driver.
+
 #### 5.6.0 (2020-12-17)
 
 * Added filter expression `in()` for orm driver.
