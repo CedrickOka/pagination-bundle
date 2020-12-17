@@ -222,3 +222,7 @@ public function listAction(Request $request, EntityManagerInterface $em)
     return $this->render('foo/list.html.twig', ['page' => $page]);
 }
 ```
+
+#### How use
+
+Test this `http://localhost/list?name=in(john,doe)`
