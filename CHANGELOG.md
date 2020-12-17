@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 5.7.1 (2020-12-17)
+
+* Fixed bug in filter expression `range()` for orm driver.
+
+#### 5.7.0 (2020-12-17)
+
+* Added filter expression `in()` for mongodb driver.
+
 #### 5.6.1 (2020-12-17)
 
 * Fixed bug in filter expression `in()` for orm driver.

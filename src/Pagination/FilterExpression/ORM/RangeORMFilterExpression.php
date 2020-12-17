@@ -41,15 +41,15 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
 				);
 				
 			case $start && $end:
-				$start = $boundCounter;
-				$end = ++$boundCounter;
+				$startBoundCounter = $boundCounter;
+				$endBoundCounter = ++$boundCounter;
 				
 				return new EvaluationResult(
 					$queryBuilder->expr()->andX(
-						$this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator'], '?'.$start),
-						$this->createLessExpr($queryBuilder, $field, $matches['rightOperator'], '?'.$end)
+						$this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator'], '?'.$startBoundCounter),
+						$this->createLessExpr($queryBuilder, $field, $matches['rightOperator'], '?'.$endBoundCounter)
 					), 
-					[$start => Filter::castTo($start, $castType), $end => Filter::castTo($end, $castType)]
+					[$startBoundCounter => Filter::castTo($start, $castType), $endBoundCounter => Filter::castTo($end, $castType)]
 				);
 				
 			default:

@@ -55,12 +55,12 @@ class RangeORMFilterExpressionTest extends KernelTestCase
 		$this->assertEquals('p.field > ?1 AND p.field <= ?2', $expr->__toString());
 		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
 		
-		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range[1,2[', 'int');
+		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range[1,3[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
 		$expr = $result->getExpr();
 		
 		$this->assertEquals('p.field >= ?1 AND p.field < ?2', $expr->__toString());
-		$this->assertEquals([1 => 1, 2 => 2], $result->getParameters());
+		$this->assertEquals([1 => 1, 2 => 3], $result->getParameters());
 		
 		$result = $filterExpression->evaluate($queryBuilder, 'p.field', 'range]1,2[', 'int');
 		/** @var \Doctrine\ORM\Query\Expr $expr */
