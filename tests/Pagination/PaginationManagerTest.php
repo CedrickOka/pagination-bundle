@@ -37,16 +37,30 @@ class PaginationManagerTest extends KernelTestCase
 		$this->documentManager = null;
 	}
 	
-// 	/**
-// 	 * @covers
-// 	 */
-// 	public function testThatPaginateEntityPage()
-// 	{
-// 		/** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
-// 		$paginationManager = static::$container->get('oka_pagination.pagination_manager');
-// 		$request = new Request(['createdAt' => date('c')]);
-// 		$paginationManager->paginate('page_orm', $request);
-// 	}
+	/**
+	 * @covers
+	 */
+	public function testThatPaginateEntityPage()
+	{
+		$this->markTestIncomplete();
+		$filterValue = sprintf('neq(%s)', date('c'));
+		
+		/** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
+		$paginationManager = static::$container->get('oka_pagination.pagination_manager');
+		$request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
+		$page = $paginationManager->paginate(\Oka\PaginationBundle\Tests\Entity\Page::class, $request);
+		
+		$this->assertEquals(1, $page->getPage());
+		$this->assertEquals(1, $page->getPageNumber());
+		$this->assertEquals(0, $page->getFullyItems());
+		$this->assertEquals(['createdAt' => $filterValue], $page->getFilters());
+		
+		$page = $paginationManager->paginate('page_orm', $request);
+		$this->assertEquals(1, $page->getPage());
+		$this->assertEquals(1, $page->getPageNumber());
+		$this->assertEquals(0, $page->getFullyItems());
+		$this->assertEquals(['createdAt' => $filterValue], $page->getFilters());
+	}
 	
 	/**
 	 * @covers
@@ -59,7 +73,7 @@ class PaginationManagerTest extends KernelTestCase
 		$paginationManager = static::$container->get(PaginationManager::class);
 		$request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 		
-		$page = $paginationManager->paginate(Page::class, $request);
+		$page = $paginationManager->paginate(\Oka\PaginationBundle\Tests\Document\Page::class, $request);
 		$this->assertEquals(1, $page->getPage());
 		$this->assertEquals(1, $page->getPageNumber());
 		$this->assertEquals(0, $page->getFullyItems());
