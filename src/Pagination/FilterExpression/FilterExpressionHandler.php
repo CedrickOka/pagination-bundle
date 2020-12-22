@@ -43,9 +43,9 @@ class FilterExpressionHandler
 				foreach ($result->getParameters() as $name => $value) {
 					$queryBuilder->setParameter($name, $value, $propertyType);
 				}
+				$boundCounter++;
 			}
 			
-			++$boundCounter;
 			$evaluated = true;
 			break;
 		}
@@ -59,9 +59,9 @@ class FilterExpressionHandler
 		if ($queryBuilder instanceof Builder) {
 			$queryBuilder->field($field)->equals($value);
 		} else {
-			$boundCounter++;
 			$queryBuilder->andWhere($queryBuilder->expr()->eq($field, '?'.$boundCounter));
 			$queryBuilder->setParameter($boundCounter, $value, $propertyType);
+			$boundCounter++;
 		}
 	}
 }
