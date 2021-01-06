@@ -30,7 +30,7 @@ class TwigExtensionPass implements CompilerPassInterface
 		$extension->addTag('twig.extension');
 		
 		$listener = $container->register('oka_pagination.page.event_listener', PageListener::class);
-		$extension->addArgument(new Reference('twig'));
+		$listener->replaceArgument(0, new Reference('twig'));
 		$listener->addTag('kernel.event_listener', ['event' => OkaPaginationEvents::PAGE, 'method' => 'onPage']);
 	}
 }
