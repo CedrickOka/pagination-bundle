@@ -207,7 +207,7 @@ class Query
 					$this->dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortName($sort)), $order);
 				}
 				
-				$items = $this->dbalQueryBuilder->select($this->dqlAlias)
+				$items = $this->dbalQueryBuilder->addSelect($this->dqlAlias)
 												->setFirstResult($itemOffset)
 												->setMaxResults($this->itemPerPage)
 												->getQuery()
