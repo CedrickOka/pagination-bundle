@@ -194,10 +194,11 @@ class Query
 		}
 		
 		if ($this->dbalQueryBuilder instanceof QueryBuilder) {
-			$identifier = sprintf('%s.%s', $this->dqlAlias, $classMetadata->getIdentifierFieldNames()[0]);
-			$fullyItems = (int) $this->dbalQueryBuilder->select(true === $this->queryParts['distinct'] ?
-											$this->dbalQueryBuilder->expr()->countDistinct($identifier) : 
-											$this->dbalQueryBuilder->expr()->count($identifier)
+		    $identifier = sprintf('%s.%s', $this->dqlAlias, $classMetadata->getIdentifierFieldNames()[0]);
+		    $builder = $this->dbalQueryBuilder->__clone();
+			$fullyItems = (int) $builder->select(true === $this->queryParts['distinct'] ?
+                            			    $builder->expr()->countDistinct($identifier) : 
+                            			    $builder->expr()->count($identifier)
 										)
 										->getQuery()
 										->getSingleScalarResult();
@@ -214,9 +215,10 @@ class Query
 												->getResult();
 			}
 		} elseif ($this->dbalQueryBuilder instanceof Builder) {
-			$fullyItems = (int) $this->dbalQueryBuilder->count()
-													   ->getQuery()
-													   ->execute();
+		    $builder = $this->dbalQueryBuilder->__clone();
+		    $fullyItems = (int) $builder->count()
+									    ->getQuery()
+									    ->execute();
 			
 			if ($fullyItems > 0) {
 				foreach ($this->queryParts['orderBy'] as $sort => $order) {
