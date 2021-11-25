@@ -195,7 +195,7 @@ class Query
 		
 		if ($this->dbalQueryBuilder instanceof QueryBuilder) {
 		    $identifier = sprintf('%s.%s', $this->dqlAlias, $classMetadata->getIdentifierFieldNames()[0]);
-		    $builder = $this->dbalQueryBuilder->__clone();
+		    $builder = clone $this->dbalQueryBuilder;
 			$fullyItems = (int) $builder->select(true === $this->queryParts['distinct'] ?
                             			    $builder->expr()->countDistinct($identifier) : 
                             			    $builder->expr()->count($identifier)
@@ -215,7 +215,7 @@ class Query
 												->getResult();
 			}
 		} elseif ($this->dbalQueryBuilder instanceof Builder) {
-		    $builder = $this->dbalQueryBuilder->__clone();
+		    $builder = clone $this->dbalQueryBuilder;
 		    $fullyItems = (int) $builder->count()
 									    ->getQuery()
 									    ->execute();
