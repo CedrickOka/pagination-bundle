@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\PaginationBundle\DependencyInjection;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionInterface;
@@ -14,42 +15,42 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class OkaPaginationExtension extends Extension
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function load(array $configs, ContainerBuilder $container)
-	{
-		$container
-			->registerForAutoconfiguration(FilterExpressionInterface::class)
-			->addTag('oka_pagination.filter_expression');
-		
-		$configuration = new Configuration();
-		$config = $this->processConfiguration($configuration, $configs);
-		
-		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-		$loader->load('services.yml');
-		
-		// Configure pagination manager
-		$paginationManagers = [
-			'_defaults' => [
-				'db_driver' => $config['db_driver'],
-				'item_per_page' => $config['item_per_page'],
-				'max_page_number' => $config['max_page_number'],
-				'sort' => $config['sort'],
-				'query_mappings' => $config['query_mappings'],
-				'filters' => $config['filters'],
-				'object_manager_name' => $config['object_manager_name'],
-				'twig' => $config['twig']
-			]
-		];
-		
-		if (false === empty($config['pagination_managers'])) {
-			$paginationManagers = array_merge($paginationManagers, $config['pagination_managers']);
-		}
-		
- 		$container->setParameter('oka_pagination.pagination_managers', $paginationManagers);
-		
-		// Twig Configuration
-		$container->setParameter('oka_pagination.twig.enabled', $config['twig']['enabled']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        $container
+            ->registerForAutoconfiguration(FilterExpressionInterface::class)
+            ->addTag('oka_pagination.filter_expression');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
+
+        // Configure pagination manager
+        $paginationManagers = [
+            '_defaults' => [
+                'db_driver' => $config['db_driver'],
+                'item_per_page' => $config['item_per_page'],
+                'max_page_number' => $config['max_page_number'],
+                'sort' => $config['sort'],
+                'query_mappings' => $config['query_mappings'],
+                'filters' => $config['filters'],
+                'object_manager_name' => $config['object_manager_name'],
+                'twig' => $config['twig']
+            ]
+        ];
+
+        if (false === empty($config['pagination_managers'])) {
+            $paginationManagers = array_merge($paginationManagers, $config['pagination_managers']);
+        }
+
+        $container->setParameter('oka_pagination.pagination_managers', $paginationManagers);
+
+        // Twig Configuration
+        $container->setParameter('oka_pagination.twig.enabled', $config['twig']['enabled']);
+    }
 }

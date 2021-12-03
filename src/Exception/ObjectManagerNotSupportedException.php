@@ -1,9 +1,12 @@
 <?php
+
 namespace Oka\PaginationBundle\Exception;
 
 /**
- * 
+ *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- * 
+ *
  */
-class ObjectManagerNotSupportedException extends PaginationException {}
+class ObjectManagerNotSupportedException extends PaginationException
+{
+}

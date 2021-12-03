@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 /**
@@ -8,10 +9,10 @@ namespace Oka\PaginationBundle\Pagination\FilterExpression;
  */
 abstract class AbstractFilterExpression implements FilterExpressionInterface
 {
-	public function supports(object $queryBuilder, string $value) :bool
-	{
-		return (bool) preg_match(static::getExpressionPattern(), $value);
-	}
-	
-	abstract protected static function getExpressionPattern() :string;
+    public function supports(object $queryBuilder, string $value): bool
+    {
+        return (bool) preg_match(static::getExpressionPattern(), $value);
+    }
+
+    abstract protected static function getExpressionPattern(): string;
 }

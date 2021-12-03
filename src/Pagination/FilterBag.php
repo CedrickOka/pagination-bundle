@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Symfony\Component\HttpFoundation\ParameterBag;

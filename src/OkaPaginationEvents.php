@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\PaginationBundle;
 
 /**
@@ -8,10 +9,10 @@ namespace Oka\PaginationBundle;
  */
 final class OkaPaginationEvents
 {
-	/**
-	 * The PAGE will be emitted when a page is generated.
-	 *
-	 * @Event("Oka\PaginationBundle\Event\PageEvent")
-	 */
-	const PAGE = 'oka_pagination.page';
+    /**
+     * The PAGE will be emitted when a page is generated.
+     *
+     * @Event("Oka\PaginationBundle\Event\PageEvent")
+     */
+    public const PAGE = 'oka_pagination.page';
 }

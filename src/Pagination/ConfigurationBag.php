@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -10,13 +11,13 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class ConfigurationBag extends ParameterBag
 {
-	public function getDefaults() :?Configuration
-	{
-		return $this->get('_defaults');
-	}
-	
-	public function setDefaults(Configuration $configurtion) :void
-	{
-		$this->set('_defaults', $configurtion);
-	}
+    public function getDefaults(): ?Configuration
+    {
+        return $this->get('_defaults');
+    }
+
+    public function setDefaults(Configuration $configurtion): void
+    {
+        $this->set('_defaults', $configurtion);
+    }
 }

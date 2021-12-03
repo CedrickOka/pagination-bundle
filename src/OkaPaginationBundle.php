@@ -15,12 +15,12 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class OkaPaginationBundle extends Bundle
 {
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
-		
-		$container->addCompilerPass(new TwigExtensionPass());
-		$container->addCompilerPass(new FilterExpressionsPass());
-		$container->addCompilerPass(new DoctrineRegistryServiceLocatorPass());
-	}
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new TwigExtensionPass());
+        $container->addCompilerPass(new FilterExpressionsPass());
+        $container->addCompilerPass(new DoctrineRegistryServiceLocatorPass());
+    }
 }
