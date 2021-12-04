@@ -104,10 +104,41 @@ class Query
     {
         return $this->page < 2 ? 0 : $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
     }
+    
+    public function getDqlAlias(): string
+    {
+        return $this->dqlAlias;
+    }
+    
+    public function setDqlAlias(string $dqlAlias): self
+    {
+        $this->dqlAlias = $dqlAlias;
+        return $this;
+    }
+    
+    public function getDBALQueryBuilder(): object
+    {
+        return $this->dbalQueryBuilder;
+    }
+    
+    public function setDBALQueryBuilder(object $dbalQueryBuilder): self
+    {
+        if (!$dbalQueryBuilder instanceof QueryBuilder && !$dbalQueryBuilder instanceof Builder) {
+            throw new ObjectManagerNotSupportedException(sprintf('Doctrine DBAL query builder class "%s" is not supported.', get_class($dbalQueryBuilder)));
+        }
+        
+        $this->dbalQueryBuilder = $dbalQueryBuilder;
+        return $this;
+    }
 
     public function getQueryParts(): array
     {
         return $this->queryParts;
+    }
+    
+    public function getQueryPart(string $queryPartName)
+    {
+        return $this->queryParts[$queryPartName] ?? null;
     }
 
     /**
@@ -144,32 +175,6 @@ class Query
             $this->queryParts[$queryPartName] = (true === $isMultiple && false === is_array($queryPart)) ? [$queryPart] : $queryPart;
         }
 
-        return $this;
-    }
-
-    public function getDqlAlias(): string
-    {
-        return $this->dqlAlias;
-    }
-
-    public function setDqlAlias(string $dqlAlias): self
-    {
-        $this->dqlAlias = $dqlAlias;
-        return $this;
-    }
-
-    public function getDBALQueryBuilder(): object
-    {
-        return $this->dbalQueryBuilder;
-    }
-
-    public function setDBALQueryBuilder(object $dbalQueryBuilder): self
-    {
-        if (!$dbalQueryBuilder instanceof QueryBuilder && !$dbalQueryBuilder instanceof Builder) {
-            throw new ObjectManagerNotSupportedException(sprintf('Doctrine DBAL query builder class "%s" is not supported.', get_class($dbalQueryBuilder)));
-        }
-
-        $this->dbalQueryBuilder = $dbalQueryBuilder;
         return $this;
     }
     
