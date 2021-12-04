@@ -99,6 +99,11 @@ class Query
     {
         return $this->page;
     }
+    
+    public function getItemOffset(): int
+    {
+        return $this->page < 2 ? 0 : $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
+    }
 
     public function getQueryParts(): array
     {
@@ -167,6 +172,18 @@ class Query
         $this->dbalQueryBuilder = $dbalQueryBuilder;
         return $this;
     }
+    
+    public function getSortPropertyName(string $sort): string
+    {
+        if (false === $this->filters->has($sort)) {
+            throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not available.', $sort));
+        }
+        
+        /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
+        $filter = $this->filters->get($sort);
+        
+        return $filter->getPropertyName();
+    }
 
     public function execute(): Page
     {
@@ -207,7 +224,7 @@ class Query
 
             if ($fullyItems > 0) {
                 foreach ($this->queryParts['orderBy'] as $sort => $order) {
-                    $this->dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortName($sort)), $order);
+                    $this->dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortPropertyName($sort)), $order);
                 }
 
                 $items = $this->dbalQueryBuilder->addSelect($this->dqlAlias)
@@ -224,7 +241,7 @@ class Query
 
             if ($fullyItems > 0) {
                 foreach ($this->queryParts['orderBy'] as $sort => $order) {
-                    $this->dbalQueryBuilder->sort($this->getSortName($sort), $order);
+                    $this->dbalQueryBuilder->sort($this->getSortPropertyName($sort), $order);
                 }
 
                 $items = $this->dbalQueryBuilder->find()
@@ -274,28 +291,5 @@ class Query
             default:
                 throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
         }
-    }
-
-    protected function getItemOffset(): int
-    {
-        return $this->page < 2 ?
-            0 :
-            $this->itemPerPage * (
-                $this->maxPageNumber < $this->page ?
-                $this->maxPageNumber - 1 :
-                $this->page - 1
-            );
-    }
-
-    protected function getSortName(string $sort): string
-    {
-        if (false === $this->filters->has($sort)) {
-            throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not available.', $sort));
-        }
-
-        /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
-        $filter = $this->filters->get($sort);
-
-        return $filter->getPropertyName();
     }
 }
