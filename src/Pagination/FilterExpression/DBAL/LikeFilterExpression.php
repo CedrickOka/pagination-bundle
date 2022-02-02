@@ -29,7 +29,7 @@ class LikeFilterExpression extends AbstractFilterExpression
                 return new EvaluationResult($queryBuilder->expr()->like($field, '?'.$boundCounter), [$boundCounter => $value]);
 
             case $queryBuilder instanceof \Doctrine\ODM\MongoDB\Query\Builder:
-                return new EvaluationResult($queryBuilder->expr()->field($field)->equals(new \MongoDB\BSON\Regex(sprintf('/%s/i', str_replace(['_', '%'], ['.?', '.*'], $value)))));
+                return new EvaluationResult($queryBuilder->expr()->field($field)->equals(new \MongoDB\BSON\Regex(sprintf('%s', str_replace(['_', '%'], ['.?', '.*'], $value)), 'i')));
         }
     }
 
