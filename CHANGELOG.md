@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+#### 5.12.0 (2022-02-02)
+
+* Added support for symfony 5.4.
+
+#### 5.11.3 (2022-02-02)
+
+* Fixed bug.
+
 #### 5.8.4 (2021-01-06)
 
 * Fixed bug.

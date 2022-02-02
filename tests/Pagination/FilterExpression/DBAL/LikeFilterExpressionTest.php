@@ -7,9 +7,7 @@ use Oka\PaginationBundle\Tests\Document\Page;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class LikeFilterExpressionTest extends KernelTestCase
 {
@@ -66,6 +64,6 @@ class LikeFilterExpressionTest extends KernelTestCase
         /** @var \Doctrine\ODM\MongoDB\Query\Expr $expr */
         $expr = $result->getExpr();
 
-        $this->assertEquals(['$text' => ['$search' => 'text']], $expr->getQuery());
+        $this->assertEquals(['field' => new \MongoDB\BSON\Regex('text', 'i')], $expr->getQuery());
     }
 }

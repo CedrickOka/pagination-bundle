@@ -30,19 +30,19 @@
 	"require" : {
 		"php" : ">=7.2",
 		"doctrine/annotations" : "^1.2",
-		"symfony/event-dispatcher" : "^4.4",
-		"symfony/dependency-injection" : "^4.4",
-		"symfony/config" : "^4.4",
-		"symfony/translation" : "^4.4",
-		"symfony/validator" : "^4.4"
+		"symfony/event-dispatcher" : "^4.4 || ^5.4",
+		"symfony/dependency-injection" : "^4.4 || ^5.4",
+		"symfony/config" : "^4.4 || ^5.4",
+		"symfony/translation" : "^4.4 || ^5.4",
+		"symfony/validator" : "^4.4 || ^5.4"
 	},
 	"require-dev" : {
 		"doctrine/doctrine-bundle" : "^2.0",
 		"doctrine/mongodb-odm-bundle" : "^4.2",
 		"doctrine/orm" : "^2.4.8",
-		"symfony/framework-bundle" : "4.4.*",
-		"symfony/phpunit-bridge" : "4.4.*",
-		"symfony/yaml" : "^5.0",
+		"symfony/framework-bundle" : "4.4.* || 5.4.*",
+		"symfony/phpunit-bridge" : "4.4.* || 5.4.*",
+		"symfony/yaml" : "4.4.* || 5.4.*",
 		"twig/twig" : "^2.12|^3.0"
 	},
 	"suggest" : {
@@ -62,6 +62,6 @@
 		}
 	},
 	"support" : {
-		"docs" : "https://github.com/CedrickOka/pagination-bundle/blob/master/src/Resources/doc/index.md"
+		"docs" : "https://github.com/CedrickOka/pagination-bundle/blob/master/docs/index.md"
 	}
 }

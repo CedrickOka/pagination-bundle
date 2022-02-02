@@ -1,7 +1,7 @@
 services:
     Oka\PaginationBundle\Pagination\FilterExpression\:
-        resource: '../../Pagination/FilterExpression/*'
-        exclude: '../../Pagination/FilterExpression/{EvaluationResult.php,FilterExpressionHandler.php}'
+        resource: '../src/Pagination/FilterExpression/*'
+        exclude: '../src/Pagination/FilterExpression/{EvaluationResult.php,FilterExpressionHandler.php}'
         tags:
           - {name: oka_pagination.filter_expression}
 

@@ -5,9 +5,7 @@ namespace Oka\PaginationBundle\Pagination;
 use Symfony\Component\Routing\Route;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 final class Configuration
 {
@@ -58,6 +56,7 @@ final class Configuration
     public function setMaxPageNumber(int $maxPageNumber): self
     {
         $this->maxPageNumber = $maxPageNumber;
+
         return $this;
     }
 

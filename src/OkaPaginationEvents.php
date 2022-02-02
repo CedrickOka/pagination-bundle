@@ -3,9 +3,7 @@
 namespace Oka\PaginationBundle;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 final class OkaPaginationEvents
 {

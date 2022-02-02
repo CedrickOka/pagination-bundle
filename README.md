@@ -20,12 +20,12 @@ For notes about latest changes please read [CHANGELOG](CHANGELOG.md), for requir
 Documentation
 -------------
 
-Read the [src/Resources/doc/index.md](src/Resources/doc/index.md).
+Read the [docs/index.md](docs/index.md).
 
 Installation
 ------------
 
-All the installation instructions are located in the [documentation](src/Resources/doc/index.md).
+All the installation instructions are located in the [documentation](docs/index.md).
 
 Original Credits
 ----------------
