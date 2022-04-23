@@ -1,5 +1,3 @@
-# Created by https://www.gitignore.io/api/eclipse,composer
-
 ### Composer ###
 
 .phpunit.*
@@ -7,6 +5,14 @@ composer.lock
 composer.phar
 /var/
 /vendor/
+
+### PHPUnit ###
+.phpunit.result.cache
+/phpunit.xml
+
+### friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
 
 ### Eclipse ###
 
