@@ -12,9 +12,7 @@ use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class Query
 {
@@ -58,7 +56,7 @@ class Query
             'distinct' => false,
             'select' => [],
             'where' => [],
-            'orderBy' => []
+            'orderBy' => [],
         ];
         $this->dqlAlias = 'p';
 
@@ -99,35 +97,37 @@ class Query
     {
         return $this->page;
     }
-    
+
     public function getItemOffset(): int
     {
         return $this->page < 2 ? 0 : $this->itemPerPage * ($this->maxPageNumber < $this->page ? $this->maxPageNumber - 1 : $this->page - 1);
     }
-    
+
     public function getDqlAlias(): string
     {
         return $this->dqlAlias;
     }
-    
+
     public function setDqlAlias(string $dqlAlias): self
     {
         $this->dqlAlias = $dqlAlias;
+
         return $this;
     }
-    
+
     public function getDBALQueryBuilder(): object
     {
         return $this->dbalQueryBuilder;
     }
-    
+
     public function setDBALQueryBuilder(object $dbalQueryBuilder): self
     {
         if (!$dbalQueryBuilder instanceof QueryBuilder && !$dbalQueryBuilder instanceof Builder) {
             throw new ObjectManagerNotSupportedException(sprintf('Doctrine DBAL query builder class "%s" is not supported.', get_class($dbalQueryBuilder)));
         }
-        
+
         $this->dbalQueryBuilder = $dbalQueryBuilder;
+
         return $this;
     }
 
@@ -135,7 +135,7 @@ class Query
     {
         return $this->queryParts;
     }
-    
+
     public function getQueryPart(string $queryPartName)
     {
         return $this->queryParts[$queryPartName] ?? null;
@@ -146,9 +146,8 @@ class Query
      *
      * The available parts are: 'select', 'distinct', 'where' and 'orderBy'.
      *
-     * @param string $queryPartName
      * @param mixed $queryPart
-     * @param bool $append
+     *
      * @return \Oka\PaginationBundle\Pagination\Query
      */
     public function addQueryPart(string $queryPartName, $queryPart, bool $append = false): self
@@ -177,16 +176,16 @@ class Query
 
         return $this;
     }
-    
+
     public function getSortPropertyName(string $sort): string
     {
         if (false === $this->filters->has($sort)) {
-            throw new SortAttributeNotAvailableException($sort, sprintf('Invalid request sort attributes "%s" not available.', $sort));
+            throw new SortAttributeNotAvailableException([$sort], sprintf('Invalid request sort attributes "%s" not available.', $sort));
         }
-        
+
         /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
         $filter = $this->filters->get($sort);
-        
+
         return $filter->getPropertyName();
     }
 
@@ -271,7 +270,7 @@ class Query
     }
 
     /**
-     * @deprecated Use instead Query::execute() method.
+     * @deprecated use instead Query::execute() method
      */
     public function fetch(): Page
     {
@@ -285,12 +284,12 @@ class Query
     {
         switch (true) {
             case $this->objectManager instanceof \Doctrine\ORM\EntityManager:
-                /** @var \Doctrine\ORM\QueryBuilder $builder */
+                /* @var \Doctrine\ORM\QueryBuilder $builder */
                 return $this->objectManager->createQueryBuilder()
                             ->from($this->className, $this->dqlAlias);
 
             case $this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager:
-                /** @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
+                /* @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
                 return $this->objectManager->createQueryBuilder($this->className);
 
             default:
