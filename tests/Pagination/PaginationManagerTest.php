@@ -13,16 +13,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class PaginationManagerTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $entityManager;
-
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
-    protected $documentManager;
-
     public function setUp(): void
     {
         $kernel = self::bootKernel();
@@ -32,15 +22,6 @@ class PaginationManagerTest extends KernelTestCase
         }
 
         $this->initDatabase($kernel);
-
-        $this->entityManager = static::$container->get('doctrine.orm.entity_manager');
-        $this->documentManager = static::$container->get('doctrine_mongodb.odm.document_manager');
-    }
-
-    public function tearDown(): void
-    {
-        $this->entityManager = null;
-        $this->documentManager = null;
     }
 
     /**
@@ -48,7 +29,6 @@ class PaginationManagerTest extends KernelTestCase
      */
     public function testThatPaginateEntityPage()
     {
-//         $this->markTestIncomplete();
         $filterValue = sprintf('neq(%s)', date('c'));
 
         /** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
