@@ -5,9 +5,7 @@ namespace Oka\PaginationBundle\Pagination;
 use Symfony\Component\Routing\Route;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 final class ConfigurationBagConfigurator
 {
@@ -46,12 +44,12 @@ final class ConfigurationBagConfigurator
         }
     }
 
-    protected function createFilterBag(array $filters): FilterBag
+    private function createFilterBag(array $filters): FilterBag
     {
         $bag = new FilterBag();
 
         foreach ($filters as $key => $filter) {
-            $bag->set($key, new Filter($filter['property_name'], $filter['cast_type'], $filter['searchable'], $filter['orderable'], $filter['private']));
+            $bag->set($key, new Filter($filter['location'], $filter['property_name'], $filter['cast_type'], $filter['searchable'], $filter['orderable'], $filter['private']));
         }
 
         return $bag;

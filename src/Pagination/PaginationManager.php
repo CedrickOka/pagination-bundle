@@ -2,18 +2,16 @@
 
 namespace Oka\PaginationBundle\Pagination;
 
-use Oka\PaginationBundle\OkaPaginationEvents;
 use Oka\PaginationBundle\Event\PageEvent;
 use Oka\PaginationBundle\Exception\SortAttributeNotAvailableException;
+use Oka\PaginationBundle\OkaPaginationEvents;
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class PaginationManager
 {
@@ -76,7 +74,7 @@ class PaginationManager
             }
 
             if (true === $filter->isSearchable()) {
-                if (null !== ($value = $request->get($key))) {
+                if (null !== ($value = $request->{$filter->getLocation()}->get($key))) {
                     $criteria[$key] = $value;
                 }
             }
@@ -115,10 +113,10 @@ class PaginationManager
             $objectManager,
             $this->filterHandler,
             $configuration->getClassName() ?? $managerName,
-            (int) $request->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()),
+            (int) $request->query->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()),
             $configuration->getMaxPageNumber(),
             $filters,
-            (int) $request->get($queryMappings['page'], '1'),
+            (int) $request->query->get($queryMappings['page'], '1'),
             $criteria,
             $orderBy
         );

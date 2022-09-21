@@ -3,25 +3,34 @@
 namespace Oka\PaginationBundle\Pagination;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 final class Filter
 {
+    private $location;
     private $propertyName;
     private $castType;
     private $searchable;
     private $orderable;
     private $private;
 
-    public function __construct(string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
+    public function __construct(string $location, string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
     {
+        if (false === in_array($location, ['query', 'headers'], true)) {
+            throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$location" is not valid.', $location));
+        }
+
         $this->propertyName = $propertyName;
         $this->castType = $castType;
         $this->searchable = $searchable;
         $this->orderable = $orderable;
         $this->private = $private;
+        $this->location = $location;
+    }
+
+    public function getLocation(): string
+    {
+        return $this->location;
     }
 
     public function getPropertyName(): string

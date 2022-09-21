@@ -2,15 +2,15 @@
 
 namespace Oka\PaginationBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\IntegerNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * This is the class that validates and merges configuration from your app/config files
+ * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
@@ -44,7 +44,7 @@ class Configuration implements ConfigurationInterface
                         }
 
                         if (true === isset($v['sort'])) {
-                            $v['pagination_managers'][$key]['sort'] = array_merge_recursive($v['sort'], $config['sort'] ??[]);
+                            $v['pagination_managers'][$key]['sort'] = array_merge_recursive($v['sort'], $config['sort'] ?? []);
                         }
 
                         if (true === isset($v['query_mappings'])) {
@@ -193,6 +193,12 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->arrayPrototype()
                 ->children()
+                    ->enumNode('location')
+                        ->cannotBeEmpty()
+                        ->values(['query', 'headers'])
+                        ->defaultValue('query')
+                    ->end()
+
                     ->scalarNode('property_name')->isRequired()->cannotBeEmpty()->end()
 
                     ->scalarNode('cast_type')

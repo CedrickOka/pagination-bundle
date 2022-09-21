@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.13.0 (2022-09-21)
+
+* Added new property in Filter class for indicate filter value location.
+
 #### 5.12.0 (2022-02-02)
 
 * Added support for symfony 5.4.
