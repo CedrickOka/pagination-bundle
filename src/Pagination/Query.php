@@ -35,7 +35,7 @@ class Query
     private $dqlAlias;
 
     /**
-     * @var \Doctrine\ORM\QueryBuilder|\Doctrine\ODM\MongoDB\Query\Builder
+     * @var QueryBuilder|Builder
      */
     private $dbalQueryBuilder;
 
@@ -145,10 +145,6 @@ class Query
      * Either appends to or replaces a single, generic query part.
      *
      * The available parts are: 'select', 'distinct', 'where' and 'orderBy'.
-     *
-     * @param mixed $queryPart
-     *
-     * @return \Oka\PaginationBundle\Pagination\Query
      */
     public function addQueryPart(string $queryPartName, $queryPart, bool $append = false): self
     {
@@ -183,7 +179,7 @@ class Query
             throw new SortAttributeNotAvailableException([$sort], sprintf('Invalid request sort attributes "%s" not available.', $sort));
         }
 
-        /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
+        /** @var Filter $filter */
         $filter = $this->filters->get($sort);
 
         return $filter->getPropertyName();
@@ -202,7 +198,7 @@ class Query
                 throw new FilterNotAvailableException(sprintf('Pagination filter "%s" is not available for criteria.', $key));
             }
 
-            /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
+            /** @var Filter $filter */
             $filter = $this->filters->get($key);
             $propertyName = $filter->getPropertyName();
             $propertyType = null;
@@ -229,6 +225,10 @@ class Query
             if ($fullyItems > 0) {
                 foreach ($this->queryParts['orderBy'] as $sort => $order) {
                     $this->dbalQueryBuilder->addOrderBy(sprintf('%s.%s', $this->dqlAlias, $this->getSortPropertyName($sort)), $order);
+                }
+
+                if (true === $this->queryParts['distinct']) {
+                    $this->dbalQueryBuilder->distinct();
                 }
 
                 $items = $this->dbalQueryBuilder->addSelect($this->dqlAlias)
@@ -264,7 +264,6 @@ class Query
             $this->queryParts['orderBy'],
             $itemOffset,
             $fullyItems,
-            0,
             $items
         );
     }
@@ -278,7 +277,7 @@ class Query
     }
 
     /**
-     * @return \Doctrine\ODM\MongoDB\Query\Builder|\Doctrine\ORM\QueryBuilder
+     * @return Builder|QueryBuilder
      */
     protected function createDBALQueryBuilder(): object
     {

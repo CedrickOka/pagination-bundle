@@ -3,9 +3,7 @@
 namespace Oka\PaginationBundle\Pagination;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class Page
 {
@@ -17,8 +15,9 @@ class Page
     private $fullyItems;
     private $items;
     private $pageNumber;
+    private $metadata;
 
-    public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, int $pageNumber, array $items)
+    public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, array $items, array $metadata = [])
     {
         $this->page = $page;
         $this->itemPerPage = $itemPerPage;
@@ -27,17 +26,14 @@ class Page
         $this->itemOffset = $itemOffset;
         $this->fullyItems = $fullyItems;
         $this->items = $items;
+        $this->metadata = $metadata;
 
-        if (0 < $pageNumber) {
-            $this->pageNumber = $pageNumber;
-        } else {
-            $this->pageNumber = 1;
-            $items = $this->fullyItems - $this->itemPerPage;
+        $this->pageNumber = 1;
+        $items = $this->fullyItems - $this->itemPerPage;
 
-            while ($items > 0) {
-                $items -= $this->itemPerPage;
-                ++$this->pageNumber;
-            }
+        while ($items > 0) {
+            $items -= $this->itemPerPage;
+            ++$this->pageNumber;
         }
     }
 
@@ -71,30 +67,43 @@ class Page
         return $this->fullyItems;
     }
 
-    public function getItems(): array
-    {
-        return $this->items;
-    }
-
     public function getPageNumber(): int
     {
         return $this->pageNumber;
     }
 
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    public function getMetadata(): array
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(array $metadata): self
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+
     public function toArray(array $exludedFields = []): array
     {
         $data = [
-            'page' 			=> $this->page,
-            'itemPerPage' 	=> $this->itemPerPage,
-            'filters' 		=> $this->filters,
-            'orderBy' 		=> $this->orderBy,
-            'itemOffset' 	=> $this->itemOffset,
-            'fullyItems' 	=> $this->fullyItems,
-            'pageNumber' 	=> $this->pageNumber,
-            'items' 		=> $this->items
+            'page' => $this->page,
+            'itemPerPage' => $this->itemPerPage,
+            'filters' => $this->filters,
+            'orderBy' => $this->orderBy,
+            'itemOffset' => $this->itemOffset,
+            'fullyItems' => $this->fullyItems,
+            'pageNumber' => $this->pageNumber,
+            'items' => $this->items,
+            'metadata' => $this->items,
         ];
 
-        if (false === empty($exludedFields)) {
+        if (!empty($exludedFields)) {
             foreach ($exludedFields as $exludedField) {
                 if (true === isset($data[$exludedField])) {
                     unset($data[$exludedField]);
