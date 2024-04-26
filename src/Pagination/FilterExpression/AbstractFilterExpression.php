@@ -3,9 +3,7 @@
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 abstract class AbstractFilterExpression implements FilterExpressionInterface
 {

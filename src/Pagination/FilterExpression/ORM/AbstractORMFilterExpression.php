@@ -6,9 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Oka\PaginationBundle\Pagination\FilterExpression\AbstractFilterExpression;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 abstract class AbstractORMFilterExpression extends AbstractFilterExpression
 {

@@ -15,9 +15,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class OkaPaginationExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $container

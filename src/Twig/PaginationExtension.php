@@ -3,15 +3,13 @@
 namespace Oka\PaginationBundle\Twig;
 
 use Oka\PaginationBundle\Pagination\PaginationManager;
-use Twig\TwigFunction;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
-use Twig\Environment;
+use Twig\TwigFunction;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class PaginationExtension extends AbstractExtension implements GlobalsInterface
 {
@@ -31,8 +29,8 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
             'oka_pagination' => [
-                'pages' => []
-            ]
+                'pages' => [],
+            ],
         ];
     }
 
@@ -40,12 +38,12 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
             new TwigFunction('paginate', [$this, 'renderCurrentPaginationView'], ['needs_environment' => true, 'is_safe' => ['html']]),
-            new TwigFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']])
+            new TwigFunction('paginate_*', [$this, 'renderView'], ['needs_environment' => true, 'is_safe' => ['html']]),
         ];
     }
 
     /**
-     * Render current pagination widget view
+     * Render current pagination widget view.
      */
     public function renderCurrentPaginationView(Environment $env, string $route, array $params = []): string
     {
@@ -53,7 +51,8 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
-     * Render pagination widget view
+     * Render pagination widget view.
+     *
      * @throws \InvalidArgumentException
      */
     public function renderView(Environment $env, string $managerName, string $route, array $parameters = []): string
@@ -71,7 +70,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
             'route' => $route,
             'managerName' => $managerName,
             'parameters' => $parameters,
-            'context' => $globals['pages'][$managerName]
+            'context' => $globals['pages'][$managerName],
         ]);
     }
 

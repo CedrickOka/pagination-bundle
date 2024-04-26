@@ -9,9 +9,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 use Oka\PaginationBundle\Pagination\FilterExpression\RangeFilterExpressionTrait;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class RangeODMFilterExpression extends AbstractODMFilterExpression
 {
@@ -37,6 +35,7 @@ class RangeODMFilterExpression extends AbstractODMFilterExpression
 
             case $start && $end:
                 $queryBuilder instanceof Builder;
+
                 return new EvaluationResult($queryBuilder->expr()->addAnd(
                     $this->createGreaterExpr($queryBuilder, $field, $matches['leftOperator'], Filter::castTo($start, $castType)),
                     $this->createLessExpr($queryBuilder, $field, $matches['rightOperator'], Filter::castTo($end, $castType))

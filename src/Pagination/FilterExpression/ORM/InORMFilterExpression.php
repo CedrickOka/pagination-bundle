@@ -7,9 +7,7 @@ use Oka\PaginationBundle\Pagination\Filter;
 use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class InORMFilterExpression extends AbstractORMFilterExpression
 {
@@ -26,12 +24,12 @@ class InORMFilterExpression extends AbstractORMFilterExpression
 
         foreach (explode(',', $matches[1]) as $value) {
             $parameters[$boundCounter] = Filter::castTo($value, $castType);
-            $values[] = '?' . $boundCounter;
+            $values[] = '?'.$boundCounter;
             ++$boundCounter;
         }
         --$boundCounter;
 
-        /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
+        /* @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         return new EvaluationResult($queryBuilder->expr()->in($field, implode(',', $values)), $parameters);
     }
 

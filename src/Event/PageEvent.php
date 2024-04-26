@@ -7,9 +7,7 @@ use Oka\PaginationBundle\Pagination\Page;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class PageEvent extends Event
 {

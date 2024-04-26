@@ -6,9 +6,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
- *
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
- *
  */
 class AppKernel extends Kernel
 {
@@ -18,7 +16,7 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new \Oka\PaginationBundle\OkaPaginationBundle()
+            new \Oka\PaginationBundle\OkaPaginationBundle(),
         ];
 
         return $bundles;

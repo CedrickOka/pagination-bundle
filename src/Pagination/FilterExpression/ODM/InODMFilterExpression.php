@@ -7,9 +7,7 @@ use Oka\PaginationBundle\Pagination\Filter;
 use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class InODMFilterExpression extends AbstractODMFilterExpression
 {
@@ -27,7 +25,7 @@ class InODMFilterExpression extends AbstractODMFilterExpression
             $values[] = Filter::castTo($value, $castType);
         }
 
-        /** @var \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder */
+        /* @var \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder */
         return new EvaluationResult($queryBuilder->expr()->field($field)->in($values));
     }
 

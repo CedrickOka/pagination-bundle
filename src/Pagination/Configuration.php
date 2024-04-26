@@ -20,7 +20,7 @@ final class Configuration
     private $route;
     private $twig;
 
-    public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, string $objectManagerName = null, string $className = null, Route $route = null, array $twig = [])
+    public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, ?string $objectManagerName = null, ?string $className = null, ?Route $route = null, array $twig = [])
     {
         if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));

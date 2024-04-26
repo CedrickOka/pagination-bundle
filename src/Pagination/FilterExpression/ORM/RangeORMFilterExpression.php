@@ -9,9 +9,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 use Oka\PaginationBundle\Pagination\FilterExpression\RangeFilterExpressionTrait;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class RangeORMFilterExpression extends AbstractORMFilterExpression
 {

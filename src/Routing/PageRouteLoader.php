@@ -22,7 +22,7 @@ class PageRouteLoader implements RouteLoaderInterface
     {
         $routes = new RouteCollection();
 
-        /** @var \Oka\PaginationBundle\Pagination\ConfigurationBag $configuration */
+        /** @var ConfigurationBag $configuration */
         foreach ($this->configurations->all() as $key => $configuration) {
             if (!$route = $configuration->getRoute()) {
                 continue;

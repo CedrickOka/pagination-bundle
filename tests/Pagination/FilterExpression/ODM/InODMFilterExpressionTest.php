@@ -7,9 +7,7 @@ use Oka\PaginationBundle\Tests\Document\Page;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class InODMFilterExpressionTest extends KernelTestCase
 {

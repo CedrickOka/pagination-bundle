@@ -6,9 +6,7 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use Oka\PaginationBundle\Pagination\Filter;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class FilterExpressionHandler
 {
@@ -24,11 +22,11 @@ class FilterExpressionHandler
         $this->filterExpressions[] = $filterExpression;
     }
 
-    public function evaluate(object $queryBuilder, string $field, string $value, string $castType, string $propertyType = null, int &$boundCounter = 1): void
+    public function evaluate(object $queryBuilder, string $field, string $value, string $castType, ?string $propertyType = null, int &$boundCounter = 1): void
     {
         $evaluated = false;
 
-        /** @var \Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionInterface $filterExpression */
+        /** @var FilterExpressionInterface $filterExpression */
         foreach ($this->filterExpressions as $filterExpression) {
             if (false === $filterExpression->supports($queryBuilder, $value)) {
                 continue;
@@ -44,7 +42,7 @@ class FilterExpressionHandler
                 foreach ($result->getParameters() as $name => $value) {
                     $queryBuilder->setParameter($name, $value, $propertyType);
                 }
-                $boundCounter++;
+                ++$boundCounter;
             }
 
             $evaluated = true;
@@ -62,7 +60,7 @@ class FilterExpressionHandler
         } else {
             $queryBuilder->andWhere($queryBuilder->expr()->eq($field, '?'.$boundCounter));
             $queryBuilder->setParameter($boundCounter, $value, $propertyType);
-            $boundCounter++;
+            ++$boundCounter;
         }
     }
 }

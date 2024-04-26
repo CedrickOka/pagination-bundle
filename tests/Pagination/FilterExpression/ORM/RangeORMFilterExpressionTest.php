@@ -6,9 +6,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\ORM\RangeORMFilterExpressio
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class RangeORMFilterExpressionTest extends KernelTestCase
 {

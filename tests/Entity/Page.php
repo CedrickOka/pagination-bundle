@@ -8,13 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
  *
  * @ORM\Entity()
+ *
  * @ORM\Table(name="page")
  */
 class Page
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\Column(type="integer")
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @var string

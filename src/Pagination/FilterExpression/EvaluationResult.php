@@ -3,9 +3,7 @@
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class EvaluationResult
 {
@@ -31,12 +29,14 @@ class EvaluationResult
     public function addParameter($name, $value): self
     {
         $this->parameters[$name] = $value;
+
         return $this;
     }
 
     public function setParameters(array $parameters): self
     {
         $this->parameters = $parameters;
+
         return $this;
     }
 }

@@ -31,7 +31,7 @@ class PaginationManagerTest extends KernelTestCase
     {
         $filterValue = sprintf('neq(%s)', date('c'));
 
-        /** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
+        /** @var PaginationManager $paginationManager */
         $paginationManager = static::$container->get(PaginationManager::class);
         $request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 
@@ -49,7 +49,7 @@ class PaginationManagerTest extends KernelTestCase
     {
         $filterValue = sprintf('neq(%s)', date('c'));
 
-        /** @var \Oka\PaginationBundle\Pagination\PaginationManager $paginationManager */
+        /** @var PaginationManager $paginationManager */
         $paginationManager = static::$container->get(PaginationManager::class);
         $request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 

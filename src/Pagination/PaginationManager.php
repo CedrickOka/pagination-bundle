@@ -67,7 +67,7 @@ class PaginationManager
         $sortAttributes = $this->parseQueryToArray($request, $queryMappings['sort'], $sort['delimiter']);
         $descAttributes = $this->parseQueryToArray($request, $queryMappings['desc'], $sort['delimiter']);
 
-        /** @var \Oka\PaginationBundle\Pagination\Filter $filter */
+        /** @var Filter $filter */
         foreach ($filters as $key => $filter) {
             if (true === $filter->isPrivate()) {
                 continue;
@@ -127,7 +127,7 @@ class PaginationManager
         return $query;
     }
 
-    protected function parseQueryToArray(Request $request, string $key, string $delimiter = null, $defaultValue = null): array
+    protected function parseQueryToArray(Request $request, string $key, ?string $delimiter = null, $defaultValue = null): array
     {
         $value = $request->query->get($key, $defaultValue);
 

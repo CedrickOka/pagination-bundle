@@ -8,9 +8,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\AbstractFilterExpression;
 use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
 
 /**
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
  */
 class NotEqualFilterExpression extends AbstractFilterExpression
 {
