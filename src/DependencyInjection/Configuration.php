@@ -18,13 +18,10 @@ class Configuration implements ConfigurationInterface
 {
     protected static $supportedDrivers = ['orm', 'mongodb'];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('oka_pagination');
-        /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode */
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
@@ -170,7 +167,7 @@ class Configuration implements ConfigurationInterface
 
     protected function getFiltersNodeDefinition(): NodeDefinition
     {
-        $supportedTypes = ['array', 'boolean', 'bool', 'double', 'float', 'real', 'integer', 'int', 'string', 'datetime', 'object'];
+        $supportedTypes = ['array', 'boolean', 'bool', 'datetime', 'double', 'enum', 'float', 'int', 'integer', 'object', 'real', 'string'];
 
         $node = new ArrayNodeDefinition('filters');
         $node
@@ -208,6 +205,8 @@ class Configuration implements ConfigurationInterface
                             ->thenInvalid('The type %s is not supported. Please choose one of '.json_encode($supportedTypes))
                         ->end()
                     ->end()
+
+                    ->scalarNode('enum_class')->defaultNull()->end()
 
                     ->booleanNode('searchable')->defaultTrue()->end()
                     ->booleanNode('orderable')->defaultTrue()->end()

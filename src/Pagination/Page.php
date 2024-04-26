@@ -100,7 +100,7 @@ class Page
             'fullyItems' => $this->fullyItems,
             'pageNumber' => $this->pageNumber,
             'items' => $this->items,
-            'metadata' => $this->items,
+            'metadata' => $this->metadata,
         ];
 
         if (!empty($exludedFields)) {
