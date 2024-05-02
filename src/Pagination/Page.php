@@ -113,4 +113,17 @@ class Page
 
         return $data;
     }
+
+    public static function fromQuery(Query $query, int $fullyItems = 0, array $items = [], array $metadata = []): self
+    {
+        return new Page(
+            $query->getPage(),
+            $query->getItemPerPage(),
+            $query->getQueryPart('where'),
+            $query->getQueryPart('orderBy'),
+            $query->getItemOffset(),
+            0,
+            []
+        );
+    }
 }

@@ -257,15 +257,7 @@ class Query
             }
         }
 
-        return new Page(
-            $this->page,
-            $this->itemPerPage,
-            $this->queryParts['where'],
-            $this->queryParts['orderBy'],
-            $itemOffset,
-            $fullyItems,
-            $items
-        );
+        return Page::fromQuery($this, $fullyItems, $items);
     }
 
     /**
