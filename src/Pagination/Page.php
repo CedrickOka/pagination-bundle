@@ -122,8 +122,9 @@ class Page
             $query->getQueryPart('where'),
             $query->getQueryPart('orderBy'),
             $query->getItemOffset(),
-            0,
-            []
+            $fullyItems,
+            $items,
+            $metadata
         );
     }
 }
