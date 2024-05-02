@@ -2,6 +2,7 @@
 
 namespace Oka\PaginationBundle\DependencyInjection;
 
+use Oka\PaginationBundle\Pagination\Filter;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\IntegerNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -192,7 +193,7 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->enumNode('location')
                         ->cannotBeEmpty()
-                        ->values(['query', 'request', 'headers'])
+                        ->values(Filter::LOCATIONS)
                         ->defaultValue('query')
                     ->end()
 

@@ -7,6 +7,8 @@ namespace Oka\PaginationBundle\Pagination;
  */
 final class Filter
 {
+    public const LOCATIONS = ['query', 'request', 'headers'];
+
     private $location;
     private $propertyName;
     private $castType;
@@ -16,7 +18,7 @@ final class Filter
 
     public function __construct(string $location, string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
     {
-        if (false === in_array($location, ['query', 'headers'], true)) {
+        if (false === in_array($location, self::LOCATIONS, true)) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$location" is not valid.', $location));
         }
 
