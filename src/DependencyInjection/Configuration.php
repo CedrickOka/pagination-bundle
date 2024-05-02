@@ -192,7 +192,7 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->enumNode('location')
                         ->cannotBeEmpty()
-                        ->values(['query', 'headers'])
+                        ->values(['query', 'request', 'headers'])
                         ->defaultValue('query')
                     ->end()
 
