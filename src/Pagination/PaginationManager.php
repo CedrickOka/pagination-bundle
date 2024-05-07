@@ -113,7 +113,7 @@ class PaginationManager
             $objectManager,
             $this->filterHandler,
             $configuration->getClassName() ?? $managerName,
-            (int) $request->query->get($queryMappings['item_per_page'], (string) $configuration->getItemPerPage()),
+            (int) $request->query->get($queryMappings['item_per_page'], $configuration->getItemPerPage()),
             $configuration->getMaxPageNumber(),
             $filters,
             (int) $request->query->get($queryMappings['page'], '1'),

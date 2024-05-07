@@ -92,6 +92,13 @@ oka_pagination:
                     cast_type: int
                     searchable: true
                     orderable: true
+            query_mappings:
+                page: p
+                sort: s
+                desc: d
+                fields: f
+                distinct: d
+                item_per_page: i
             sort:
                 order:
                     number: asc
