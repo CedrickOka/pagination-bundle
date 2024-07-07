@@ -12,7 +12,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  */
 class NotEqualFilterExpression extends AbstractFilterExpression
 {
-    public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1): EvaluationResult
+    public function evaluate(object $queryBuilder, string $field, $value, string $castType, int &$boundCounter = 1): EvaluationResult
     {
         $matches = [];
 

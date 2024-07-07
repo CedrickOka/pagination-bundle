@@ -22,7 +22,7 @@ class FilterExpressionHandler
         $this->filterExpressions[] = $filterExpression;
     }
 
-    public function evaluate(object $queryBuilder, string $field, string $value, string $castType, ?string $propertyType = null, int &$boundCounter = 1): void
+    public function evaluate(object $queryBuilder, string $field, $value, string $castType, ?string $propertyType = null, int &$boundCounter = 1): void
     {
         $evaluated = false;
 

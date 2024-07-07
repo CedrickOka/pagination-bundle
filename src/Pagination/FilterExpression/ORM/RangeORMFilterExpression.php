@@ -15,7 +15,7 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
 {
     use RangeFilterExpressionTrait;
 
-    public function evaluate(object $queryBuilder, string $field, string $value, string $castType, int &$boundCounter = 1): EvaluationResult
+    public function evaluate(object $queryBuilder, string $field, $value, string $castType, int &$boundCounter = 1): EvaluationResult
     {
         $matches = [];
 

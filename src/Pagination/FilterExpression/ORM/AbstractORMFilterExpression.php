@@ -10,7 +10,7 @@ use Oka\PaginationBundle\Pagination\FilterExpression\AbstractFilterExpression;
  */
 abstract class AbstractORMFilterExpression extends AbstractFilterExpression
 {
-    public function supports(object $queryBuilder, string $value): bool
+    public function supports(object $queryBuilder, $value): bool
     {
         return parent::supports($queryBuilder, $value) && $queryBuilder instanceof QueryBuilder;
     }
