@@ -60,7 +60,7 @@ final class Filter
         return $this->private;
     }
 
-    public static function castTo(string $value, string $type)
+    public static function castTo($value, string $type)
     {
         switch (true) {
             case 'datetime' === $type:
