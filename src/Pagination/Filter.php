@@ -7,7 +7,7 @@ namespace Oka\PaginationBundle\Pagination;
  */
 final class Filter
 {
-    public const LOCATIONS = ['query', 'request', 'headers'];
+    public const LOCATIONS = ['query', 'request', 'files', 'headers'];
 
     private $location;
     private $propertyName;
