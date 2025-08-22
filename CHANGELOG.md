@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-#### 5.14.0 (2025-08-22)
+#### 5.16.0 (2025-08-22)
 
 * Added REGEXP_LIKE MySQL function like query filter.
 
