@@ -1,6 +1,6 @@
 <?php
 
-namespace Oka\PaginationBundle\Doctrine\Functions\Query\MySQL;
+namespace Oka\PaginationBundle\Doctrine\Query\Functions\MySQL;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Parser;
