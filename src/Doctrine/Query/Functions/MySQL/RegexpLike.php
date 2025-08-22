@@ -9,6 +9,8 @@ use Doctrine\ORM\Query\TokenType;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
+ *
+ * RegexpLikeFunction ::= "REGEXP_LIKE" "(" StringPrimary "," StringPrimary "," StringPrimary ")"
  */
 class RegexpLike extends FunctionNode
 {

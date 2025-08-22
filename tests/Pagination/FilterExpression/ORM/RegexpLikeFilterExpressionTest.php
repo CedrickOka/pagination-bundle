@@ -48,14 +48,14 @@ class RegexpLikeFilterExpressionTest extends KernelTestCase
         /** @var \Doctrine\ORM\Query\Expr $expr */
         $expr = $result->getExpr();
 
-        $this->assertEquals('REGEXP_LIKE(p.field, \'^text\')', $expr->__toString());
+        $this->assertEquals('REGEXP_LIKE(p.field, \'^text\') = 1', $expr->__toString());
         $this->assertEmpty($result->getParameters());
 
         $result = $this->filterExpression->evaluate($queryBuilder, 'p.field', 'rLike(^text,i)', 'string');
         /** @var \Doctrine\ORM\Query\Expr $expr */
         $expr = $result->getExpr();
 
-        $this->assertEquals('REGEXP_LIKE(p.field, \'^text\', \'i\')', $expr->__toString());
+        $this->assertEquals('REGEXP_LIKE(p.field, \'^text\', \'i\') = 1', $expr->__toString());
         $this->assertEmpty($result->getParameters());
     }
 }

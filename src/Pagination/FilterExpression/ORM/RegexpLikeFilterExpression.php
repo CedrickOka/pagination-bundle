@@ -25,9 +25,31 @@ class RegexpLikeFilterExpression extends AbstractORMFilterExpression
         $pattern = trim($matches['pattern']);
 
         if (!isset($matches['matchType'])) {
-            return new EvaluationResult(new Func('REGEXP_LIKE', [$field, $queryBuilder->expr()->literal($pattern)->__toString()]), []);
+            return new EvaluationResult(
+                $queryBuilder->expr()->eq(
+                    new Func(
+                        'REGEXP_LIKE',
+                        [$field, $queryBuilder->expr()->literal($pattern)->__toString()]
+                    ),
+                    1
+                ),
+                []
+            );
         } else {
-            return new EvaluationResult(new Func('REGEXP_LIKE', [$field, $queryBuilder->expr()->literal($pattern)->__toString(), $queryBuilder->expr()->literal(trim($matches['matchType']))->__toString()]), []);
+            return new EvaluationResult(
+                $queryBuilder->expr()->eq(
+                    new Func(
+                        'REGEXP_LIKE',
+                        [
+                            $field,
+                            $queryBuilder->expr()->literal($pattern)->__toString(),
+                            $queryBuilder->expr()->literal(trim($matches['matchType']))->__toString(),
+                        ]
+                    ),
+                    1
+                ),
+                []
+            );
         }
     }
 
