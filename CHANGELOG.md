@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+#### 5.14.0 (2025-08-22)
+
+* Added REGEXP_LIKE MySQL function like query filter.
+
 #### 5.13.0 (2022-09-21)
 
 * Added new property in Filter class for indicate filter value location.
