@@ -19,7 +19,7 @@ class RangeORMFilterExpressionTest extends KernelTestCase
     {
         static::bootKernel();
 
-        $this->entityManager = static::$container->get('doctrine.orm.entity_manager');
+        $this->entityManager = static::getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**

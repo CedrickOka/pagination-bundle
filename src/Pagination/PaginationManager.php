@@ -121,7 +121,7 @@ class PaginationManager
             $orderBy
         );
 
-        $query->addQueryPart('select', $this->parseQueryToArray($request, $queryMappings['fields'], ',', []));
+        $query->addQueryPart('select', $this->parseQueryToArray($request, $queryMappings['fields'], ','));
         $query->addQueryPart('distinct', $request->query->has($queryMappings['distinct']));
 
         return $query;

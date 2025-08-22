@@ -25,8 +25,8 @@ class EqualFilterExpressionTest extends KernelTestCase
     {
         static::bootKernel();
 
-        $this->entityManager = static::$container->get('doctrine.orm.entity_manager');
-        $this->documentManager = static::$container->get('doctrine_mongodb.odm.document_manager');
+        $this->entityManager = static::getContainer()->get('doctrine.orm.entity_manager');
+        $this->documentManager = static::getContainer()->get('doctrine_mongodb.odm.document_manager');
     }
 
     /**
