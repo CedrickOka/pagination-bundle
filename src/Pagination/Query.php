@@ -39,6 +39,11 @@ class Query
      */
     private $dbalQueryBuilder;
 
+    /**
+     * @var int
+     */
+    private $boundCounter;
+
     public function __construct(ObjectManager $objectManager, FilterExpressionHandler $filterHandler, string $className, int $itemPerPage, int $maxPageNumber, FilterBag $filters, int $page, array $criteria = [], array $orderBy = [])
     {
         if (1 > $itemPerPage) {
@@ -59,6 +64,7 @@ class Query
             'orderBy' => [],
         ];
         $this->dqlAlias = 'p';
+        $this->boundCounter = 1;
 
         // Query part where
         foreach ($criteria as $key => $value) {
@@ -131,6 +137,23 @@ class Query
         return $this;
     }
 
+    public function getBoundCounter(): int
+    {
+        return $this->boundCounter;
+    }
+
+    public function setBoundCounter(int $boundCounter): self
+    {
+        $this->boundCounter = $boundCounter;
+
+        return $this;
+    }
+
+    public function useBoundCounter(): int
+    {
+        return $this->boundCounter++;
+    }
+
     public function getQueryParts(): array
     {
         return $this->queryParts;
@@ -188,8 +211,8 @@ class Query
     public function execute(): Page
     {
         $items = [];
-        $boundCounter = 1;
         $itemOffset = $this->getItemOffset();
+        $boundCounter = $this->getBoundCounter();
         /** @var \Doctrine\Persistence\Mapping\ClassMetadata $classMetadata */
         $classMetadata = $this->objectManager->getClassMetadata($this->className);
 
@@ -258,14 +281,6 @@ class Query
         }
 
         return Page::fromQuery($this, $fullyItems, $items);
-    }
-
-    /**
-     * @deprecated use instead Query::execute() method
-     */
-    public function fetch(): Page
-    {
-        return $this->execute();
     }
 
     /**
