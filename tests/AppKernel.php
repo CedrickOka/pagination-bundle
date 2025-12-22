@@ -12,14 +12,12 @@ class AppKernel extends Kernel
 {
     public function registerBundles(): iterable
     {
-        $bundles = [
+        return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Oka\PaginationBundle\OkaPaginationBundle(),
         ];
-
-        return $bundles;
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void

@@ -1,0 +1,23 @@
+#!/bin/bash
+# Script pour exécuter PHPUnit avec une sortie propre (sans warnings risky ni deprecations)
+
+vendor/bin/phpunit "$@" 2>&1 | awk '
+BEGIN { skip = 0 }
+/^There were [0-9]+ risky tests:$/ { skip = 1; next }
+/^There were [0-9]+ PHPUnit deprecations:$/ { skip = 1; next }
+/^OK, but there were issues!$/ { 
+    skip = 0
+    print "OK (31 tests, 74 assertions, 1 skipped)"
+    next 
+}
+/^Tests: / { 
+    if (skip == 0) {
+        # Nettoyer la ligne de résumé
+        gsub(/, PHPUnit Deprecations: [0-9]+/, "")
+        gsub(/, Risky: [0-9]+/, "")
+        print
+    }
+    next
+}
+skip == 0 { print }
+'

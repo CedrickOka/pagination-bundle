@@ -36,8 +36,8 @@ class EqualFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new EqualFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'eq(text)'));
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'eq(text)'));
+        $this->assertTrue($filterExpression->supports($this->entityManager->createQueryBuilder(), 'eq(text)'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'eq(text)'));
     }
 
     /**

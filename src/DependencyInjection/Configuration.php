@@ -17,7 +17,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected static $supportedDrivers = ['orm', 'mongodb'];
+    protected static array $supportedDrivers = ['orm', 'mongodb'];
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
