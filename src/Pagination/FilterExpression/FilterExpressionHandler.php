@@ -10,14 +10,12 @@ use Oka\PaginationBundle\Pagination\Filter;
  */
 class FilterExpressionHandler
 {
-    private $filterExpressions;
-
-    public function __construct(iterable $filterExpressions = [])
-    {
-        $this->filterExpressions = $filterExpressions;
+    public function __construct(
+        private iterable $filterExpressions = [],
+    ) {
     }
 
-    public function addFilterExpression(FilterExpressionInterface $filterExpression)
+    public function addFilterExpression(FilterExpressionInterface $filterExpression): void
     {
         $this->filterExpressions[] = $filterExpression;
     }

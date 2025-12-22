@@ -13,19 +13,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-class PaginationManager
+readonly class PaginationManager
 {
-    private $registryLocator;
-    private $configurations;
-    private $filterHandler;
-    private $dispatcher;
-
-    public function __construct(ServiceLocator $registryLocator, ConfigurationBag $configurations, FilterExpressionHandler $filterHandler, EventDispatcherInterface $dispatcher)
-    {
-        $this->registryLocator = $registryLocator;
-        $this->configurations = $configurations;
-        $this->filterHandler = $filterHandler;
-        $this->dispatcher = $dispatcher;
+    public function __construct(
+        private ServiceLocator $registryLocator,
+        private ConfigurationBag $configurations,
+        private FilterExpressionHandler $filterHandler,
+        private EventDispatcherInterface $dispatcher,
+    ) {
     }
 
     public function getConfiguration(string $managerName): Configuration

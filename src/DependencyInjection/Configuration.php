@@ -17,9 +17,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected static $supportedDrivers = ['orm', 'mongodb'];
+    protected static array $supportedDrivers = ['orm', 'mongodb'];
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('oka_pagination');
         /** @var ArrayNodeDefinition $rootNode */

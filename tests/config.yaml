@@ -3,7 +3,7 @@ framework:
     secret: 'secret'
     default_locale: 'fr'
     session:
-        storage_id: session.storage.mock_file
+        storage_factory_id: session.storage.factory.mock_file
     php_errors:
         log: true
 
@@ -35,7 +35,7 @@ doctrine:
         mappings:
             App:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/tests/Entity'
                 prefix: 'Oka\PaginationBundle\Tests\Entity'
                 alias: App
@@ -54,7 +54,7 @@ doctrine_mongodb:
             mappings:
                 App:
                     is_bundle: false
-                    type: annotation
+                    type: attribute
                     dir: '%kernel.project_dir%/tests/Document'
                     prefix: 'Oka\PaginationBundle\Tests\Document'
                     alias: App

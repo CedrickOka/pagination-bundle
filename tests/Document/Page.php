@@ -6,29 +6,16 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
- *
- * @MongoDB\Document(collection="page")
  */
+#[MongoDB\Document(collection: 'page')]
 class Page
 {
-    /**
-     * @MongoDB\Id()
-     *
-     * @var string
-     */
-    protected $id;
+    #[MongoDB\Id]
+    protected string $id;
 
-    /**
-     * @MongoDB\Field(type="int")
-     *
-     * @var int
-     */
-    protected $number;
+    #[MongoDB\Field(type: 'int')]
+    protected int $number;
 
-    /**
-     * @MongoDB\Field(name="created_at", type="date")
-     *
-     * @var \DateTime
-     */
-    protected $createdAt;
+    #[MongoDB\Field(name: 'created_at', type: 'date')]
+    protected \DateTime $createdAt;
 }
