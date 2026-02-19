@@ -6,35 +6,19 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
- *
- * @ORM\Entity()
- *
- * @ORM\Table(name="page")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'page')]
 class Page
 {
-    /**
-     * @ORM\Id()
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var string
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected int|string|null $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @var int
-     */
-    protected $number;
+    #[ORM\Column(type: 'integer')]
+    protected int $number;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $createdAt;
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    protected \DateTime $createdAt;
 }

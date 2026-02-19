@@ -13,19 +13,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-class PaginationManager
+readonly class PaginationManager
 {
-    private $registryLocator;
-    private $configurations;
-    private $filterHandler;
-    private $dispatcher;
-
-    public function __construct(ServiceLocator $registryLocator, ConfigurationBag $configurations, FilterExpressionHandler $filterHandler, EventDispatcherInterface $dispatcher)
-    {
-        $this->registryLocator = $registryLocator;
-        $this->configurations = $configurations;
-        $this->filterHandler = $filterHandler;
-        $this->dispatcher = $dispatcher;
+    public function __construct(
+        private ServiceLocator $registryLocator,
+        private ConfigurationBag $configurations,
+        private FilterExpressionHandler $filterHandler,
+        private EventDispatcherInterface $dispatcher,
+    ) {
     }
 
     public function getConfiguration(string $managerName): Configuration
@@ -142,6 +137,20 @@ class PaginationManager
 
     protected function sanitizeQuery(string $query): string
     {
-        return trim(rawurldecode($query));
+        $sanitized = trim(rawurldecode($query));
+        
+        // Validate input length to prevent DoS
+        $maxLength = $this->configurations->getDefaults()->getMaxPageNumber() ?? 400;
+        if (strlen($sanitized) > $maxLength) {
+            throw new \InvalidArgumentException(sprintf('Query parameter too long (max: %d)', $maxLength));
+        }
+        
+        // Whitelist allowed characters for sort/filter parameters
+        // Only allow alphanumeric, underscore, hyphen, comma, brackets
+        if (!preg_match('/^[\w\s,\-\[\]\(\):.]+$/u', $sanitized)) {
+            throw new \InvalidArgumentException(sprintf('Invalid characters in query parameter "%s". Only alphanumeric, underscore, hyphen, comma, brackets allowed.', $sanitized));
+        }
+        
+        return $sanitized;
     }
 }

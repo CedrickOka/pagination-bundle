@@ -28,28 +28,28 @@
         }
     },
     "require" : {
-        "php" : ">=7.4",
-        "doctrine/annotations" : "^1.2",
-        "symfony/event-dispatcher" : "^4.4 || ^5.4",
-        "symfony/dependency-injection" : "^4.4 || ^5.4",
-        "symfony/config" : "^4.4 || ^5.4",
-        "symfony/translation" : "^4.4 || ^5.4",
-        "symfony/validator" : "^4.4 || ^5.4"
+        "php" : ">=8.2",
+        "symfony/event-dispatcher" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/dependency-injection" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/config" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/translation" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/validator" : "^5.4 || ^6.4 || ^7.0"
     },
     "require-dev" : {
         "doctrine/doctrine-bundle" : "^2.0",
-        "doctrine/mongodb-odm-bundle" : "^4.2",
-        "doctrine/orm" : "^2.4.8",
-        "friendsofphp/php-cs-fixer" : "^3",
-        "symfony/framework-bundle" : "^4.4 || ^5.4",
-        "symfony/phpunit-bridge" : "^4.4 || ^5.4",
-        "symfony/yaml" : "^4.4 || ^5.4",
-        "twig/twig" : "^2.12|^3.0"
+        "doctrine/mongodb-odm-bundle" : "^4.2 || ^5.0",
+        "doctrine/orm" : "^2.14 || ^3.0",
+        "friendsofphp/php-cs-fixer" : "^3.64",
+        "phpunit/phpunit" : "^10.5 || ^11.0",
+        "symfony/framework-bundle" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/phpunit-bridge" : "^5.4 || ^6.4 || ^7.0",
+        "symfony/yaml" : "^5.4 || ^6.4 || ^7.0",
+        "twig/twig" : "^3.0"
     },
     "suggest" : {
         "doctrine/doctrine-bundle" : "^2.0",
-        "doctrine/mongodb-odm-bundle" : "^4.0",
-        "twig/twig" : "^2.12|^3.0"
+        "doctrine/mongodb-odm-bundle" : "^4.2 || ^5.0",
+        "twig/twig" : "^3.0"
     },
     "config" : {
         "sort-packages" : true
@@ -59,7 +59,7 @@
     },
     "extra" : {
         "branch-alias" : {
-            "dev-master" : "5.x-dev"
+            "dev-master" : "6.x-dev"
         },
         "symfony" : {
             "allow-contrib" : "true"

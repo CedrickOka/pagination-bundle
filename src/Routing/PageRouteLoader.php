@@ -9,13 +9,11 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-class PageRouteLoader implements RouteLoaderInterface
+readonly class PageRouteLoader implements RouteLoaderInterface
 {
-    private $configurations;
-
-    public function __construct(ConfigurationBag $configurations)
-    {
-        $this->configurations = $configurations;
+    public function __construct(
+        private ConfigurationBag $configurations,
+    ) {
     }
 
     public function __invoke(): RouteCollection
@@ -30,6 +28,8 @@ class PageRouteLoader implements RouteLoaderInterface
 
             $routes->add(sprintf('oka_pagination_%s_list', $this->underscore($key)), $route);
         }
+
+        return $routes;
     }
 
     private function underscore(string $string): string

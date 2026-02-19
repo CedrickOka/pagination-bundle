@@ -3,17 +3,16 @@
 namespace Oka\PaginationBundle\EventListener;
 
 use Oka\PaginationBundle\Event\PageEvent;
+use Twig\Environment;
 
-class PageListener
+readonly class PageListener
 {
-    private $twig;
-
-    public function __construct(\Twig_Environment $twig)
-    {
-        $this->twig = $twig;
+    public function __construct(
+        private Environment $twig,
+    ) {
     }
 
-    public function onPage(PageEvent $event)
+    public function onPage(PageEvent $event): void
     {
         $configuration = $event->getConfiguration();
 

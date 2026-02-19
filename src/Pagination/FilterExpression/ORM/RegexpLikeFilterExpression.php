@@ -24,6 +24,16 @@ class RegexpLikeFilterExpression extends AbstractORMFilterExpression
 
         $pattern = trim($matches['pattern']);
 
+        // Security: Limit regex pattern length to prevent ReDoS
+        if (strlen($pattern) > 100) {
+            throw new BadFilterExpressionException('Regex pattern too long (max 100 characters)');
+        }
+
+        // Security: Validate pattern doesn't contain potentially dangerous constructs
+        if (preg_match('/\(\?<!|\(\?=|\(\?!|\{\d+,\}/', $pattern)) {
+            throw new BadFilterExpressionException('Complex regex patterns are not allowed');
+        }
+
         if (!isset($matches['matchType'])) {
             return new EvaluationResult(
                 $queryBuilder->expr()->eq(
