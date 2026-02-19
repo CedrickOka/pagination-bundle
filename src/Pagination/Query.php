@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -16,35 +18,24 @@ use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
  */
 class Query
 {
-    private $objectManager;
-    private $filterHandler;
-    private $className;
-    private $itemPerPage;
-    private $maxPageNumber;
-    private $filters;
-    private $page;
-
+    private readonly ObjectManager $objectManager;
+    private readonly FilterExpressionHandler $filterHandler;
+    private readonly string $className;
+    private readonly int $itemPerPage;
+    private readonly int $maxPageNumber;
+    private readonly FilterBag $filters;
+    private readonly int $page;
+    private array $queryParts;
+    private string $dqlAlias;
+    private \Doctrine\ORM\QueryBuilder|\Doctrine\ODM\MongoDB\Query\Builder $dbalQueryBuilder;
+    private int $boundCounter;
+    
     /**
-     * @var array
+     * Whether to use a single query with inline count (MySQL optimization)
      */
-    private $queryParts;
+    private bool $useSingleQuery = false;
 
-    /**
-     * @var string
-     */
-    private $dqlAlias;
-
-    /**
-     * @var QueryBuilder|Builder
-     */
-    private $dbalQueryBuilder;
-
-    /**
-     * @var int
-     */
-    private $boundCounter;
-
-    public function __construct(ObjectManager $objectManager, FilterExpressionHandler $filterHandler, string $className, int $itemPerPage, int $maxPageNumber, FilterBag $filters, int $page, array $criteria = [], array $orderBy = [])
+    public function __construct(ObjectManager $objectManager, FilterExpressionHandler $filterHandler, string $className, int $itemPerPage, int $maxPageNumber, FilterBag $filters, int $page, array $criteria = [], array $orderBy = [], bool $useSingleQuery = false)
     {
         if (1 > $itemPerPage) {
             throw new \LogicException(sprintf('The number of items per page must be greater than 0, "%s" given.', $itemPerPage));
@@ -65,6 +56,7 @@ class Query
         ];
         $this->dqlAlias = 'p';
         $this->boundCounter = 1;
+        $this->useSingleQuery = $useSingleQuery;
 
         // Query part where
         foreach ($criteria as $key => $value) {
@@ -152,6 +144,17 @@ class Query
     public function useBoundCounter(): int
     {
         return $this->boundCounter++;
+    }
+    
+    public function useSingleQuery(): bool
+    {
+        return $this->useSingleQuery;
+    }
+    
+    public function setUseSingleQuery(bool $useSingleQuery): self
+    {
+        $this->useSingleQuery = $useSingleQuery;
+        return $this;
     }
 
     public function getQueryParts(): array

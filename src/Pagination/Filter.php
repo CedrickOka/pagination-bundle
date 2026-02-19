@@ -8,26 +8,41 @@ namespace Oka\PaginationBundle\Pagination;
 final class Filter
 {
     public const LOCATIONS = ['query', 'request', 'files', 'headers'];
+    
+    // Security: Maximum length for filter values
+    public const MAX_VALUE_LENGTH = 200;
+    
+    // Compiled regex patterns for better performance
+    private static array $typeCastPatterns = [
+        'datetime' => true,
+        'bool' => true,
+        'boolean' => true,
+        'array' => true,
+        'int' => true,
+        'integer' => true,
+        'float' => true,
+        'double' => true,
+        'real' => true,
+        'string' => true,
+        'object' => true,
+    ];
 
-    private $location;
-    private $propertyName;
-    private $castType;
-    private $searchable;
-    private $orderable;
-    private $private;
-
-    public function __construct(string $location, string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
-    {
+    private function __construct(
+        private readonly string $location,
+        private readonly string $propertyName,
+        private readonly string $castType,
+        private readonly bool $searchable,
+        private readonly bool $orderable,
+        private readonly bool $private = false
+    ) {
         if (false === in_array($location, self::LOCATIONS, true)) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$location" is not valid.', $location));
         }
-
-        $this->propertyName = $propertyName;
-        $this->castType = $castType;
-        $this->searchable = $searchable;
-        $this->orderable = $orderable;
-        $this->private = $private;
-        $this->location = $location;
+        
+        // Security: Validate cast type
+        if (!isset(self::$typeCastPatterns[$castType])) {
+            throw new \InvalidArgumentException(sprintf('Unsupported cast type: "%s".', $castType));
+        }
     }
 
     public function getLocation(): string
@@ -62,6 +77,13 @@ final class Filter
 
     public static function castTo($value, string $type)
     {
+        // Security: Validate value length before casting
+        if (is_string($value) && strlen($value) > self::MAX_VALUE_LENGTH) {
+            throw new \InvalidArgumentException(
+                sprintf('Filter value too long (max %d characters)', self::MAX_VALUE_LENGTH)
+            );
+        }
+
         switch (true) {
             case 'datetime' === $type:
                 return !$value instanceof \DateTime ? new \DateTime(is_int($value) ? '@'.$value : $value) : $value;
@@ -75,5 +97,23 @@ final class Filter
         }
 
         return $value;
+    }
+    
+    /**
+     * Check if a cast type is supported
+     */
+    public static function isValidCastType(string $type): bool
+    {
+        return isset(self::$typeCastPatterns[$type]);
+    }
+    
+    /**
+     * Get supported cast types
+     *
+     * @return string[]
+     */
+    public static function getSupportedCastTypes(): array
+    {
+        return array_keys(self::$typeCastPatterns);
     }
 }
