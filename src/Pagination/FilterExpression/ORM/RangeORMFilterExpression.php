@@ -26,6 +26,12 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
         $start = trim($matches['start']);
         $end = trim($matches['end']);
 
+        // Security: Validate range values length to prevent abuse
+        $maxValueLength = 100;
+        if (strlen($start) > $maxValueLength || strlen($end) > $maxValueLength) {
+            throw new BadFilterExpressionException(sprintf('Range value too long (max %d characters)', $maxValueLength));
+        }
+
         switch (true) {
             case $start && !$end:
                 return new EvaluationResult(

@@ -137,6 +137,20 @@ readonly class PaginationManager
 
     protected function sanitizeQuery(string $query): string
     {
-        return trim(rawurldecode($query));
+        $sanitized = trim(rawurldecode($query));
+        
+        // Validate input length to prevent DoS
+        $maxLength = $this->configurations->getDefaults()->getMaxPageNumber() ?? 400;
+        if (strlen($sanitized) > $maxLength) {
+            throw new \InvalidArgumentException(sprintf('Query parameter too long (max: %d)', $maxLength));
+        }
+        
+        // Whitelist allowed characters for sort/filter parameters
+        // Only allow alphanumeric, underscore, hyphen, comma, brackets
+        if (!preg_match('/^[\w\s,\-\[\]\(\):.]+$/u', $sanitized)) {
+            throw new \InvalidArgumentException(sprintf('Invalid characters in query parameter "%s". Only alphanumeric, underscore, hyphen, comma, brackets allowed.', $sanitized));
+        }
+        
+        return $sanitized;
     }
 }

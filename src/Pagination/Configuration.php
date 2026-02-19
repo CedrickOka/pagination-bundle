@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Symfony\Component\Routing\Route;
@@ -9,16 +11,17 @@ use Symfony\Component\Routing\Route;
  */
 final class Configuration
 {
-    private $dbDriver;
-    private $itemPerPage;
-    private $maxPageNumber;
-    private $sort;
-    private $queryMappings;
-    private $filters;
-    private $objectManagerName;
-    private $className;
-    private $route;
-    private $twig;
+    private readonly string $dbDriver;
+    private readonly int $itemPerPage;
+    private readonly int $maxPageNumber;
+    private readonly array $sort;
+    private readonly array $queryMappings;
+    private readonly FilterBag $filters;
+    private readonly ?string $objectManagerName;
+    private readonly ?string $className;
+    private readonly ?Route $route;
+    private array $twig;
+    private int $maxPageNumberMutable;
 
     public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, ?string $objectManagerName = null, ?string $className = null, ?Route $route = null, array $twig = [])
     {
@@ -29,6 +32,7 @@ final class Configuration
         $this->dbDriver = $dbDriver;
         $this->itemPerPage = $itemPerPage;
         $this->maxPageNumber = $maxPageNumber;
+        $this->maxPageNumberMutable = $maxPageNumber;
         $this->sort = $sort;
         $this->filters = $filters;
         $this->objectManagerName = $objectManagerName;

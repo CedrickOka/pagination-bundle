@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 /**
@@ -7,15 +9,15 @@ namespace Oka\PaginationBundle\Pagination;
  */
 class Page
 {
-    private $page;
-    private $itemPerPage;
-    private $filters;
-    private $orderBy;
-    private $itemOffset;
-    private $fullyItems;
-    private $items;
-    private $pageNumber;
-    private $metadata;
+    private readonly int $page;
+    private readonly int $itemPerPage;
+    private readonly array $filters;
+    private readonly array $orderBy;
+    private readonly int $itemOffset;
+    private readonly int $fullyItems;
+    private array $items;
+    private int $pageNumber;
+    private array $metadata;
 
     public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, array $items, array $metadata = [])
     {
