@@ -13,14 +13,6 @@ use Oka\PaginationBundle\Pagination\FilterExpression\EvaluationResult;
  */
 class RegexpLikeFilterExpression extends AbstractORMFilterExpression
 {
-    /**
-     * @param object $queryBuilder
-     * @param string $field
-     * @param $value
-     * @param string $castType
-     * @param int $boundCounter
-     * @return EvaluationResult
-     */
     public function evaluate(object $queryBuilder, string $field, $value, string $castType, int &$boundCounter = 1): EvaluationResult
     {
         $matches = [];

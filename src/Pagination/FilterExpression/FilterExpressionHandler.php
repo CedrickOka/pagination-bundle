@@ -35,7 +35,14 @@ class FilterExpressionHandler
 
     public function addFilterExpression(FilterExpressionInterface $filterExpression): void
     {
-        $this->filterExpressions[] = $filterExpression;
+        if (is_array($this->filterExpressions)) {
+            $this->filterExpressions[] = $filterExpression;
+        } else {
+            $this->filterExpressions = iterator_to_array($this->filterExpressions);
+            $this->filterExpressions[] = $filterExpression;
+        }
+        
+        $this->defaultExpressions = $this->sortExpressions($this->filterExpressions);
         // Reset cache when new expression is added
         self::$expressionCache = [];
     }
@@ -126,9 +133,6 @@ class FilterExpressionHandler
         // Build cache for this query builder type
         $cached = [];
         foreach ($this->defaultExpressions as $expression) {
-            // Test with a dummy call to supports to determine if expression works
-            // Note: This is a simplified approach; for production, you'd want
-            // to use more sophisticated caching based on value patterns
             $cached[] = $expression;
         }
 
