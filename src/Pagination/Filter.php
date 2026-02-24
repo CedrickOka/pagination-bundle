@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 /**
@@ -8,10 +10,10 @@ namespace Oka\PaginationBundle\Pagination;
 final class Filter
 {
     public const LOCATIONS = ['query', 'request', 'files', 'headers'];
-    
+
     // Security: Maximum length for filter values
     public const MAX_VALUE_LENGTH = 200;
-    
+
     // Compiled regex patterns for better performance
     private static array $typeCastPatterns = [
         'datetime' => true,
@@ -27,19 +29,19 @@ final class Filter
         'object' => true,
     ];
 
-    private function __construct(
+    public function __construct(
         private readonly string $location,
         private readonly string $propertyName,
         private readonly string $castType,
         private readonly bool $searchable,
         private readonly bool $orderable,
-        private readonly bool $private = false
+        private readonly bool $private = false,
     ) {
         if (false === in_array($location, self::LOCATIONS, true)) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$location" is not valid.', $location));
         }
-        
-        // Security: Validate cast type
+
+        // Security: Validate a cast type
         if (!isset(self::$typeCastPatterns[$castType])) {
             throw new \InvalidArgumentException(sprintf('Unsupported cast type: "%s".', $castType));
         }
@@ -79,9 +81,7 @@ final class Filter
     {
         // Security: Validate value length before casting
         if (is_string($value) && strlen($value) > self::MAX_VALUE_LENGTH) {
-            throw new \InvalidArgumentException(
-                sprintf('Filter value too long (max %d characters)', self::MAX_VALUE_LENGTH)
-            );
+            throw new \InvalidArgumentException(sprintf('Filter value too long (max %d characters)', self::MAX_VALUE_LENGTH));
         }
 
         switch (true) {
@@ -98,17 +98,17 @@ final class Filter
 
         return $value;
     }
-    
+
     /**
-     * Check if a cast type is supported
+     * Check if a cast type is supported.
      */
     public static function isValidCastType(string $type): bool
     {
         return isset(self::$typeCastPatterns[$type]);
     }
-    
+
     /**
-     * Get supported cast types
+     * Get supported cast types.
      *
      * @return string[]
      */

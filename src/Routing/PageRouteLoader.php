@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Routing;
 
 use Oka\PaginationBundle\Pagination\ConfigurationBag;
@@ -9,10 +11,10 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-readonly class PageRouteLoader implements RouteLoaderInterface
+class PageRouteLoader implements RouteLoaderInterface
 {
     public function __construct(
-        private ConfigurationBag $configurations,
+        private readonly ConfigurationBag $configurations,
     ) {
     }
 

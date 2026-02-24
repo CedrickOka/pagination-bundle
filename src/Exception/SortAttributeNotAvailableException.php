@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Exception;
 
 /**
@@ -7,7 +9,7 @@ namespace Oka\PaginationBundle\Exception;
  */
 class SortAttributeNotAvailableException extends PaginationException
 {
-    private $sort;
+    private array $sort;
 
     public function __construct(array $sort, $message = null, $code = null, $previous = null)
     {

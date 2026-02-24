@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\ODM;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\ODM\InODMFilterExpression;
@@ -14,7 +16,7 @@ class InODMFilterExpressionTest extends KernelTestCase
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
-    protected $documentManager;
+    protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
 
     public function setUp(): void
     {
@@ -30,7 +32,7 @@ class InODMFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new InODMFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'in(1,2)'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'in(1,2)'));
     }
 
     /**
