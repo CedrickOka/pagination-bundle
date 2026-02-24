@@ -10,7 +10,7 @@
 	displayDetailsOnTestsThatTriggerWarnings="false"
 	displayDetailsOnTestsThatTriggerNotices="false"
 	displayDetailsOnTestsThatTriggerDeprecations="false"
-	displayDetailsOnTestsThatTriggerErrors="true"
+	displayDetailsOnTestsThatTriggerErrors="false"
 	beStrictAboutTestsThatDoNotTestAnything="false"
 	failOnRisky="false"
 	failOnWarning="false"

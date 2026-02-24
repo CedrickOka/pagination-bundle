@@ -18,6 +18,14 @@ class InODMFilterExpressionTest extends KernelTestCase
      */
     protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
+
     public function setUp(): void
     {
         static::bootKernel();

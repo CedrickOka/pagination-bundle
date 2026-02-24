@@ -14,9 +14,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DoctrineRegistryServiceLocatorPass implements CompilerPassInterface
 {
-    /**
-     * @var array
-     */
     public static array $doctrineDrivers = [
         'orm' => [
             'registry' => 'doctrine',

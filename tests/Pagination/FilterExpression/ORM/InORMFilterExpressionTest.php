@@ -17,6 +17,14 @@ class InORMFilterExpressionTest extends KernelTestCase
      */
     protected \Doctrine\ORM\EntityManager $entityManager;
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
+
     public function setUp(): void
     {
         static::bootKernel();
