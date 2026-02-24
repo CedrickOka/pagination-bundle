@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression\ORM;
 
 use Doctrine\ORM\QueryBuilder;
@@ -62,14 +64,14 @@ class RangeORMFilterExpression extends AbstractORMFilterExpression
         }
     }
 
-    protected function createGreaterExpr(QueryBuilder $queryBuilder, string $field, string $leftOperator, string $placeholder)
+    protected function createGreaterExpr(QueryBuilder $queryBuilder, string $field, string $leftOperator, string $placeholder): \Doctrine\ORM\Query\Expr\Comparison
     {
         return ']' === $leftOperator ?
             $queryBuilder->expr()->gt($field, $placeholder) :
             $queryBuilder->expr()->gte($field, $placeholder);
     }
 
-    protected function createLessExpr(QueryBuilder $queryBuilder, $field, $rightOperator, string $placeholder)
+    protected function createLessExpr(QueryBuilder $queryBuilder, $field, $rightOperator, string $placeholder): \Doctrine\ORM\Query\Expr\Comparison
     {
         return '[' === $rightOperator ?
             $queryBuilder->expr()->lt($field, $placeholder) :

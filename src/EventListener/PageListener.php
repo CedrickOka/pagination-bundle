@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Oka\PaginationBundle\EventListener;
 
 use Oka\PaginationBundle\Event\PageEvent;
 use Twig\Environment;
 
-readonly class PageListener
+class PageListener
 {
     public function __construct(
-        private Environment $twig,
+        private readonly Environment $twig,
     ) {
     }
 

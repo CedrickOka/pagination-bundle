@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Event;
 
 use Oka\PaginationBundle\Pagination\Configuration;
@@ -11,9 +13,9 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class PageEvent extends Event
 {
-    private $managerName;
-    private $configuration;
-    private $page;
+    private string $managerName;
+    private Configuration $configuration;
+    private Page $page;
 
     public function __construct(string $managerName, Configuration $configuration, Page $page)
     {

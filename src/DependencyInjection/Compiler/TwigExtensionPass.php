@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\DependencyInjection\Compiler;
 
 use Oka\PaginationBundle\EventListener\PageListener;
@@ -14,7 +16,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TwigExtensionPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->getParameter('oka_pagination.twig.enabled')) {
             return;

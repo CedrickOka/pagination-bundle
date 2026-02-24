@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\DBAL;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\DBAL\EqualFilterExpression;

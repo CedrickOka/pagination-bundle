@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Twig;
 
 use Oka\PaginationBundle\Pagination\PaginationManager;

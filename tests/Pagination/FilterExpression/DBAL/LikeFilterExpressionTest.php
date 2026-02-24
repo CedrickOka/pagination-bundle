@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\DBAL;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\DBAL\LikeFilterExpression;
@@ -14,12 +16,12 @@ class LikeFilterExpressionTest extends KernelTestCase
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $entityManager;
+    protected \Doctrine\ORM\EntityManager $entityManager;
 
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
-    protected $documentManager;
+    protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
 
     public function setUp(): void
     {
@@ -36,8 +38,8 @@ class LikeFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new LikeFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'like(text)'));
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'like(text)'));
+        $this->assertTrue($filterExpression->supports($this->entityManager->createQueryBuilder(), 'like(text)'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'like(text)'));
     }
 
     /**
