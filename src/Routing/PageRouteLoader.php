@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Routing;
 
 use Oka\PaginationBundle\Pagination\ConfigurationBag;
@@ -11,11 +13,9 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PageRouteLoader implements RouteLoaderInterface
 {
-    private $configurations;
-
-    public function __construct(ConfigurationBag $configurations)
-    {
-        $this->configurations = $configurations;
+    public function __construct(
+        private readonly ConfigurationBag $configurations,
+    ) {
     }
 
     public function __invoke(): RouteCollection
@@ -30,6 +30,8 @@ class PageRouteLoader implements RouteLoaderInterface
 
             $routes->add(sprintf('oka_pagination_%s_list', $this->underscore($key)), $route);
         }
+
+        return $routes;
     }
 
     private function underscore(string $string): string

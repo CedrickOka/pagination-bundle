@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\ORM;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\ORM\InORMFilterExpression;
@@ -13,7 +15,15 @@ class InORMFilterExpressionTest extends KernelTestCase
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $entityManager;
+    protected \Doctrine\ORM\EntityManager $entityManager;
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
 
     public function setUp(): void
     {
@@ -29,7 +39,7 @@ class InORMFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new InORMFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'in(1,2)'));
+        $this->assertTrue($filterExpression->supports($this->entityManager->createQueryBuilder(), 'in(1,2)'));
     }
 
     /**

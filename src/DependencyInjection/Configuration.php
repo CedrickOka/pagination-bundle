@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\DependencyInjection;
 
 use Oka\PaginationBundle\Pagination\Filter;
@@ -17,9 +19,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected static $supportedDrivers = ['orm', 'mongodb'];
+    protected static array $supportedDrivers = ['orm', 'mongodb'];
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('oka_pagination');
         /** @var ArrayNodeDefinition $rootNode */

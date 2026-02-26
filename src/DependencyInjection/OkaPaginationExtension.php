@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\DependencyInjection;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionInterface;
@@ -15,7 +17,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class OkaPaginationExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container
             ->registerForAutoconfiguration(FilterExpressionInterface::class)

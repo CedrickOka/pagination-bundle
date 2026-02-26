@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -12,10 +14,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DoctrineRegistryServiceLocatorPass implements CompilerPassInterface
 {
-    /**
-     * @var array
-     */
-    public static $doctrineDrivers = [
+    public static array $doctrineDrivers = [
         'orm' => [
             'registry' => 'doctrine',
             'tag' => 'doctrine.event_subscriber',
