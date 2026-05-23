@@ -40,7 +40,6 @@ jobs:
         uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
         with:
           php-version: ${{ matrix.php_version }}
-  #        tools: composer:v2.2
           coverage: none
           extensions: mbstring, intl, pdo, mongodb
           ini-values: date.timezone=UTC
@@ -67,7 +66,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist ${{ matrix.composer_extra_args }};
+            composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist ${{ matrix.composer_extra_args }};
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
