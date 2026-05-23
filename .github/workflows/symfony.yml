@@ -23,6 +23,7 @@ jobs:
           - php_version: "8.1"
             symfony_version: "5.4"
             stability: "stable"
+            composer_extra_args: "--ignore-platform-req=ext-mongodb"
           - php_version: "8.1"
             symfony_version: "6.4"
             stability: "stable"
@@ -66,7 +67,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist;
+            composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist ${{ matrix.composer_extra_args }};
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
