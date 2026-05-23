@@ -19,7 +19,7 @@ class Configuration implements ConfigurationInterface
 {
     protected static $supportedDrivers = ['orm', 'mongodb'];
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('oka_pagination');
         /** @var ArrayNodeDefinition $rootNode */

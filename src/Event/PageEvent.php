@@ -11,15 +11,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class PageEvent extends Event
 {
-    private $managerName;
-    private $configuration;
-    private $page;
-
-    public function __construct(string $managerName, Configuration $configuration, Page $page)
+    public function __construct(private string $managerName, private Configuration $configuration, private Page $page)
     {
-        $this->managerName = $managerName;
-        $this->configuration = $configuration;
-        $this->page = $page;
     }
 
     public function getManagerName(): string

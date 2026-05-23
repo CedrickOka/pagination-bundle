@@ -6,11 +6,8 @@ use Oka\PaginationBundle\Event\PageEvent;
 
 class PageListener
 {
-    private $twig;
-
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(private \Twig_Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     public function onPage(PageEvent $event)
