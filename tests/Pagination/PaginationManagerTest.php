@@ -32,7 +32,7 @@ class PaginationManagerTest extends KernelTestCase
         $filterValue = sprintf('neq(%s)', date('c'));
 
         /** @var PaginationManager $paginationManager */
-        $paginationManager = static::$container->get(PaginationManager::class);
+        $paginationManager = static::getContainer()->get(PaginationManager::class);
         $request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 
         $page = $paginationManager->paginate('page_orm', $request);
@@ -50,10 +50,10 @@ class PaginationManagerTest extends KernelTestCase
         $filterValue = sprintf('neq(%s)', date('c'));
 
         /** @var PaginationManager $paginationManager */
-        $paginationManager = static::$container->get(PaginationManager::class);
+        $paginationManager = static::getContainer()->get(PaginationManager::class);
         $request = new Request(['createdAt' => $filterValue, 'sort' => 'createdAt', 'desc' => 'number']);
 
-        $page = $paginationManager->paginate(\Oka\PaginationBundle\Tests\Document\Page::class, $request);
+        $page = $paginationManager->paginate(\Oka\PaginationBundle\Test\Document\Page::class, $request);
         $this->assertEquals(1, $page->getPage());
         $this->assertEquals(1, $page->getPageNumber());
         $this->assertEquals(0, $page->getFullyItems());

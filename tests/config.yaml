@@ -3,7 +3,8 @@ framework:
     secret: 'secret'
     default_locale: 'fr'
     session:
-        storage_id: session.storage.mock_file
+        storage_factory_id: session.storage.factory.mock_file
+        handler_id: null
     php_errors:
         log: true
 
@@ -35,9 +36,9 @@ doctrine:
         mappings:
             App:
                 is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/tests/Entity'
-                prefix: 'Oka\PaginationBundle\Tests\Entity'
+                type: attribute
+                dir: '%kernel.project_dir%/src/Test/Entity'
+                prefix: 'Oka\PaginationBundle\Test\Entity'
                 alias: App
 
 doctrine_mongodb:
@@ -54,9 +55,9 @@ doctrine_mongodb:
             mappings:
                 App:
                     is_bundle: false
-                    type: annotation
-                    dir: '%kernel.project_dir%/tests/Document'
-                    prefix: 'Oka\PaginationBundle\Tests\Document'
+                    type: attribute
+                    dir: '%kernel.project_dir%/src/Test/Document'
+                    prefix: 'Oka\PaginationBundle\Test\Document'
                     alias: App
 
 oka_pagination:
@@ -73,7 +74,7 @@ oka_pagination:
     pagination_managers:
         page_orm:
             db_driver: orm
-            class: Oka\PaginationBundle\Tests\Entity\Page
+            class: Oka\PaginationBundle\Test\Entity\Page
             filters:
                 number:
                     property_name: number
@@ -85,7 +86,7 @@ oka_pagination:
                     number: desc
         page_mongodb:
             db_driver: mongodb
-            class: Oka\PaginationBundle\Tests\Document\Page
+            class: Oka\PaginationBundle\Test\Document\Page
             filters:
                 number:
                     property_name: number

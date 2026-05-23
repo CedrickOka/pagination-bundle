@@ -14,7 +14,7 @@ class FilterExpressionsPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->hasDefinition('oka_pagination.filter_expression_handler')) {
             return;

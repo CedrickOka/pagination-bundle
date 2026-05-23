@@ -1,34 +1,30 @@
 <?php
 
-namespace Oka\PaginationBundle\Tests\Document;
+namespace Oka\PaginationBundle\Test\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
- *
- * @MongoDB\Document(collection="page")
  */
+#[MongoDB\Document(collection: 'page')]
 class Page
 {
     /**
-     * @MongoDB\Id()
-     *
      * @var string
      */
+    #[MongoDB\Id()]
     protected $id;
 
     /**
-     * @MongoDB\Field(type="int")
-     *
      * @var int
      */
+    #[MongoDB\Field(type: 'int')]
     protected $number;
 
     /**
-     * @MongoDB\Field(name="created_at", type="date")
-     *
      * @var \DateTime
      */
+    #[MongoDB\Field(name: 'created_at', type: 'date')]
     protected $createdAt;
 }

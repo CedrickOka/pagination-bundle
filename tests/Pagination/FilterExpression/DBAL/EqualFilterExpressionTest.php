@@ -3,7 +3,7 @@
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\DBAL;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\DBAL\EqualFilterExpression;
-use Oka\PaginationBundle\Tests\Document\Page;
+use Oka\PaginationBundle\Test\Document\Page;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
