@@ -29,7 +29,6 @@
     },
     "require" : {
         "php" : ">=8.0",
-        "doctrine/annotations" : "^1.2",
         "symfony/event-dispatcher" : "^5.4 || ^6.4 || ^7.4",
         "symfony/dependency-injection" : "^5.4 || ^6.4 || ^7.4",
         "symfony/config" : "^5.4 || ^6.4 || ^7.4",
