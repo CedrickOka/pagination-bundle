@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 /**
@@ -7,27 +9,18 @@ namespace Oka\PaginationBundle\Pagination;
  */
 class Page
 {
-    private $page;
-    private $itemPerPage;
-    private $filters;
-    private $orderBy;
-    private $itemOffset;
-    private $fullyItems;
-    private $items;
-    private $pageNumber;
-    private $metadata;
+    private int $pageNumber;
 
-    public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, array $items, array $metadata = [])
-    {
-        $this->page = $page;
-        $this->itemPerPage = $itemPerPage;
-        $this->filters = $filters;
-        $this->orderBy = $orderBy;
-        $this->itemOffset = $itemOffset;
-        $this->fullyItems = $fullyItems;
-        $this->items = $items;
-        $this->metadata = $metadata;
-
+    public function __construct(
+        private readonly int $page,
+        private readonly int $itemPerPage,
+        private readonly array $filters,
+        private readonly array $orderBy,
+        private readonly int $itemOffset,
+        private readonly int $fullyItems,
+        private readonly array $items,
+        private array $metadata = [],
+    ) {
         $this->pageNumber = 1;
         $items = $this->fullyItems - $this->itemPerPage;
 
@@ -89,7 +82,7 @@ class Page
         return $this;
     }
 
-    public function toArray(array $exludedFields = []): array
+    public function toArray(array $excludedFields = []): array
     {
         $data = [
             'page' => $this->page,
@@ -103,10 +96,10 @@ class Page
             'metadata' => $this->metadata,
         ];
 
-        if (!empty($exludedFields)) {
-            foreach ($exludedFields as $exludedField) {
-                if (true === isset($data[$exludedField])) {
-                    unset($data[$exludedField]);
+        if (!empty($excludedFields)) {
+            foreach ($excludedFields as $excludedField) {
+                if (true === isset($data[$excludedField])) {
+                    unset($data[$excludedField]);
                 }
             }
         }

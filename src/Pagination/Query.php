@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -16,47 +18,31 @@ use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
  */
 class Query
 {
-    private $objectManager;
-    private $filterHandler;
-    private $className;
-    private $itemPerPage;
-    private $maxPageNumber;
-    private $filters;
-    private $page;
+    private array $queryParts;
+    private string $dqlAlias;
+    private \Doctrine\ORM\QueryBuilder|Builder $dbalQueryBuilder;
+    private int $boundCounter;
 
     /**
-     * @var array
+     * Whether to use a single query with inline count (MySQL optimization).
      */
-    private $queryParts;
+    private bool $useSingleQuery = false;
 
-    /**
-     * @var string
-     */
-    private $dqlAlias;
-
-    /**
-     * @var QueryBuilder|Builder
-     */
-    private $dbalQueryBuilder;
-
-    /**
-     * @var int
-     */
-    private $boundCounter;
-
-    public function __construct(ObjectManager $objectManager, FilterExpressionHandler $filterHandler, string $className, int $itemPerPage, int $maxPageNumber, FilterBag $filters, int $page, array $criteria = [], array $orderBy = [])
-    {
+    public function __construct(
+        private readonly ObjectManager $objectManager,
+        private readonly FilterExpressionHandler $filterHandler,
+        private readonly string $className,
+        private readonly int $itemPerPage,
+        private readonly int $maxPageNumber,
+        private readonly FilterBag $filters,
+        private readonly int $page,
+        private readonly array $criteria = [],
+        private readonly array $orderBy = [],
+    ) {
         if (1 > $itemPerPage) {
             throw new \LogicException(sprintf('The number of items per page must be greater than 0, "%s" given.', $itemPerPage));
         }
 
-        $this->objectManager = $objectManager;
-        $this->filterHandler = $filterHandler;
-        $this->className = $className;
-        $this->itemPerPage = $itemPerPage;
-        $this->maxPageNumber = $maxPageNumber;
-        $this->filters = $filters;
-        $this->page = $page;
         $this->queryParts = [
             'distinct' => false,
             'select' => [],
@@ -152,6 +138,18 @@ class Query
     public function useBoundCounter(): int
     {
         return $this->boundCounter++;
+    }
+
+    public function useSingleQuery(): bool
+    {
+        return $this->useSingleQuery;
+    }
+
+    public function setUseSingleQuery(bool $useSingleQuery): self
+    {
+        $this->useSingleQuery = $useSingleQuery;
+
+        return $this;
     }
 
     public function getQueryParts(): array
@@ -288,18 +286,10 @@ class Query
      */
     protected function createDBALQueryBuilder(): object
     {
-        switch (true) {
-            case $this->objectManager instanceof \Doctrine\ORM\EntityManager:
-                /* @var \Doctrine\ORM\QueryBuilder $builder */
-                return $this->objectManager->createQueryBuilder()
-                            ->from($this->className, $this->dqlAlias);
-
-            case $this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager:
-                /* @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
-                return $this->objectManager->createQueryBuilder($this->className);
-
-            default:
-                throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager)));
-        }
+        return match (true) {
+            $this->objectManager instanceof \Doctrine\ORM\EntityManager => $this->objectManager->createQueryBuilder()->from($this->className, $this->dqlAlias),
+            $this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager => $this->objectManager->createQueryBuilder($this->className),
+            default => throw new ObjectManagerNotSupportedException(sprintf('Doctrine object manager class "%s" is not supported.', get_class($this->objectManager))),
+        };
     }
 }

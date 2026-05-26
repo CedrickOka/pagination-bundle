@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\DBAL;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\DBAL\EqualFilterExpression;
@@ -21,6 +23,14 @@ class EqualFilterExpressionTest extends KernelTestCase
      */
     protected $documentManager;
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
+
     public function setUp(): void
     {
         static::bootKernel();
@@ -36,8 +46,8 @@ class EqualFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new EqualFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'eq(text)'));
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'eq(text)'));
+        $this->assertTrue($filterExpression->supports($this->entityManager->createQueryBuilder(), 'eq(text)'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'eq(text)'));
     }
 
     /**

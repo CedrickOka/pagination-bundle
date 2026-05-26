@@ -1,23 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Doctrine\Query\Functions\MySQL;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
+use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Parser;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\TokenType;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
- * RegexpLikeFunction ::= "REGEXP_LIKE" "(" StringPrimary "," StringPrimary "," StringPrimary ")"
+ * RegexpLikeFunction: = "REGEXP_LIKE" "(" StringPrimary "," StringPrimary "," StringPrimary ")"
  */
 class RegexpLike extends FunctionNode
 {
-    protected $expression;
-    protected $pattern;
-    protected $matchType;
+    protected string|Node $expression;
+    protected string|Node $pattern;
+    protected string|Node|null $matchType;
 
+    /**
+     * @throws QueryException
+     */
     public function parse(Parser $parser): void
     {
         $parser->match(TokenType::T_IDENTIFIER);

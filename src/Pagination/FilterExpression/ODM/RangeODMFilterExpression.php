@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression\ODM;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -46,14 +48,14 @@ class RangeODMFilterExpression extends AbstractODMFilterExpression
         }
     }
 
-    protected function createGreaterExpr(Builder $queryBuilder, string $field, string $leftOperator, $start)
+    protected function createGreaterExpr(Builder $queryBuilder, string $field, string $leftOperator, $start): \Doctrine\ODM\MongoDB\Query\Expr
     {
         return ']' === $leftOperator ?
             $queryBuilder->expr()->field($field)->gt($start) :
             $queryBuilder->expr()->field($field)->gte($start);
     }
 
-    protected function createLessExpr(Builder $queryBuilder, string $field, string $rightOperator, $end)
+    protected function createLessExpr(Builder $queryBuilder, string $field, string $rightOperator, $end): \Doctrine\ODM\MongoDB\Query\Expr
     {
         return '[' === $rightOperator ?
             $queryBuilder->expr()->field($field)->lt($end) :

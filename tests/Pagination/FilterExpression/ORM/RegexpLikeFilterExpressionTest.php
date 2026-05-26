@@ -13,12 +13,20 @@ class RegexpLikeFilterExpressionTest extends KernelTestCase
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $entityManager;
+    protected \Doctrine\ORM\EntityManager $entityManager;
 
     /**
      * @var RegexpLikeFilterExpression
      */
-    protected $filterExpression;
+    protected RegexpLikeFilterExpression $filterExpression;
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
 
     public function setUp(): void
     {
@@ -33,8 +41,8 @@ class RegexpLikeFilterExpressionTest extends KernelTestCase
      */
     public function testThatFilterCanSupportEvaluation()
     {
-        $this->assertEquals(true, $this->filterExpression->supports($this->entityManager->createQueryBuilder(), 'rLike(^text,)'));
-        $this->assertEquals(true, $this->filterExpression->supports($this->entityManager->createQueryBuilder(), 'rLike(^text,i)'));
+        $this->assertTrue($this->filterExpression->supports($this->entityManager->createQueryBuilder(), 'rLike(^text,)'));
+        $this->assertTrue($this->filterExpression->supports($this->entityManager->createQueryBuilder(), 'rLike(^text,i)'));
     }
 
     /**

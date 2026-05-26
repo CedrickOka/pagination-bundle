@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 /**
@@ -7,13 +9,8 @@ namespace Oka\PaginationBundle\Pagination\FilterExpression;
  */
 class EvaluationResult
 {
-    private $expr;
-    private $parameters;
-
-    public function __construct($expr, array $parameters = [])
+    public function __construct(private $expr, private array $parameters = [])
     {
-        $this->expr = $expr;
-        $this->parameters = $parameters;
     }
 
     public function getExpr()

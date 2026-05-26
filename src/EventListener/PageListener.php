@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\EventListener;
 
 use Oka\PaginationBundle\Event\PageEvent;
+use Twig\Environment;
 
 class PageListener
 {
@@ -10,7 +13,7 @@ class PageListener
     {
     }
 
-    public function onPage(PageEvent $event)
+    public function onPage(PageEvent $event): void
     {
         $configuration = $event->getConfiguration();
 

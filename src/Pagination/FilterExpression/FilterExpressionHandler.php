@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -10,24 +12,77 @@ use Oka\PaginationBundle\Pagination\Filter;
  */
 class FilterExpressionHandler
 {
-    private $filterExpressions;
+    /**
+     * Cache for supported filter expressions by query builder class.
+     *
+     * @var array<string, array<int, FilterExpressionInterface>>
+     */
+    private static array $expressionCache = [];
 
-    public function __construct(iterable $filterExpressions = [])
-    {
-        $this->filterExpressions = $filterExpressions;
+    /**
+     * Default filter expressions in order of priority.
+     *
+     * @var array<int, FilterExpressionInterface>
+     */
+    private array $defaultExpressions = [];
+
+    public function __construct(
+        private iterable $filterExpressions = [],
+    ) {
+        // Pre-sort expressions by priority for better performance
+        $this->defaultExpressions = $this->sortExpressions($filterExpressions);
     }
 
-    public function addFilterExpression(FilterExpressionInterface $filterExpression)
+    public function addFilterExpression(FilterExpressionInterface $filterExpression): void
     {
-        $this->filterExpressions[] = $filterExpression;
+        if (is_array($this->filterExpressions)) {
+            $this->filterExpressions[] = $filterExpression;
+        } else {
+            $this->filterExpressions = iterator_to_array($this->filterExpressions);
+            $this->filterExpressions[] = $filterExpression;
+        }
+        
+        $this->defaultExpressions = $this->sortExpressions($this->filterExpressions);
+        // Reset cache when new expression is added
+        self::$expressionCache = [];
+    }
+
+    /**
+     * Sort expressions by priority (higher priority first).
+     *
+     * @param iterable<FilterExpressionInterface> $expressions
+     *
+     * @return array<int, FilterExpressionInterface>
+     */
+    private function sortExpressions(iterable $expressions): array
+    {
+        $sorted = [];
+        foreach ($expressions as $expr) {
+            $sorted[] = $expr;
+        }
+
+        // Sort by priority if expressions implement priority interface
+        usort($sorted, function ($a, $b) {
+            $priorityA = method_exists($a, 'getPriority') ? $a->getPriority() : 0;
+            $priorityB = method_exists($b, 'getPriority') ? $b->getPriority() : 0;
+
+            return $priorityB <=> $priorityA;
+        });
+
+        return $sorted;
     }
 
     public function evaluate(object $queryBuilder, string $field, $value, string $castType, ?string $propertyType = null, int &$boundCounter = 1): void
     {
+        $queryBuilderClass = get_class($queryBuilder);
+
+        // Use cached expressions if available
+        $expressions = $this->getExpressionsForQueryBuilder($queryBuilderClass);
+
         $evaluated = false;
 
         /** @var FilterExpressionInterface $filterExpression */
-        foreach ($this->filterExpressions as $filterExpression) {
+        foreach ($expressions as $filterExpression) {
             if (false === $filterExpression->supports($queryBuilder, $value)) {
                 continue;
             }
@@ -39,8 +94,8 @@ class FilterExpressionHandler
             } else {
                 $queryBuilder->andWhere($result->getExpr());
 
-                foreach ($result->getParameters() as $name => $value) {
-                    $queryBuilder->setParameter($name, $value, $propertyType);
+                foreach ($result->getParameters() as $name => $paramValue) {
+                    $queryBuilder->setParameter($name, $paramValue, $propertyType);
                 }
                 ++$boundCounter;
             }
@@ -62,5 +117,35 @@ class FilterExpressionHandler
             $queryBuilder->setParameter($boundCounter, $value, $propertyType);
             ++$boundCounter;
         }
+    }
+
+    /**
+     * Get cached expressions for a specific query builder class.
+     *
+     * @return array<int, FilterExpressionInterface>
+     */
+    private function getExpressionsForQueryBuilder(string $queryBuilderClass): array
+    {
+        if (isset(self::$expressionCache[$queryBuilderClass])) {
+            return self::$expressionCache[$queryBuilderClass];
+        }
+
+        // Build cache for this query builder type
+        $cached = [];
+        foreach ($this->defaultExpressions as $expression) {
+            $cached[] = $expression;
+        }
+
+        self::$expressionCache[$queryBuilderClass] = $cached;
+
+        return $cached;
+    }
+
+    /**
+     * Clear the expression cache.
+     */
+    public static function clearCache(): void
+    {
+        self::$expressionCache = [];
     }
 }
