@@ -52,8 +52,8 @@ class RegexpLike extends FunctionNode
 
         if (null === $this->matchType) {
             return sprintf('REGEXP_LIKE(%s, %s)', $expression, $pattern);
-        } else {
-            return sprintf('REGEXP_LIKE(%s, %s, %s)', $expression, $pattern, $sqlWalker->walkStringPrimary($this->matchType));
         }
+
+        return sprintf('REGEXP_LIKE(%s, %s, %s)', $expression, $pattern, $sqlWalker->walkStringPrimary($this->matchType));
     }
 }

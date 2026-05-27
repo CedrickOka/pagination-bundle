@@ -63,7 +63,7 @@ class PaginationManagerTest extends KernelTestCase
             $mongoClient = new \MongoDB\Client($_ENV['MONGODB_URL'] ?? 'mongodb://root:root@localhost:27017');
             $mongoClient->listDatabases(['maxTimeMS' => 1000]);
         } catch (\Exception $e) {
-            $this->markTestSkipped('MongoDB is not available: ' . $e->getMessage());
+            $this->markTestSkipped('MongoDB is not available: '.$e->getMessage());
         }
 
         $filterValue = sprintf('neq(%s)', date('c'));

@@ -10,14 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RegexpLikeFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
     protected \Doctrine\ORM\EntityManager $entityManager;
 
-    /**
-     * @var RegexpLikeFilterExpression
-     */
     protected RegexpLikeFilterExpression $filterExpression;
 
     protected function tearDown(): void

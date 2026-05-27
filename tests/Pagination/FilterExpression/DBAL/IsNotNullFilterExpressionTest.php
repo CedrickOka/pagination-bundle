@@ -13,14 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class IsNotNullFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
     protected \Doctrine\ORM\EntityManager $entityManager;
 
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
     protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
 
     protected function tearDown(): void

@@ -44,22 +44,22 @@ class RegexpLikeFilterExpression extends AbstractORMFilterExpression
                 ),
                 []
             );
-        } else {
-            return new EvaluationResult(
-                $queryBuilder->expr()->eq(
-                    new Func(
-                        'REGEXP_LIKE',
-                        [
-                            $field,
-                            $queryBuilder->expr()->literal($pattern)->__toString(),
-                            $queryBuilder->expr()->literal(trim($matches['matchType']))->__toString(),
-                        ]
-                    ),
-                    1
-                ),
-                []
-            );
         }
+
+        return new EvaluationResult(
+            $queryBuilder->expr()->eq(
+                new Func(
+                    'REGEXP_LIKE',
+                    [
+                        $field,
+                        $queryBuilder->expr()->literal($pattern)->__toString(),
+                        $queryBuilder->expr()->literal(trim($matches['matchType']))->__toString(),
+                    ]
+                ),
+                1
+            ),
+            []
+        );
     }
 
     protected static function getExpressionPattern(): string

@@ -12,9 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class InORMFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
     protected \Doctrine\ORM\EntityManager $entityManager;
 
     protected function tearDown(): void

@@ -41,7 +41,7 @@ class FilterExpressionHandler
             $this->filterExpressions = iterator_to_array($this->filterExpressions);
             $this->filterExpressions[] = $filterExpression;
         }
-        
+
         $this->defaultExpressions = $this->sortExpressions($this->filterExpressions);
         // Reset cache when new expression is added
         self::$expressionCache = [];

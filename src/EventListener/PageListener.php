@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Oka\PaginationBundle\EventListener;
 
 use Oka\PaginationBundle\Event\PageEvent;
-use Twig\Environment;
 
 class PageListener
 {

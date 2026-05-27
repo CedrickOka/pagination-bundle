@@ -13,9 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RangeODMFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
     protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
 
     protected function tearDown(): void
