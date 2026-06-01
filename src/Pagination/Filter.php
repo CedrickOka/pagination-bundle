@@ -11,9 +11,6 @@ final class Filter
 {
     public const LOCATIONS = ['query', 'request', 'files', 'headers'];
 
-    // Security: Maximum length for filter values
-    public const MAX_VALUE_LENGTH = 200;
-
     // Compiled regex patterns for better performance
     private static array $typeCastPatterns = [
         'datetime' => true,
@@ -29,14 +26,33 @@ final class Filter
         'object' => true,
     ];
 
-    public function __construct(
-        private readonly string $location,
-        private readonly string $propertyName,
-        private readonly string $castType,
-        private readonly bool $searchable,
-        private readonly bool $orderable,
-        private readonly bool $private = false,
-    ) {
+    /**
+     * @var string
+     */
+    private $location;
+    /**
+     * @var string
+     */
+    private $propertyName;
+    /**
+     * @var string
+     */
+    private $castType;
+    /**
+     * @var bool
+     */
+    private $searchable;
+    /**
+     * @var bool
+     */
+    private $orderable;
+    /**
+     * @var bool
+     */
+    private $private;
+
+    public function __construct(string $location, string $propertyName, string $castType, bool $searchable, bool $orderable, bool $private = false)
+    {
         if (false === in_array($location, self::LOCATIONS, true)) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$location" is not valid.', $location));
         }
@@ -45,6 +61,13 @@ final class Filter
         if (!isset(self::$typeCastPatterns[$castType])) {
             throw new \InvalidArgumentException(sprintf('Unsupported cast type: "%s".', $castType));
         }
+
+        $this->propertyName = $propertyName;
+        $this->castType = $castType;
+        $this->searchable = $searchable;
+        $this->orderable = $orderable;
+        $this->private = $private;
+        $this->location = $location;
     }
 
     public function getLocation(): string

@@ -9,11 +9,16 @@ use Symfony\Component\Routing\Route;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-final readonly class ConfigurationBagConfigurator
+final class ConfigurationBagConfigurator
 {
-    public function __construct(
-        private array $paginationManagers,
-    ) {
+    /**
+     * @var array
+     */
+    private $paginationManagers;
+
+    public function __construct(array $paginationManagers)
+    {
+        $this->paginationManagers = $paginationManagers;
     }
 
     public function __invoke(ConfigurationBag $configurations): void

@@ -8,8 +8,14 @@ use Oka\PaginationBundle\Event\PageEvent;
 
 class PageListener
 {
-    public function __construct(private \Twig_Environment $twig)
+    /**
+     * @var \Twig_Environment
+     */
+    private $twig;
+
+    public function __construct(\Twig_Environment $twig)
     {
+        $this->twig = $twig;
     }
 
     public function onPage(PageEvent $event): void

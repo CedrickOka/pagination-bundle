@@ -9,18 +9,54 @@ namespace Oka\PaginationBundle\Pagination;
  */
 class Page
 {
-    private int $pageNumber;
+    /**
+     * @var int
+     */
+    private $page;
+    /**
+     * @var int
+     */
+    private $itemPerPage;
+    /**
+     * @var array
+     */
+    private $filters;
+    /**
+     * @var array
+     */
+    private $orderBy;
+    /**
+     * @var int
+     */
+    private $itemOffset;
+    /**
+     * @var int
+     */
+    private $fullyItems;
+    /**
+     * @var array
+     */
+    private $items;
+    /**
+     * @var int
+     */
+    private $pageNumber;
+    /**
+     * @var array
+     */
+    private $metadata;
 
-    public function __construct(
-        private readonly int $page,
-        private readonly int $itemPerPage,
-        private readonly array $filters,
-        private readonly array $orderBy,
-        private readonly int $itemOffset,
-        private readonly int $fullyItems,
-        private readonly array $items,
-        private array $metadata = [],
-    ) {
+    public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, array $items, array $metadata = [])
+    {
+        $this->page = $page;
+        $this->itemPerPage = $itemPerPage;
+        $this->filters = $filters;
+        $this->orderBy = $orderBy;
+        $this->itemOffset = $itemOffset;
+        $this->fullyItems = $fullyItems;
+        $this->items = $items;
+        $this->metadata = $metadata;
+
         $this->pageNumber = 1;
         $items = $this->fullyItems - $this->itemPerPage;
 

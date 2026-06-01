@@ -9,8 +9,16 @@ namespace Oka\PaginationBundle\Pagination\FilterExpression;
  */
 class EvaluationResult
 {
-    public function __construct(private $expr, private array $parameters = [])
+    private $expr;
+    /**
+     * @var array
+     */
+    private $parameters;
+
+    public function __construct($expr, array $parameters = [])
     {
+        $this->expr = $expr;
+        $this->parameters = $parameters;
     }
 
     public function getExpr()

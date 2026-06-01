@@ -15,9 +15,11 @@ use Twig\TwigFunction;
  */
 class PaginationExtension extends AbstractExtension implements GlobalsInterface
 {
-    public function __construct(
-        private readonly PaginationManager $paginationManager,
-    ) {
+    private $paginationManager;
+
+    public function __construct(PaginationManager $paginationManager)
+    {
+        $this->paginationManager = $paginationManager;
     }
 
     public function getGlobals(): array

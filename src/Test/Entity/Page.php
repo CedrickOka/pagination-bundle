@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Test\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,27 +9,35 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
  */
-#[ORM\Entity()]
-#[ORM\Table(name: 'page')]
+/**
+ * @ORM\Entity
+ *
+ * @ORM\Table(name: 'page')
+ */
 class Page
 {
     /**
-     * @var string
+     * @ORM\Id
+     *
+     * @ORM\GeneratedValue(strategy: 'AUTO')
+     *
+     * @ORM\Column(type: 'integer')
+     *
+     * @var int
      */
-    #[ORM\Id()]
-    #[ORM\Column(type: 'integer')]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
+     * @ORM\Column(type: 'integer')
+     *
      * @var int
      */
-    #[ORM\Column(type: 'integer')]
     protected $number;
 
     /**
+     * @ORM\Column(name: 'created_at', type: 'datetime')
+     *
      * @var \DateTime
      */
-    #[ORM\Column(name: 'created_at', type: 'datetime')]
     protected $createdAt;
 }

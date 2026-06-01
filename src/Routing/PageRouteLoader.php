@@ -13,9 +13,14 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class PageRouteLoader implements RouteLoaderInterface
 {
-    public function __construct(
-        private readonly ConfigurationBag $configurations,
-    ) {
+    /**
+     * @var ConfigurationBag
+     */
+    private $configurations;
+
+    public function __construct(ConfigurationBag $configurations)
+    {
+        $this->configurations = $configurations;
     }
 
     public function __invoke(): RouteCollection

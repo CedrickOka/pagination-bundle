@@ -11,21 +11,73 @@ use Symfony\Component\Routing\Route;
  */
 final class Configuration
 {
+    /**
+     * @var string
+     */
+    private $dbDriver;
+    /**
+     * @var int
+     */
+    private $itemPerPage;
+    /**
+     * @var int
+     */
+    private $maxPageNumber;
+    /**
+     * @var array
+     */
+    private $sort;
+    /**
+     * @var array
+     */
+    private $queryMappings;
+    /**
+     * @var FilterBag
+     */
+    private $filters;
+    /**
+     * @var string|null
+     */
+    private $objectManagerName;
+    /**
+     * @var string|null
+     */
+    private $className;
+    /**
+     * @var Route|null
+     */
+    private $route;
+    /**
+     * @var array
+     */
+    private $twig;
+
     public function __construct(
-        private readonly string $dbDriver,
-        private readonly int $itemPerPage,
-        private int $maxPageNumber,
-        private readonly array $sort,
-        private readonly array $queryMappings,
-        private readonly FilterBag $filters,
-        private readonly ?string $objectManagerName = null,
-        private readonly ?string $className = null,
-        private readonly ?Route $route = null,
-        private readonly array $twig = [],
+        string $dbDriver,
+        int $itemPerPage,
+        int $maxPageNumber,
+        array $sort,
+        array $queryMappings,
+        FilterBag $filters,
+        ?string $objectManagerName = null,
+        ?string $className = null,
+        ?Route $route = null,
+        array $twig = []
     ) {
         if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));
         }
+
+        $this->dbDriver = $dbDriver;
+        $this->itemPerPage = $itemPerPage;
+        $this->maxPageNumber = $maxPageNumber;
+        $this->sort = $sort;
+        $this->filters = $filters;
+        $this->objectManagerName = $objectManagerName;
+        $this->className = $className;
+        $this->queryMappings = $queryMappings;
+        $this->route = $route;
+        $this->twig = $twig;
     }
 
     public function getDBDriver(): string

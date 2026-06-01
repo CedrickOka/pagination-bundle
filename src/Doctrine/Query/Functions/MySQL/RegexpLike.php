@@ -18,9 +18,20 @@ use Doctrine\ORM\Query\TokenType;
  */
 class RegexpLike extends FunctionNode
 {
-    protected string|Node $expression;
-    protected string|Node $pattern;
-    protected string|Node|null $matchType;
+    /**
+     * @var string|Node
+     */
+    protected $expression;
+
+    /**
+     * @var string|Node
+     */
+    protected $pattern;
+
+    /**
+     * @var string|Node|null
+     */
+    protected $matchType;
 
     /**
      * @throws QueryException
