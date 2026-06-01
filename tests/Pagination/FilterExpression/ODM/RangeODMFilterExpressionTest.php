@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\ODM;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\ODM\RangeODMFilterExpression;
@@ -11,10 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RangeODMFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
-    protected $documentManager;
+    protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
 
     public function setUp(): void
     {
@@ -30,7 +37,7 @@ class RangeODMFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new RangeODMFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'range[1,2]'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'range[1,2]'));
     }
 
     /**

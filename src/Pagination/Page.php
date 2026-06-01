@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 /**
@@ -7,14 +9,41 @@ namespace Oka\PaginationBundle\Pagination;
  */
 class Page
 {
+    /**
+     * @var int
+     */
     private $page;
+    /**
+     * @var int
+     */
     private $itemPerPage;
+    /**
+     * @var array
+     */
     private $filters;
+    /**
+     * @var array
+     */
     private $orderBy;
+    /**
+     * @var int
+     */
     private $itemOffset;
+    /**
+     * @var int
+     */
     private $fullyItems;
+    /**
+     * @var array
+     */
     private $items;
+    /**
+     * @var int
+     */
     private $pageNumber;
+    /**
+     * @var array
+     */
     private $metadata;
 
     public function __construct(int $page, int $itemPerPage, array $filters, array $orderBy, int $itemOffset, int $fullyItems, array $items, array $metadata = [])
@@ -89,7 +118,7 @@ class Page
         return $this;
     }
 
-    public function toArray(array $exludedFields = []): array
+    public function toArray(array $excludedFields = []): array
     {
         $data = [
             'page' => $this->page,
@@ -103,10 +132,10 @@ class Page
             'metadata' => $this->metadata,
         ];
 
-        if (!empty($exludedFields)) {
-            foreach ($exludedFields as $exludedField) {
-                if (true === isset($data[$exludedField])) {
-                    unset($data[$exludedField]);
+        if (!empty($excludedFields)) {
+            foreach ($excludedFields as $excludedField) {
+                if (true === isset($data[$excludedField])) {
+                    unset($data[$excludedField]);
                 }
             }
         }

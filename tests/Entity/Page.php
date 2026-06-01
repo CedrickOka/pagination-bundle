@@ -2,40 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Oka\PaginationBundle\Test\Entity;
+namespace Oka\PaginationBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @author Cedrick Oka Baidai <baidai.cedric@veone.net>
- */
-/**
+ *
  * @ORM\Entity
  *
- * @ORM\Table(name: 'page')
+ * @ORM\Table(name="page")
  */
 class Page
 {
     /**
      * @ORM\Id
      *
-     * @ORM\GeneratedValue(strategy: 'AUTO')
+     * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @ORM\Column(type: 'integer')
+     * @ORM\Column(type="integer")
      *
      * @var int
      */
     protected $id;
 
     /**
-     * @ORM\Column(type: 'integer')
-     *
-     * @var int
+     * @ORM\Column(type="integer")
      */
-    protected $number;
+    protected int $number;
 
     /**
-     * @ORM\Column(name: 'created_at', type: 'datetime')
+     * @ORM\Column(name="created_at", type="datetime")
      *
      * @var \DateTime
      */

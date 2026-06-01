@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Oka\PaginationBundle\Event\PageEvent;
@@ -15,13 +17,29 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PaginationManager
 {
+    /**
+     * @var ServiceLocator
+     */
     private $registryLocator;
+    /**
+     * @var ConfigurationBag
+     */
     private $configurations;
+    /**
+     * @var FilterExpressionHandler
+     */
     private $filterHandler;
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
 
-    public function __construct(ServiceLocator $registryLocator, ConfigurationBag $configurations, FilterExpressionHandler $filterHandler, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        ServiceLocator $registryLocator,
+        ConfigurationBag $configurations,
+        FilterExpressionHandler $filterHandler,
+        EventDispatcherInterface $dispatcher
+    ) {
         $this->registryLocator = $registryLocator;
         $this->configurations = $configurations;
         $this->filterHandler = $filterHandler;

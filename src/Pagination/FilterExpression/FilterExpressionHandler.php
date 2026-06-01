@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -10,6 +12,9 @@ use Oka\PaginationBundle\Pagination\Filter;
  */
 class FilterExpressionHandler
 {
+    /**
+     * @var array|iterable
+     */
     private $filterExpressions;
 
     public function __construct(iterable $filterExpressions = [])

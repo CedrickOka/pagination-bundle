@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -12,14 +14,12 @@ class AppKernel extends Kernel
 {
     public function registerBundles(): iterable
     {
-        $bundles = [
+        return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Oka\PaginationBundle\OkaPaginationBundle(),
         ];
-
-        return $bundles;
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void

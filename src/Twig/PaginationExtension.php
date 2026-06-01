@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Twig;
 
 use Oka\PaginationBundle\Pagination\PaginationManager;
@@ -20,11 +22,6 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
         $this->paginationManager = $paginationManager;
     }
 
-    public function getName()
-    {
-        return 'oka_pagination.twig_extension';
-    }
-
     public function getGlobals(): array
     {
         return [
@@ -34,7 +31,7 @@ class PaginationExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('paginate', [$this, 'renderCurrentPaginationView'], ['needs_environment' => true, 'is_safe' => ['html']]),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination\FilterExpression\ODM;
 
 use Oka\PaginationBundle\Exception\BadFilterExpressionException;

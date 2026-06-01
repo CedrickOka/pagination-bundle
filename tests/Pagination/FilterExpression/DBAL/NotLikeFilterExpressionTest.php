@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Tests\Pagination\FilterExpression\DBAL;
 
 use Oka\PaginationBundle\Pagination\FilterExpression\DBAL\NotLikeFilterExpression;
@@ -11,15 +13,17 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class NotLikeFilterExpressionTest extends KernelTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $entityManager;
+    protected \Doctrine\ORM\EntityManager $entityManager;
 
-    /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
-     */
-    protected $documentManager;
+    protected \Doctrine\ODM\MongoDB\DocumentManager $documentManager;
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (null !== $this->entityManager) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
 
     public function setUp(): void
     {
@@ -36,8 +40,8 @@ class NotLikeFilterExpressionTest extends KernelTestCase
     {
         $filterExpression = new NotLikeFilterExpression();
 
-        $this->assertEquals(true, $filterExpression->supports($this->entityManager->createQueryBuilder(), 'notLike(text)'));
-        $this->assertEquals(true, $filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'notLike(text)'));
+        $this->assertTrue($filterExpression->supports($this->entityManager->createQueryBuilder(), 'notLike(text)'));
+        $this->assertTrue($filterExpression->supports($this->documentManager->createQueryBuilder(Page::class), 'notLike(text)'));
     }
 
     /**

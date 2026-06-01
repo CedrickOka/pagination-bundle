@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Symfony\Component\Routing\Route;
@@ -9,6 +11,9 @@ use Symfony\Component\Routing\Route;
  */
 final class ConfigurationBagConfigurator
 {
+    /**
+     * @var array
+     */
     private $paginationManagers;
 
     public function __construct(array $paginationManagers)
@@ -16,7 +21,7 @@ final class ConfigurationBagConfigurator
         $this->paginationManagers = $paginationManagers;
     }
 
-    public function __invoke(ConfigurationBag $configurations)
+    public function __invoke(ConfigurationBag $configurations): void
     {
         foreach ($this->paginationManagers as $key => $manager) {
             $configurations->set($key, new Configuration(

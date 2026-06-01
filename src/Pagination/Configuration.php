@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Symfony\Component\Routing\Route;
@@ -9,19 +11,59 @@ use Symfony\Component\Routing\Route;
  */
 final class Configuration
 {
+    /**
+     * @var string
+     */
     private $dbDriver;
+    /**
+     * @var int
+     */
     private $itemPerPage;
+    /**
+     * @var int
+     */
     private $maxPageNumber;
+    /**
+     * @var array
+     */
     private $sort;
+    /**
+     * @var array
+     */
     private $queryMappings;
+    /**
+     * @var FilterBag
+     */
     private $filters;
+    /**
+     * @var string|null
+     */
     private $objectManagerName;
+    /**
+     * @var string|null
+     */
     private $className;
+    /**
+     * @var Route|null
+     */
     private $route;
+    /**
+     * @var array
+     */
     private $twig;
 
-    public function __construct(string $dbDriver, int $itemPerPage, int $maxPageNumber, array $sort, array $queryMappings, FilterBag $filters, ?string $objectManagerName = null, ?string $className = null, ?Route $route = null, array $twig = [])
-    {
+    public function __construct(
+        string $dbDriver,
+        int $itemPerPage,
+        int $maxPageNumber,
+        array $sort,
+        array $queryMappings,
+        FilterBag $filters,
+        ?string $objectManagerName = null,
+        ?string $className = null,
+        ?Route $route = null,
+        array $twig = []
+    ) {
         if ($diff = array_diff(array_keys($twig), ['enabled', 'template'])) {
             throw new \InvalidArgumentException(sprintf('The following options given "%s" for the arguments "$twig" are not valids.', implode(',', $diff)));
         }

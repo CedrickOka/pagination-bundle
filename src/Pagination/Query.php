@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Oka\PaginationBundle\Pagination;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -16,36 +18,68 @@ use Oka\PaginationBundle\Pagination\FilterExpression\FilterExpressionHandler;
  */
 class Query
 {
-    private $objectManager;
-    private $filterHandler;
-    private $className;
-    private $itemPerPage;
-    private $maxPageNumber;
-    private $filters;
-    private $page;
-
     /**
      * @var array
      */
     private $queryParts;
-
     /**
      * @var string
      */
     private $dqlAlias;
-
     /**
-     * @var QueryBuilder|Builder
+     * @var QueryBuilder|Builder|object
      */
     private $dbalQueryBuilder;
-
     /**
      * @var int
      */
     private $boundCounter;
 
-    public function __construct(ObjectManager $objectManager, FilterExpressionHandler $filterHandler, string $className, int $itemPerPage, int $maxPageNumber, FilterBag $filters, int $page, array $criteria = [], array $orderBy = [])
-    {
+    /**
+     * @var ObjectManager
+     */
+    private $objectManager;
+    /**
+     * @var FilterExpressionHandler
+     */
+    private $filterHandler;
+    /**
+     * @var string
+     */
+    private $className;
+    /**
+     * @var int
+     */
+    private $itemPerPage;
+    /**
+     * @var int
+     */
+    private $maxPageNumber;
+    /**
+     * @var FilterBag
+     */
+    private $filters;
+    /**
+     * @var int
+     */
+    private $page;
+
+    /**
+     * Whether to use a single query with inline count (MySQL optimization).
+     */
+    private bool $useSingleQuery = false;
+
+    public function __construct(
+        ObjectManager $objectManager,
+        FilterExpressionHandler $filterHandler,
+        string $className,
+        int $itemPerPage,
+        int $maxPageNumber,
+        FilterBag $filters,
+        int $page,
+        array $criteria = [],
+        array $orderBy = []
+    ) {
         if (1 > $itemPerPage) {
             throw new \LogicException(sprintf('The number of items per page must be greater than 0, "%s" given.', $itemPerPage));
         }
@@ -152,6 +186,18 @@ class Query
     public function useBoundCounter(): int
     {
         return $this->boundCounter++;
+    }
+
+    public function useSingleQuery(): bool
+    {
+        return $this->useSingleQuery;
+    }
+
+    public function setUseSingleQuery(bool $useSingleQuery): self
+    {
+        $this->useSingleQuery = $useSingleQuery;
+
+        return $this;
     }
 
     public function getQueryParts(): array
@@ -292,7 +338,7 @@ class Query
             case $this->objectManager instanceof \Doctrine\ORM\EntityManager:
                 /* @var \Doctrine\ORM\QueryBuilder $builder */
                 return $this->objectManager->createQueryBuilder()
-                            ->from($this->className, $this->dqlAlias);
+                    ->from($this->className, $this->dqlAlias);
 
             case $this->objectManager instanceof \Doctrine\ODM\MongoDB\DocumentManager:
                 /* @var \Doctrine\ODM\MongoDB\Query\Builder $builder */
